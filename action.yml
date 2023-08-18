@@ -1,0 +1,41 @@
+name: "Download From Contract"
+description: "Download  tokens & contracts files from contract repository"
+
+inputs:  
+  type:
+    description: "version type of files (for example public-soft-launch)"
+    required: true
+  tag:
+    description: "which version of contracts release will be downloaded? [Default: last one]"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Fetch Contract Links
+      shell: bash
+      id: version
+      run: |
+        if [ -z "${{inputs.tag}}" ]
+        then
+          echo "download_version=$(echo $(curl -s https://api.github.com/repos/rosen-bridge/contract/releases) | jq -r 'max_by(.published_at).name')" >> $GITHUB_OUTPUT
+        elif [ "$(echo "${{inputs.tag}}" | tr '[:upper:]' '[:lower:]')" == "latest" ]
+        then
+          echo "download_version=$(echo $(curl -s https://api.github.com/repos/rosen-bridge/contract/releases/latest) | jq -r '.tag_name')" >> $GITHUB_OUTPUT
+        else
+          echo "download_version=$(echo "${{inputs.tag}}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Download Contracts Files
+      shell: bash
+      run: |
+        release_info=$(curl -s "https://api.github.com/repos/rosen-bridge/contract/releases/tags/${{steps.version.outputs.download_version}}")
+        asset_urls=$(echo "$release_info" | jq -r --arg name "${{inputs.type}}" '.assets | map(select(.name | test($name))) | .[].browser_download_url')
+        for url in $asset_urls; do
+          curl -LJO "$url"
+        done
+        mv ./tokensMap-${{inputs.type}}-${{steps.version.outputs.download_version}}.json ./tokens.json
+        files=$(ls contracts-*-${{inputs.type}}-${{steps.version.outputs.download_version}}.json)
+        for file in $files; do
+          new_name=$(echo "$file" | awk -F'-' '{print $1"-"$2"-mainnet.json"}')
+          mv "$file" "$new_name"
+        done
