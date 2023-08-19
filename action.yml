@@ -1,5 +1,5 @@
 name: "Download From Contract"
-description: "Download  tokens & contracts files from contract repository"
+description: "Download tokens & contracts files from contract repository"
 
 inputs:  
   type:
