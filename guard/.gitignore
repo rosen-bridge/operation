@@ -1,0 +1,5 @@
+**/logs/*
+config/thresholds.json
+config/local*.yaml
+.env
+.DS_Store
