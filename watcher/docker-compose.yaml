@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    container_name: postgres-${DB_INSTANCE_NUMBER:-0}
+    env_file:
+      - .env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - rosen_network
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  watcher:
+    image: ghcr.io/rosen-bridge/watcher:${WATCHER_IMAGE_VERSION:-latest}
+    container_name: watcher-${WATCHER_INSTANCE_NUMBER:-0}
+    ports:
+      - 127.0.0.1:${WATCHER_PORT:-3000}:3000
+    environment:
+      POSTGRES_HOST: db
+    env_file:
+      - .env
+    volumes:
+      - type: bind
+        source: ./config/local.yaml
+        target: /app/config/local.yml
+      - ./logs/:/app/logs/
+    networks:
+      - rosen_network
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'curl --fail http://localhost:3000/health/status || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  ui:
+    image: ghcr.io/rosen-bridge/ui-watcher:${UI_IMAGE_VERSION:-latest}
+    container_name: ui-watcher-${UI_INSTANCE_NUMBER:-0}
+    networks:
+      - rosen_network
+    restart: always
+    environment:
+      - SERVICE_NAME=watcher
+      - SERVICE_PORT=3000
+    ports:
+      - 127.0.0.1:${UI_PORT:-80}:80
+    volumes:
+      - nginx-logs:/var/log/nginx
+    depends_on:
+      watcher:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
+  nginx-logs:
+
+networks:
+  rosen_network:
