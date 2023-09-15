@@ -3,7 +3,6 @@ version: '3.8'
 services:
   db:
     image: postgres:13
-    container_name: postgres-${DB_INSTANCE_NUMBER:-0}
     env_file:
       - .env
     volumes:
@@ -18,12 +17,11 @@ services:
       retries: 3
 
   watcher:
-    image: ghcr.io/rosen-bridge/watcher:${WATCHER_IMAGE_VERSION:-latest}
-    container_name: watcher-${WATCHER_INSTANCE_NUMBER:-0}
+    image: ghcr.io/arsalanyavari/new-watcher:${WATCHER_IMAGE_VERSION:-latest}
     ports:
       - 127.0.0.1:${WATCHER_PORT:-3000}:3000
     environment:
-      POSTGRES_HOST: db
+      - POSTGRES_HOST=db
     env_file:
       - .env
     volumes:
@@ -44,8 +42,7 @@ services:
       retries: 3
 
   ui:
-    image: ghcr.io/rosen-bridge/ui-watcher:${UI_IMAGE_VERSION:-latest}
-    container_name: ui-watcher-${UI_INSTANCE_NUMBER:-0}
+    image: ghcr.io/arsalanyavari/ui-watcher:${UI_IMAGE_VERSION:-latest}
     networks:
       - rosen_network
     restart: always
