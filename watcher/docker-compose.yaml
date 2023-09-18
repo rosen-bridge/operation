@@ -16,10 +16,10 @@ services:
       timeout: 5s
       retries: 3
 
-  watcher:
-    image: ghcr.io/arsalanyavari/new-watcher:${WATCHER_IMAGE_VERSION:-latest}
+  service:
+    image: ghcr.io/rosen-bridge/watcher-service:${WATCHER_IMAGE_VERSION:-latest}
     ports:
-      - 127.0.0.1:${WATCHER_PORT:-3000}:3000
+      - 127.0.0.1:${SERVICE_PORT:-3000}:3000
     environment:
       - POSTGRES_HOST=db
     env_file:
@@ -42,19 +42,16 @@ services:
       retries: 3
 
   ui:
-    image: ghcr.io/arsalanyavari/ui-watcher:${UI_IMAGE_VERSION:-latest}
+    image: ghcr.io/rosen-bridge/ui-watcher:${UI_IMAGE_VERSION:-latest}
     networks:
       - rosen_network
     restart: always
-    environment:
-      - SERVICE_NAME=watcher
-      - SERVICE_PORT=3000
     ports:
-      - 127.0.0.1:${UI_PORT:-80}:80
+      - 127.0.0.1:${UI_PORT:-3030}:80
     volumes:
       - nginx-logs:/var/log/nginx
     depends_on:
-      watcher:
+      service:
         condition: service_healthy
 
 volumes:
