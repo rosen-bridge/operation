@@ -25,7 +25,7 @@ Set your parameters in `.env` file
 >**Note:** do not use space after `=` sign
 
 ```
-GUARD_PORT: (default is 8080 if no value is set)
+# Required Environments
 
 POSTGRES_PASSWORD: a random alphanumeric password without special characters (like $%!-#)
 
@@ -34,6 +34,17 @@ POSTGRES_USER: a random name
 POSTGRES_DB: a random name
 
 POSTGRES_PORT: 5432 is set as default, you can change it.
+
+
+# Optional Environments
+
+SERVICE_PORT: (default is 8080 if no value is set)
+
+UI_PORT: (default is 8081 if no value is set)
+
+GUARD_IMAGE_VERSION: Don't change it!
+
+UI_IMAGE_VERSION: Don't change it!
 ```
 
 Set required permissions and create `threshold.json` and `local.yaml` files in the `config` directory
