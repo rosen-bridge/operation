@@ -18,8 +18,6 @@ services:
 
   service:
     image: ghcr.io/rosen-bridge/watcher-service:${WATCHER_IMAGE_VERSION:-latest}
-    ports:
-      - 127.0.0.1:${SERVICE_PORT:-3000}:3000
     environment:
       - POSTGRES_HOST=db
     env_file:
@@ -47,7 +45,7 @@ services:
       - rosen_network
     restart: always
     ports:
-      - 127.0.0.1:${UI_PORT:-3030}:80
+      - 127.0.0.1:${WATCHER_PORT:-3030}:80
     volumes:
       - nginx-logs:/var/log/nginx
     depends_on:
