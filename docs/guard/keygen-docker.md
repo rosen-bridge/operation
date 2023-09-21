@@ -38,9 +38,7 @@ POSTGRES_PORT: 5432 is set as default, you can change it.
 
 # Optional Environments
 
-SERVICE_PORT: (default is 8080 if no value is set)
-
-UI_PORT: (default is 8081 if no value is set)
+GUARD_PORT: (default is 8081 if no value is set)
 
 GUARD_IMAGE_VERSION: Don't change it!
 
