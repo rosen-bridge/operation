@@ -27,8 +27,8 @@ services:
     volumes:
       - type: bind
         source: ./config/local.yaml
-        target: /app/config/local.yml
-      - ./logs/:/app/logs/
+        target: /app/services/watcher/config/local.yml
+      - ./logs/:/app/services/watcher/logs/
     networks:
       - rosen_network
     restart: always
