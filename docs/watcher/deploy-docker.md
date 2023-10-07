@@ -21,15 +21,23 @@ Set your parameters in `.env` file (make sure not to use spaces after the '=' si
 
 ```shell
 # Required Environments
-POSTGRES_PASSWORD=rosen # your database password (choose any)
-POSTGRES_USER=rosen-watcher # your database user (choose any)
-POSTGRES_DB=watcher-db # your database name (choose any)
-POSTGRES_PORT=5432 # 5432 is set as default, you can change it.
+
+POSTGRES_PASSWORD= # a random alphanumeric password without special characters (like $%!-#)
+
+POSTGRES_USER= # a random name
+
+POSTGRES_DB= # a random name
+
+POSTGRES_PORT=5432 # 5432 is set as default, you can change it
+
 
 # Optional Environments
-WATCHER_PORT= # Service exposed port, is set to 3000 by default
-WATCHER_IMAGE_VERSION= # Leave empty to get the latest image
-UI_IMAGE_VERSION= # Leave empty to get the latest image
+
+WATCHER_PORT= # (default is 8081 if no value is set)
+
+WATCHER_IMAGE_VERSION= # Don't change it!
+
+UI_IMAGE_VERSION= # Don't change it!
 ```
 
 Set required permissions and create `local.yaml` file in the `config` directory
