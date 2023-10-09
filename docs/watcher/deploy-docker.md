@@ -86,13 +86,15 @@ For all watchers, even if you're targeting a different network than Ergo to watc
 mnemonic: "pretty dad program ...."
 ```
 
+> Note: Utilizing this mnemonic in a standard multi-address wallet will lead to watcher misbehavior.
+
 2. Select your primary data source for the Ergo network; block and box information are retrieved from this source. You can use either `explorer` or `node` as the primary source:
 
 ```yaml
 type: node
 ```
 
-3. Specify the node and explorer urls (Currently you are required to use an Ergo node for transaction submissions, even when you're using the explorer as your primary source)
+3. Specify the node and explorer urls (Currently you are required to use an Ergo node for transaction submissions, even when you're using the explorer as your primary source. In contrast, when you rely on a node as your primary information source, you do not need to use the explorer.)
 
 ```yaml
 node:
@@ -127,24 +129,27 @@ ergo:
 
 If you are configuring a Cardano watcher, you should set these configs under the `cardano` keyword as well:
 
-1. Choose your infomration source for cardano network and specify its connection information. You can use either `koios` or `ogmios` as the data source.
+1. Choose your information source for cardano network and specify its connection information. You can use either `koios` or `ogmios` as the data source.
 
 ```yaml
 type: ogmios
 ogmios:
-  ip: 127.0.0.1
+  host: 127.0.0.1
   port: 1337
+  useTls: false
 ```
 
 or
 
 ```yaml
 type: koios
-koios:
+koios:In contrast you don't need to use explorer while using node as the primary information source
   url: https://api.koios.rest/api/v0
 ```
 
 > Note: If you don't specify the koios url, it will use the 'https://api.koios.rest/api/v0' by default, but in case you're using ogmios as your source you should specify the ip and port of an ogmios instance.
+
+> Note: It you're using a TLS enabled ogmios, set the useTls to true.
 
 2. Set your watcher's initial height, where you start observing and reporting events. Like the Ergo network, you may choose to start from an older height but we highly recommend using the latest block as your initial point. You should specify the initial block height, hash, and slot.
 
@@ -154,6 +159,8 @@ initial:
   hash: a2f07e6b1ba2830c946d4cf7a92f9d03b3de26d4109259fe14ae9291dd2e3e47
   slot: 103305423
 ```
+
+> Note: Koios utilizes block height, while Ogmios relies on the hash and slot of the initial block.
 
 > Note: Use block absolute slot
 
