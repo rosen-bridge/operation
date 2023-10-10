@@ -65,7 +65,7 @@ Set up your `local.yaml` using the instructions in the next section (Local Confi
 Finally, after saving the 'local.yaml' changes, run the container:
 
 ```shell
-docker compose up # use `docker-compose up` for older versions of Docker
+docker compose up -d # use `docker-compose up -d` for older versions of Docker
 ```
 
 ## Local Config
@@ -149,7 +149,7 @@ koios:In contrast you don't need to use explorer while using node as the primary
 
 > Note: If you don't specify the koios url, it will use the 'https://api.koios.rest/api/v0' by default, but in case you're using ogmios as your source you should specify the ip and port of an ogmios instance.
 
-> Note: It you're using a TLS enabled ogmios, set the useTls to true.
+> Note: If you're using a TLS enabled ogmios, set the useTls to true.
 
 2. Set your watcher's initial height, where you start observing and reporting events. Like the Ergo network, you may choose to start from an older height but we highly recommend using the latest block as your initial point. You should specify the initial block height, hash, and slot.
 
