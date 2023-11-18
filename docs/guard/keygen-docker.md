@@ -45,7 +45,7 @@ GUARD_IMAGE_VERSION= # Don't change it!
 UI_IMAGE_VERSION= # Don't change it!
 ```
 
-Set required permissions and create `threshold.json` and `local.yaml` files in the `config` directory
+Set required permissions and create `thresholds.json` and `local.yaml` files in the `config` directory
 
 ```shell
 sudo chown -R 8080:8080 logs
