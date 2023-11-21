@@ -48,9 +48,9 @@ UI_IMAGE_VERSION= # Don't change it!
 Set required permissions and create `thresholds.json` and `local.yaml` files in the `config` directory
 
 ```shell
-sudo chown -R 8080:8080 logs
 touch config/thresholds.json
 touch config/local.yaml
+sudo chown -R 8080:8080 logs config
 ```
 
 Only on `MacOS`: set `707` permission for the `logs` directory
