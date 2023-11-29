@@ -143,13 +143,18 @@ or
 
 ```yaml
 type: koios
-koios:In contrast you don't need to use explorer while using node as the primary information source
-  url: https://api.koios.rest/api/v0
+koios:
+  url: https://api.koios.rest/api/v1
+  authToken: eyJhbGciOiJIU...
 ```
 
-> Note: If you don't specify the koios url, it will use the 'https://api.koios.rest/api/v0' by default, but in case you're using ogmios as your source you should specify the ip and port of an ogmios instance.
+> Note: If you don't specify the koios url, it will use the 'https://api.koios.rest/api/v1' by default, but in case you're using ogmios as your source you should specify the host address and port of an ogmios instance.
 
 > Note: If you're using a TLS enabled ogmios, set the useTls to true.
+
+> Note: Watcher utilize Koios v1 APIs, and you can use your authentication token on the Koios platform by configuring the authToken. Alternatively, the watcher uses the public tier of the Koios platform, which comes with limitations on requests.
+
+> Note: Currently, the watcher is only compatible with Ogmios v6. Utilizing other versions of Ogmios may result in improper functionality.
 
 2. Set your watcher's initial height, where you start observing and reporting events. Like the Ergo network, you may choose to start from an older height but we highly recommend using the latest block as your initial point. You should specify the initial block height, hash, and slot.
 
