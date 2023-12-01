@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   db:
-    image: rapidfort/postgresql:13.12
+    image: rapidfort/postgresql:16.0.0
     env_file:
       - .env
     volumes:
