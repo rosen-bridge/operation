@@ -182,7 +182,11 @@ tss:
 
 ## P2P
 
-Keep this config from `key generation ceremony`.
+Keep the config provided by keygen moderator for `key generation ceremony`.
+
+## Keygen
+
+Keygen mode should be deactivated. Delete whole `keygen` section from your config file.
 
 ## Mnemonic
 
