@@ -83,7 +83,7 @@ For all watchers, even if you're targeting a different network than Ergo to watc
 1. Create an empty wallet for your watcher, and set the wallet mnemonic in the config file (you can use any wallet to generate a valid mnemonic on Ergo, and please use a new fresh wallet for this purpose only):
 
 ```yaml
-mnemonic: "pretty dad program ...."
+mnemonic: <your wallet mnemonic>
 ```
 
 > Note: Utilizing this mnemonic in a standard multi-address wallet will lead to watcher misbehavior.
@@ -145,7 +145,7 @@ or
 type: koios
 koios:
   url: https://api.koios.rest/api/v1
-  authToken: eyJhbGciOiJIU...
+  authToken: <your auth token>
 ```
 
 > Note: If you don't specify the koios url, it will use the 'https://api.koios.rest/api/v1' by default, but in case you're using ogmios as your source you should specify the host address and port of an ogmios instance.
