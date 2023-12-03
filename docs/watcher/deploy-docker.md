@@ -111,6 +111,21 @@ explorer:
 initialHeight: 1092300
 ```
 
+5. (JUST ERGO WATCHER) You need to update the commitment validity threshold to match with ergo network:
+
+```yaml
+transaction:
+  commitmentTimeoutConfirmation: 720
+```
+
+6. (JUST ERGO WATCHER) To ensure the watcher's proper functionality, event observations should be confirmed enough to take action. You should customize observation confirmation and validity threshold to align with your watching network specification. By default, these settings are configured much higher. For Ergo, we recommend using the following configurations:
+
+```yaml
+observation:
+  confirmation: 10
+  validThreshold: 720
+```
+
 Finally, an example Ergo watcher `local.yaml` file would look like:
 
 ```yaml
@@ -123,6 +138,12 @@ ergo:
     url: https://node.ergopool.io
   explorer:
     url: https://api.ergoplatform.com
+  transaction:
+    commitmentTimeoutConfirmation: 720
+
+observation:
+  confirmation: 10
+  validThreshold: 720
 ```
 
 ### Cardano Config (Just for Cardano watchers)
@@ -169,13 +190,6 @@ initial:
 
 > Note: Use block absolute slot
 
-3. To ensure the watcher's proper functionality, event observations should be confirmed enough to take action. You should customize observation confirmation and validity threshold to align with your watching network specification. By default, these settings are configured according to Ergo's requirements, so you should make adjustments if you're watching a different chain. For Cardano, we recommend using the following configurations:
-
-```yaml
-observation:
-  confirmation: 60
-  validThreshold: 2880
-```
 
 Finally, an example Cardano watcher `local.yaml` file would look like:
 
@@ -189,13 +203,12 @@ ergo:
     url: https://node.ergopool.io
 cardano:
   type: koios
+  koios:
+    authToken: "eyJhbGciOiJIUzI1NiIsInR5..."
   initial:
     height: 9297100
     hash: a2f07e6b1ba2830c946d4cf7a92f9d03b3de26d4109259fe14ae9291dd2e3e47
     slot: 103305423
-observation:
-  confirmation: 60
-  validThreshold: 2880
 ```
 
 ## Get Watcher Permit
