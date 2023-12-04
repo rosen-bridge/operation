@@ -83,7 +83,7 @@ For all watchers, even if you're targeting a different network than Ergo to watc
 1. Create an empty wallet for your watcher, and set the wallet mnemonic in the config file (you can use any wallet to generate a valid mnemonic on Ergo, and please use a new fresh wallet for this purpose only):
 
 ```yaml
-mnemonic: "pretty dad program ...."
+mnemonic: <your wallet mnemonic>
 ```
 
 > Note: Utilizing this mnemonic in a standard multi-address wallet will lead to watcher misbehavior.
@@ -111,6 +111,21 @@ explorer:
 initialHeight: 1092300
 ```
 
+5. (JUST ERGO WATCHER) You need to update the commitment validity threshold to match with ergo network:
+
+```yaml
+transaction:
+  commitmentTimeoutConfirmation: 720
+```
+
+6. (JUST ERGO WATCHER) To ensure the watcher's proper functionality, event observations should be confirmed enough to take action. You should customize observation confirmation and validity threshold to align with your watching network specification. By default, these settings are configured much higher. For Ergo, we recommend using the following configurations:
+
+```yaml
+observation:
+  confirmation: 10
+  validThreshold: 720
+```
+
 Finally, an example Ergo watcher `local.yaml` file would look like:
 
 ```yaml
@@ -123,6 +138,12 @@ ergo:
     url: https://node.ergopool.io
   explorer:
     url: https://api.ergoplatform.com
+  transaction:
+    commitmentTimeoutConfirmation: 720
+
+observation:
+  confirmation: 10
+  validThreshold: 720
 ```
 
 ### Cardano Config (Just for Cardano watchers)
@@ -143,13 +164,18 @@ or
 
 ```yaml
 type: koios
-koios:In contrast you don't need to use explorer while using node as the primary information source
-  url: https://api.koios.rest/api/v0
+koios:
+  url: https://api.koios.rest/api/v1
+  authToken: <your auth token>
 ```
 
-> Note: If you don't specify the koios url, it will use the 'https://api.koios.rest/api/v0' by default, but in case you're using ogmios as your source you should specify the ip and port of an ogmios instance.
+> Note: If you don't specify the koios url, it will use the 'https://api.koios.rest/api/v1' by default, but in case you're using ogmios as your source you should specify the host address and port of an ogmios instance.
 
 > Note: If you're using a TLS enabled ogmios, set the useTls to true.
+
+> Note: Watcher utilize Koios v1 APIs, and you can use your authentication token on the Koios platform by configuring the authToken. Alternatively, the watcher uses the public tier of the Koios platform, which comes with limitations on requests.
+
+> Note: Currently, the watcher is only compatible with Ogmios v6. Utilizing other versions of Ogmios may result in improper functionality.
 
 2. Set your watcher's initial height, where you start observing and reporting events. Like the Ergo network, you may choose to start from an older height but we highly recommend using the latest block as your initial point. You should specify the initial block height, hash, and slot.
 
@@ -164,13 +190,6 @@ initial:
 
 > Note: Use block absolute slot
 
-3. To ensure the watcher's proper functionality, event observations should be confirmed enough to take action. You should customize observation confirmation and validity threshold to align with your watching network specification. By default, these settings are configured according to Ergo's requirements, so you should make adjustments if you're watching a different chain. For Cardano, we recommend using the following configurations:
-
-```yaml
-observation:
-  confirmation: 60
-  validThreshold: 2880
-```
 
 Finally, an example Cardano watcher `local.yaml` file would look like:
 
@@ -184,13 +203,12 @@ ergo:
     url: https://node.ergopool.io
 cardano:
   type: koios
+  koios:
+    authToken: "eyJhbGciOiJIUzI1NiIsInR5..."
   initial:
     height: 9297100
     hash: a2f07e6b1ba2830c946d4cf7a92f9d03b3de26d4109259fe14ae9291dd2e3e47
     slot: 103305423
-observation:
-  confirmation: 60
-  validThreshold: 2880
 ```
 
 ## Get Watcher Permit
