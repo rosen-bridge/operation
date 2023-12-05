@@ -108,7 +108,7 @@ In case of using node, set `chainNetwork` field as `node` and specify url:
 ```yaml
 ergo:
   chainNetwork: 'node'
-  explorer:
+  node:
     url: 'YOUR_NODE_URL'
 ```
 
