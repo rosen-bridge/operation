@@ -2,11 +2,11 @@ version: '3.8'
 
 services:
   db:
-    image: rapidfort/postgresql:16.0.0
+    image: postgres:16.1
     env_file:
       - .env
     volumes:
-      - postgres-data:/bitnami/postgresql
+      - postgres-data:/var/lib/postgresql/data
     networks:
       - rosen_network
     restart: always
