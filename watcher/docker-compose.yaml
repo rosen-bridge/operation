@@ -45,7 +45,7 @@ services:
       - rosen_network
     restart: always
     ports:
-      - 127.0.0.1:${WATCHER_PORT:-3030}:80
+      - 0.0.0.0:${WATCHER_PORT:-3030}:80
     volumes:
       - nginx-logs:/var/log/nginx
     depends_on:
