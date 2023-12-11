@@ -33,6 +33,8 @@ POSTGRES_PORT=5432 # 5432 is set as default, you can change it
 
 # Optional Environments
 
+WATCHER_HOST= # (default is 127.0.0.1 if no value is set)
+
 WATCHER_PORT= # (default is 3030 if no value is set)
 
 WATCHER_IMAGE_VERSION= # Don't change it!
