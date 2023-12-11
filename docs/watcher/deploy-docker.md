@@ -110,7 +110,7 @@ explorer:
 4. Set the initial height of your watcher. For the first time, you should check the current network height and set where to start watching and reporting. You may choose an older height but we highly recommend using the current network height. In case you stop your watcher and start it again later, it will continue its procedure from its last stored block, so you don't need to change the initial height in the future.
 
 ```yaml
-initialHeight: 1092300
+initialHeight: 1153667
 ```
 
 5. (JUST ERGO WATCHER) You need to update the commitment validity threshold to match with ergo network:
@@ -134,7 +134,7 @@ Finally, an example Ergo watcher `local.yaml` file would look like:
 network: ergo
 ergo:
   type: explorer
-  initialHeight: 1092300
+  initialHeight: 1153667
   mnemonic: "pretty dad program ...."
   node:
     url: https://node.ergopool.io
@@ -199,7 +199,7 @@ Finally, an example Cardano watcher `local.yaml` file would look like:
 network: cardano
 ergo:
   type: explorer
-  initialHeight: 1092300
+  initialHeight: 1153667
   mnemonic: "pretty dad program ...."
   node:
     url: https://node.ergopool.io
@@ -208,9 +208,9 @@ cardano:
   koios:
     authToken: "eyJhbGciOiJIUzI1NiIsInR5..."
   initial:
-    height: 9297100
+    height: 9660014
     hash: a2f07e6b1ba2830c946d4cf7a92f9d03b3de26d4109259fe14ae9291dd2e3e47
-    slot: 103305423
+    slot: 110737401
 ```
 
 ## Get Watcher Permit
