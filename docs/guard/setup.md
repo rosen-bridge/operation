@@ -112,6 +112,8 @@ ergo:
     url: 'YOUR_NODE_URL'
 ```
 
+> Note: Make sure the Ergo node have extra indexing turned on.
+
 ### Initial Height
 
 Specify **current height** of Ergo blockchain as initial height. The scanner will start on this height to capture any reported events.

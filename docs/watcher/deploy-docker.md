@@ -96,22 +96,30 @@ mnemonic: <your wallet mnemonic>
 type: node
 ```
 
+> Note: As you choose one of these and start, your watcher scan a bunch of blocks using that source. After that, changing the source might cause some issues, since watcher tries to scan all blocks from the begging and it takes time to be synced again. So just in case of a serious problem change this config.
+
 3. Specify the node and explorer urls (Currently you are required to use an Ergo node for transaction submissions, even when you're using the explorer as your primary source. In contrast, when you rely on a node as your primary information source, you do not need to use the explorer.)
 
 ```yaml
 node:
-  url: https://node.ergopool.io
+  url: https://example.node.com
 explorer:
   url: https://api.ergoplatform.com
 ```
 
 > Note: If you don't specify the explorer url, it will use the 'https://api.ergoplatform.com' by default, but you need to specify your node url (You may want to use a public node).
 
+> Note: Make sure the Ergo node have extra indexing turned on. Otherwise, health check parameters won't update correctly (the watcher works correctly, but wid and asset health check params might have problems).
+
+> Note: Do not use nodes with version 5.0.15 and 5.0.16 due to a bug in extra indexing (in case you're using these versions you can downgrade to 5.0.14 for now).
+
 4. Set the initial height of your watcher. For the first time, you should check the current network height and set where to start watching and reporting. You may choose an older height but we highly recommend using the current network height. In case you stop your watcher and start it again later, it will continue its procedure from its last stored block, so you don't need to change the initial height in the future.
 
 ```yaml
-initialHeight: 1153667
+initialHeight: <latest height>
 ```
+
+> Note: Fill this part using the 10 latest blocks. You can find Ergo latest blocks [here](https://explorer.ergoplatform.com/en/latest-blocks).
 
 5. (JUST ERGO WATCHER) You need to update the commitment validity threshold to match with ergo network:
 
@@ -134,10 +142,10 @@ Finally, an example Ergo watcher `local.yaml` file would look like:
 network: ergo
 ergo:
   type: explorer
-  initialHeight: 1153667
+  initialHeight: <latest height>
   mnemonic: "pretty dad program ...."
   node:
-    url: https://node.ergopool.io
+    url: https://example.node.com
   explorer:
     url: https://api.ergoplatform.com
   transaction:
@@ -167,31 +175,35 @@ or
 ```yaml
 type: koios
 koios:
-  url: https://api.koios.rest/api/v1
+  url: https://api.koios.rest/api/beta
   authToken: <your auth token>
 ```
 
-> Note: If you don't specify the koios url, it will use the 'https://api.koios.rest/api/v1' by default, but in case you're using ogmios as your source you should specify the host address and port of an ogmios instance.
+> Note: If you don't specify the koios url, it will use the https://api.koios.rest/api/beta by default, but in case you're using ogmios as your source you should specify the host address and port of an ogmios instance.
 
 > Note: If you're using a TLS enabled ogmios, set the useTls to true.
 
-> Note: Watcher utilize Koios v1 APIs, and you can use your authentication token on the Koios platform by configuring the authToken. Alternatively, the watcher uses the public tier of the Koios platform, which comes with limitations on requests.
+> Note: Watcher utilize Koios v1 APIs, and you can use your authentication token on the Koios platform by configuring the authToken. Alternatively, the watcher uses the public tier of the Koios platform, which comes with limitations on requests. You can get your koios access token [here](https://koios.rest/pricing/Pricing.html).
 
-> Note: Currently, the watcher is only compatible with Ogmios v6. Utilizing other versions of Ogmios may result in improper functionality.
+> Note: Currently, the watcher is only compatible with Ogmios v6. Utilizing other versions of Ogmios may result in improper functionality. (Ogmios v6 has an issue that is under investigation, its currently unavailable)
+
+> Note: As you choose one of these and start, your watcher scan a bunch of blocks using that source. After that, changing the source might cause some issues, since watcher tries to scan all blocks from the begging and it takes time to be synced again. So just in case of a serious problem change this config.
+
 
 2. Set your watcher's initial height, where you start observing and reporting events. Like the Ergo network, you may choose to start from an older height but we highly recommend using the latest block as your initial point. You should specify the initial block height, hash, and slot.
 
 ```yaml
 initial:
-  height: 9297100
-  hash: a2f07e6b1ba2830c946d4cf7a92f9d03b3de26d4109259fe14ae9291dd2e3e47
-  slot: 103305423
+  height: <latest height>
+  hash: <latest hash>
+  slot: <latest slot>
 ```
 
 > Note: Koios utilizes block height, while Ogmios relies on the hash and slot of the initial block.
 
 > Note: Use block absolute slot
 
+> Note: Fill this part using the 10 latest blocks. You can find Cardano latest blocks [here](https://cardanoscan.io/blocks).
 
 Finally, an example Cardano watcher `local.yaml` file would look like:
 
@@ -199,18 +211,18 @@ Finally, an example Cardano watcher `local.yaml` file would look like:
 network: cardano
 ergo:
   type: explorer
-  initialHeight: 1153667
+  initialHeight: <latest height>
   mnemonic: "pretty dad program ...."
   node:
-    url: https://node.ergopool.io
+    url: https://example.node.com
 cardano:
   type: koios
   koios:
     authToken: "eyJhbGciOiJIUzI1NiIsInR5..."
   initial:
-    height: 9660014
-    hash: a2f07e6b1ba2830c946d4cf7a92f9d03b3de26d4109259fe14ae9291dd2e3e47
-    slot: 110737401
+    height: <latest height>
+    hash: <latest hash>
+    slot: <latest slot>
 ```
 
 ## Get Watcher Permit
