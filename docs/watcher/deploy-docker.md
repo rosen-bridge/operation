@@ -96,7 +96,7 @@ mnemonic: <your wallet mnemonic>
 type: node
 ```
 
-> Note: As you choose one of these and start, your watcher scan a bunch of blocks using that source. After that, changing the source might cause some issues, since watcher tries to scan all blocks from the begging and it takes time to be synced again. So just in case of a serious problem change this config.
+Note: As you choose one of these and start, your watcher scans several blocks using that source. Changing the source might cause some issues since the watcher tries to scan all blocks from the beginning and it takes time to be synced again. So just in case of a serious problem change this config. In some cases, you may want to delete your volume and start over (Consider updating the initial height in such cases).
 
 3. Specify the node and explorer urls (Currently you are required to use an Ergo node for transaction submissions, even when you're using the explorer as your primary source. In contrast, when you rely on a node as your primary information source, you do not need to use the explorer.)
 
@@ -109,7 +109,7 @@ explorer:
 
 > Note: If you don't specify the explorer url, it will use the 'https://api.ergoplatform.com' by default, but you need to specify your node url (You may want to use a public node).
 
-> Note: Make sure the Ergo node have extra indexing turned on. Otherwise, health check parameters won't update correctly (the watcher works correctly, but wid and asset health check params might have problems).
+> Note: Make sure the Ergo node has extra indexing turned on. Otherwise, health check parameters won't update correctly (the watcher works correctly, but wid and asset health check params might have problems). Read more about extra indexing [here](https://docs.ergoplatform.com/node/conf/conf-node/#extra-index).
 
 > Note: Do not use nodes with version 5.0.15 and 5.0.16 due to a bug in extra indexing (in case you're using these versions you can downgrade to 5.0.14 for now).
 
@@ -119,9 +119,11 @@ explorer:
 initialHeight: <latest height>
 ```
 
-> Note: Fill this part using the 10 latest blocks. You can find Ergo latest blocks [here](https://explorer.ergoplatform.com/en/latest-blocks).
+> Note: Fill with a recent block height (e.g. 10 blocks before). You can find Ergo latest blocks [here](https://explorer.ergoplatform.com/en/latest-blocks).
 
-5. (JUST ERGO WATCHER) You need to update the commitment validity threshold to match with ergo network:
+> Note: Once watcher started scanning from the initial block, changing this config wont affect the watcher behavior. In case you need to restart the watcher from an earlier block consider removing volumes.
+
+5. (JUST ERGO WATCHER) You need to update the commitment validity threshold to match with Ergo network:
 
 ```yaml
 transaction:
@@ -160,7 +162,7 @@ observation:
 
 If you are configuring a Cardano watcher, you should set these configs under the `cardano` keyword as well:
 
-1. Choose your information source for cardano network and specify its connection information. You can use either `koios` or `ogmios` as the data source.
+1. Choose your information source for Cardano network and specify its connection information. You can use either `koios` or `ogmios` as the data source.
 
 ```yaml
 type: ogmios
@@ -187,7 +189,7 @@ koios:
 
 > Note: Currently, the watcher is only compatible with Ogmios v6. Utilizing other versions of Ogmios may result in improper functionality. (Ogmios v6 has an issue that is under investigation, its currently unavailable)
 
-> Note: As you choose one of these and start, your watcher scan a bunch of blocks using that source. After that, changing the source might cause some issues, since watcher tries to scan all blocks from the begging and it takes time to be synced again. So just in case of a serious problem change this config.
+> Note: As you choose one of these and start, your watcher scans several blocks using that source. Changing the source might cause some issues since the watcher tries to scan all blocks from the beginning and it takes time to be synced again. So just in case of a serious problem change this config. In some cases, you may want to delete your volume and start over (Consider updating the initial height in such cases).
 
 
 2. Set your watcher's initial height, where you start observing and reporting events. Like the Ergo network, you may choose to start from an older height but we highly recommend using the latest block as your initial point. You should specify the initial block height, hash, and slot.
@@ -203,7 +205,9 @@ initial:
 
 > Note: Use block absolute slot
 
-> Note: Fill this part using the 10 latest blocks. You can find Cardano latest blocks [here](https://cardanoscan.io/blocks).
+> Note: Fill with a recent block height (e.g. 10 blocks before). You can find Cardano latest blocks [here](https://cardanoscan.io/blocks).
+
+> Note: Once watcher started scanning from the initial block, changing this config wont affect the watcher behavior. In case you need to restart the watcher from an earlier block consider removing volumes and updating both Ergo and Cardano initial heights.
 
 Finally, an example Cardano watcher `local.yaml` file would look like:
 

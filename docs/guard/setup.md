@@ -112,7 +112,7 @@ ergo:
     url: 'YOUR_NODE_URL'
 ```
 
-> Note: Make sure the Ergo node have extra indexing turned on.
+> Note: Make sure the Ergo node has extra indexing turned on. Read more about extra indexing [here](https://docs.ergoplatform.com/node/conf/conf-node/#extra-index).
 
 ### Initial Height
 
