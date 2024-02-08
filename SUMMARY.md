@@ -1,9 +1,8 @@
 # Table of contents
 
 * [Operation](README.md)
-  * [docs](readme/docs/README.md)
-    * [guard](readme/docs/guard/README.md)
-      * [keygen-docker](readme/docs/guard/keygen-docker.md)
-      * [setup](readme/docs/guard/setup.md)
-    * [watcher](readme/docs/watcher/README.md)
-      * [Watcher Deployment](readme/docs/watcher/deploy-docker.md)
+  * [guard](readme/guard/README.md)
+    * [keygen-docker](readme/guard/keygen-docker.md)
+    * [setup](readme/guard/setup.md)
+  * [watcher](readme/watcher/README.md)
+    * [Watcher Deployment](readme/watcher/deploy-docker.md)

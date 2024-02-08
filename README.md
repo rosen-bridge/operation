@@ -3,7 +3,7 @@
 ### Table of Contents
 
 * [Guard](docs/guard/)
-  * [Keygen Operation using docker](readme/docs/guard/keygen-docker.md)
-  * [Production Setup](readme/docs/guard/setup.md)
+  * [Keygen Operation using docker](readme/guard/keygen-docker.md)
+  * [Production Setup](readme/guard/setup.md)
 * [Watcher](./)
-  * [Deployment using docker](readme/docs/watcher/deploy-docker.md)
+  * [Deployment using docker](readme/watcher/deploy-docker.md)
