@@ -1,11 +1,9 @@
 # Table of contents
 
 * [Operation](README.md)
-* [.gitlab](.gitlab/README.md)
-  * [issue\_templates](.gitlab/issue\_templates.md)
-* [docs](docs/README.md)
-  * [guard](docs/guard/README.md)
-    * [keygen-docker](docs/guard/keygen-docker.md)
-    * [setup](docs/guard/setup.md)
-  * [watcher](docs/watcher/README.md)
-    * [Watcher Deployment](docs/watcher/deploy-docker.md)
+  * [docs](readme/docs/README.md)
+    * [guard](readme/docs/guard/README.md)
+      * [keygen-docker](readme/docs/guard/keygen-docker.md)
+      * [setup](readme/docs/guard/setup.md)
+    * [watcher](readme/docs/watcher/README.md)
+      * [Watcher Deployment](readme/docs/watcher/deploy-docker.md)
