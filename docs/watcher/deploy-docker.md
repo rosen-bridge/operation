@@ -18,7 +18,7 @@ cp env.template .env
 ```
 
 ## Environment Variable Configs
-There are number of Environment Variables for some configs when using docker, you can find all of them [here](./env-references.md).
+You can configure some Environment Variables when deploying with docker, you can find all of them [here](./env-references.md).
 
 Set your parameters in `.env` file (make sure not to use spaces after the '=' sign):
 
@@ -78,7 +78,7 @@ api:
 ```
 
 ### apiKeyHash
-To secure the action base APIs (ex: lock, unlock, ...), you should set a unique and robust api key.
+To secure the action-based APIs (ex: lock, unlock, ...), you should set a unique and robust api key.
 We are using a blake2b hash to secure APIs.
 
 #### Compute api_key's Hash
@@ -92,7 +92,7 @@ Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages
 ```  
 
 #### Update Configuration File
-After obtaining the hash, input it into the your local config file. For example, the Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
+After obtaining the hash, input it into your config file. For example, the Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
 
 > **NOTE**: When using docker there is an `API_KEY_HASH` environment variable available for `apiKeyHash` that you can set instead of in the local configuration.
 

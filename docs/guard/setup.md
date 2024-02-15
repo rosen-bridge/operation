@@ -3,7 +3,7 @@
 The following document will help you through setup your guard for production on Docker after a successful `key generation ceremony`.
 
 ## Environment Variable Configs
-There are number of Environment Variables for some configs when using docker, you can find all of them [here](./env-references.md).
+You can configure some Environment Variables when deploying with docker, you can find all of them [here](./env-references.md).
 
 Note: Set your parameters in `.env` file (make sure not to use spaces after the '=' sign)
 
@@ -28,7 +28,7 @@ sign a manual transaction, set this value to `true`, restart your guard, submit 
 insertion of unwanted transactions in case of unauthorized access of malicious actor.
 
 ### apiKeyHash
-To secure the action base APIs, you should set a unique and robust api key.
+To secure the action-based APIs, you should set a unique and robust api key.
 We are using a blake2b hash to secure APIs.
 
 #### Compute api_key's Hash
@@ -42,7 +42,7 @@ Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages
 ```  
 
 #### Update Configuration File
-After obtaining the hash, input it into the your config file. For example, the Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
+After obtaining the hash, input it into your config file. For example, the Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
 
 > **NOTE**: When using docker there is an `API_KEY_HASH` environment variable available for `apiKeyHash` that you can set instead of in the local configuration.
 
