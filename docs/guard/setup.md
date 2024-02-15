@@ -2,11 +2,23 @@
 
 The following document will help you through setup your guard for production on Docker after a successful `key generation ceremony`.
 
+## Environment Variable Configs
+There are number of Environment Variables for some configs when using docker, you can find all of them [here](./env-references.md).
+
+Note: Set your parameters in `.env` file (make sure not to use spaces after the '=' sign)
+
 # Edit Config File
 
 You need to specify some required configs in `local.yaml`.
 
 ## API
+
+```yaml
+api:
+  isManualTxRequestActive: false
+  apiKeyHash: 'YOUR_API_KEY_HASH'
+```
+### isManualTxRequestActive
 
 Default value of `isManualTxRequestActive` is `false`. This field prevents
 service from getting manual transactions. Whenever you want to request to
@@ -15,10 +27,38 @@ sign a manual transaction, set this value to `true`, restart your guard, submit 
 > **NOTE**: It is crucial to keep this config as `false` to prevent
 insertion of unwanted transactions in case of unauthorized access of malicious actor.
 
+### apiKeyHash
+To secure the action base APIs, you should set a unique and robust api key.
+We are using a blake2b hash to secure APIs.
+
+#### Compute api_key's Hash
+Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages/cli) to compute api key hash:
+
+```shell
+  # use nodejs solution
+  npx @rosen-bridge/cli blake2b-hash YOUR_API_KEY
+  # or docker solution
+  docker run -it --rm node:18.16 npx --yes @rosen-bridge/cli blake2b-hash YOUR_API_KEY
+```  
+
+#### Update Configuration File
+After obtaining the hash, input it into the your config file. For example, the Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
+
+> **NOTE**: When using docker there is an `API_KEY_HASH` environment variable available for `apiKeyHash` that you can set instead of in the local configuration.
+
+## DATABASE
+Specify your database connection and credentials.
+
 ```yaml
-api:
-  isManualTxRequestActive: false
+  type: 'postgres'
+  host: ''         # database host (for postgres)
+  port: 5432       # database port (for postgres)
+  user: ''         # database user (for postgres)
+  password: ''     # database password (for postgres)
+  name: ''         # database name (for postgres)
 ```
+> **NOTE**: When using docker there are some environment variables (POSTGRES_PORT, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB) for database configuration that you can set instead of in the local configuration.
+
 
 ## Cardano
 
@@ -44,6 +84,8 @@ cardano:
     authToken: 'YOUR_AUTH_TOKEN'
 ```
 
+> **NOTE**: When using docker there is an `KOIOS_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
+
 If you plan to use Blockfrost for your network, set `chainNetwork` field
 as `blockfrost` and set your project Id.
 
@@ -63,6 +105,8 @@ cardano:
     projectId: 'YOUR_PROJECT_ID'
     url: 'YOUR_BLOCKFROST_URL'
 ```
+
+> **NOTE**: When using docker there is an `BLOCKFROST_PROJECT_ID` environment variable available for `projectId` that you can set instead of in the local configuration.
 
 ### Address Info
 
@@ -182,6 +226,8 @@ tss:
     ...
 ```
 
+> **NOTE**: When using docker there is an `TSS_SECRET` environment variable available for `secret` that you can set instead of in the local configuration.
+
 ## P2P
 
 Keep the config provided by keygen moderator for `key generation ceremony`.
@@ -198,6 +244,8 @@ Specify your Ergo address mnemonic under `guard` path:
 guard:
   mnemonic: 'YOUR_MNEMONIC'
 ```
+
+> **NOTE**: Instead of setting `mnemonic` in the local configuration file, consider using the `MNEMONIC` environment variable for ease of management. We recommend utilizing environment variables over direct configuration file settings.
 
 ## Logs
 
@@ -233,9 +281,12 @@ You have 3 options for your logs.
 
   ```yaml
   - type: 'loki'
-    host: 'YOUR_GRAFANA_URL'
+    host: 'YOUR_LOKI_URL'
     level: 'info' # [debug, info, warn, error]
+    basicAuth: '' # Required if you have a remote loki server
   ```
+
+  > **NOTE**: When using docker there is an `OVERRIDE_LOKI_BASIC_AUTH` environment variable available for `basicAuth` that you can set instead of in the local configuration.
 
 You also can set multiple logs config. Therefore your config will be something like this:
 
@@ -272,6 +323,9 @@ using this hook. Set it in config like this:
 discordWebHookUrl: 'YOUR_WEBHOOK_URL' # Discord webhook url for sending notifications
 ```
 
+> **NOTE**: When using docker there is an `DISCORD_WEBHOOK_URL` environment variable available for `discordWebHookUrl` that you can set instead of in the local configuration.
+
+
 ## Overall
 
 Combine all of your configs in `local.yaml`. The structure will be:
@@ -279,6 +333,7 @@ Combine all of your configs in `local.yaml`. The structure will be:
 ```yaml
 api:
   isManualTxRequestActive: false
+  apiKeyHash: ''
 cardano:
   ...
 ergo:
