@@ -17,6 +17,9 @@ Create your environment file `.env` based on `env.template` file in the `watcher
 cp env.template .env
 ```
 
+## Environment Variable Configs
+You can configure some Environment Variables when deploying with docker, you can find all of them [here](./env-references.md).
+
 Set your parameters in `.env` file (make sure not to use spaces after the '=' sign):
 
 ```shell
@@ -29,17 +32,6 @@ POSTGRES_USER= # a random name
 POSTGRES_DB= # a random name
 
 POSTGRES_PORT=5432 # 5432 is set as default, you can change it
-
-
-# Optional Environments
-
-WATCHER_HOST= # (default is 127.0.0.1 if no value is set)
-
-WATCHER_PORT= # (default is 3030 if no value is set)
-
-WATCHER_IMAGE_VERSION= # Don't change it!
-
-UI_IMAGE_VERSION= # Don't change it!
 ```
 
 Set required permissions and create `local.yaml` file in the `config` directory
@@ -78,6 +70,32 @@ To start your watcher, you should configure the local.yaml file. First, specify 
 network: ergo
 ```
 
+## API
+
+```yaml
+api:
+  apiKeyHash: 'YOUR_API_KEY_HASH'
+```
+
+### apiKeyHash
+To secure the action-based APIs (ex: lock, unlock, ...), you should set a unique and robust api key.
+We are using a blake2b hash to secure APIs.
+
+#### Compute api_key's Hash
+Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages/cli) to compute api key hash:
+
+```shell
+  # use nodejs solution
+  npx @rosen-bridge/cli blake2b-hash YOUR_API_KEY
+  # or docker solution
+  docker run -it --rm node:18.16 npx --yes @rosen-bridge/cli blake2b-hash YOUR_API_KEY
+```  
+
+#### Update Configuration File
+After obtaining the hash, input it into your config file. For example, the Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
+
+> **NOTE**: When using docker there is an `API_KEY_HASH` environment variable available for `apiKeyHash` that you can set instead of in the local configuration.
+
 ### Ergo Config (Essential for all watchers)
 
 For all watchers, even if you're targeting a different network than Ergo to watch, you still need to configure the Ergo section (Under the `ergo` keyword):
@@ -90,7 +108,9 @@ mnemonic: <your wallet mnemonic>
 
 > Note: Utilizing this mnemonic in a standard multi-address wallet will lead to watcher misbehavior.
 
-2. Select your primary data source for the Ergo network; block and box information are retrieved from this source. You can use either `explorer` or `node` as the primary source:
+> **NOTE**: Instead of setting `mnemonic` in the local configuration file, consider using the `MNEMONIC` environment variable for ease of management. We recommend utilizing environment variables over direct configuration file settings.
+
+1. Select your primary data source for the Ergo network; block and box information are retrieved from this source. You can use either `explorer` or `node` as the primary source:
 
 ```yaml
 type: node
@@ -180,6 +200,7 @@ koios:
   url: https://api.koios.rest/api/beta
   authToken: <your auth token>
 ```
+> **NOTE**: When using docker there is an `KOIOS_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
 
 > Note: If you don't specify the koios url, it will use the https://api.koios.rest/api/beta by default, but in case you're using ogmios as your source you should specify the host address and port of an ogmios instance.
 
@@ -187,12 +208,12 @@ koios:
 
 > Note: Watcher utilize Koios v1 APIs, and you can use your authentication token on the Koios platform by configuring the authToken. Alternatively, the watcher uses the public tier of the Koios platform, which comes with limitations on requests. You can get your koios access token [here](https://koios.rest/pricing/Pricing.html).
 
-> Note: Currently, the watcher is only compatible with Ogmios v6. Utilizing other versions of Ogmios may result in improper functionality. (Ogmios v6 has an issue that is under investigation, its currently unavailable)
+> Note: Currently, the watcher is only compatible with Ogmios v6. Utilizing other versions of Ogmios may result in improper functionality.
 
 > Note: As you choose one of these and start, your watcher scans several blocks using that source. Changing the source might cause some issues since the watcher tries to scan all blocks from the beginning and it takes time to be synced again. So just in case of a serious problem change this config. In some cases, you may want to delete your volume and start over (Consider updating the initial height in such cases).
 
 
-2. Set your watcher's initial height, where you start observing and reporting events. Like the Ergo network, you may choose to start from an older height but we highly recommend using the latest block as your initial point. You should specify the initial block height, hash, and slot.
+1. Set your watcher's initial height, where you start observing and reporting events. Like the Ergo network, you may choose to start from an older height but we highly recommend using the latest block as your initial point. You should specify the initial block height, hash, and slot.
 
 ```yaml
 initial:
