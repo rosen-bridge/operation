@@ -18,7 +18,7 @@ API_KEY_HASH= # blake2b hash of api_key
 
 MNEMONIC= # ergo mnemonic phrases
 
-TSS_SECRET=
+TSS_SECRET= # the secret used to encrypt messages to start the signing process
 
 KOIOS_AUTH_TOKEN=
 
