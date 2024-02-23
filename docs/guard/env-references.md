@@ -20,7 +20,7 @@ POSTGRES_PORT=5432 # 5432 is set as default, you can change it.
 ```
 API_KEY_HASH= # blake2b hash of api_key, e.g. API_KEY_HASH=myHashHere
 
-MNEMONIC= # ergo mnemonic phrases, e.g. MNEMONIC= word1 word2 word3 ... wordn
+MNEMONIC= # ergo mnemonic phrases, e.g. MNEMONIC=word1 word2 word3 ... wordn
 
 TSS_SECRET= # the secret used to encrypt messages to start the signing process
 
