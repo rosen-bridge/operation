@@ -17,6 +17,8 @@ Create your environment file `.env` based on `env.template` file in the `watcher
 cp env.template .env
 ```
 
+To view hidden .env later, use `ls -a`.
+
 ## Environment Variable Configs
 You can configure some Environment Variables when deploying with docker, you can find all of them [here](./env-references.md).
 
@@ -94,7 +96,9 @@ Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages
 #### Update Configuration File
 After obtaining the hash, input it into your config file. For example, the Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
 
-> **NOTE**: When using docker there is an `API_KEY_HASH` environment variable available for `apiKeyHash` that you can set instead of in the local configuration.
+> **⚠️ NOTE**: When using docker there is an `API_KEY_HASH` environment variable available for `apiKeyHash` that you can set instead of in the local configuration. See your `.env` file. We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your api key while troubleshooting etc. After updating, you can delete `apiKeyHash` from /config/local.yaml.
+
+
 
 ### Ergo Config (Essential for all watchers)
 
@@ -108,7 +112,7 @@ mnemonic: <your wallet mnemonic>
 
 > Note: Utilizing this mnemonic in a standard multi-address wallet will lead to watcher misbehavior.
 
-> **NOTE**: Instead of setting `mnemonic` in the local configuration file, consider using the `MNEMONIC` environment variable for ease of management. We recommend utilizing environment variables over direct configuration file settings.
+> **⚠️ NOTE**: Instead of setting `mnemonic` in the local configuration file, consider using the `MNEMONIC` environment variable for ease of management. We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your seed phrase while troubleshooting etc. See your `.env` file. Once updated, in /config/local.yaml delete your mnemonic phrase and put in a comment like so "mnemonic: #see local config env file"
 
 1. Select your primary data source for the Ergo network; block and box information are retrieved from this source. You can use either `explorer` or `node` as the primary source:
 
