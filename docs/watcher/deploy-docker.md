@@ -162,6 +162,8 @@ Finally, an example Ergo watcher `local.yaml` file would look like:
 
 ```yaml
 network: ergo
+api:
+  apiKeyHash: 'YOUR_API_KEY_HASH'
 ergo:
   type: explorer
   initialHeight: <latest height>
@@ -234,6 +236,8 @@ Finally, an example Cardano watcher `local.yaml` file would look like:
 
 ```yaml
 network: cardano
+api:
+  apiKeyHash: 'YOUR_API_KEY_HASH'
 ergo:
   type: explorer
   initialHeight: <latest height>
