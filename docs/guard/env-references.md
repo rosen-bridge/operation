@@ -1,6 +1,6 @@
 ## Environment Variable References
 Note: 
-- For the environmental variable file, no quotes are needed around the the strings. 
+- For the environmental variable file, no quotes are needed around the strings. 
 - Delete all comments after copying and pasting in.
 - Delete all whitespaces after the last word of the line item entry.
 
