@@ -8,7 +8,7 @@ Before proceeding, be sure to have followed the initial deployment instructions 
 
 To configure a Cardano watcher, you should set these configs under the `cardano` keyword in your `config.yaml`:
 
-1. Choose your information source for Cardano network and specify its connection information. You can use either `koios`, `blockfrost` or `ogmios` as the data source.
+1. Choose your information source for the Cardano network and specify its connection information. You can use either `koios`, `blockfrost` or `ogmios` as the data source.
 
 ```yaml
 type: koios
