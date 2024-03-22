@@ -2,6 +2,8 @@
 
 For all Watchers, even if you're targeting a different network than Ergo to watch, you still need to configure the Ergo Wallet and Ergo Configuration sections
 
+Before proceeding, be sure to have followed the initial deployment instructions found [here](./deploy-docker.md).
+
 ## Ergo Wallet (Essential for all Watchers)
 
 1. Create a new, empty wallet for your Watcher, and set the wallet mnemonic in the `MNEMONIC=` enviroment variable (`.env`) file. (you can use any wallet to generate a valid mnemonic on Ergo, and please use a new fresh wallet for this purpose only):
@@ -30,7 +32,7 @@ Note: As you choose one of these and start, your Watcher scans several blocks us
 
 ```yaml
 node:
-  url: https://example.node.com
+  url: https://ergo-node.zoomout.io
 explorer:
   url: https://api.ergoplatform.com
 ```
@@ -126,15 +128,14 @@ network: cardano
 ergo:
   type: explorer
   initialHeight: <latest height>
-  mnemonic: "pretty dad program ...." # Remove line if mnemonic is entered an an enviroment variable.
   node:
-    url: https://example.node.com
+    url: https://ergo-node.zoomout.io
   explorer:
     url: https://api.ergoplatform.com
 cardano:
   type: koios
   koios:
-    authToken: "eyJhbGciOiJIUzI1NiIsInR5..." # Remove line if Token is entered an an enviroment variable.
+    authToken: "eyJhbGciOiJIUzI1NiIsInR5..." # Remove line if Token is entered as an enviroment variable.
   initial:
     height: <latest height>
     hash: <latest hash>
