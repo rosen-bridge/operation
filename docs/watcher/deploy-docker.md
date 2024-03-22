@@ -58,10 +58,10 @@ Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages
 #### Update Environment Variable File
 After obtaining the hash, input it into your `.env` file. For example, the Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
 
-```shell
+`
 # Example
 API_KEY_HASH=324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf # blake2b hash of api_key, e.g. API_KEY_HASH=myHashHere
-```
+`
 
 > **⚠️ NOTE**: When using docker there is an `API_KEY_HASH` environment variable available for `apiKeyHash` that you can set instead of in the local configuration. See your `.env` file. We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your api key while troubleshooting etc. After updating, you can delete `apiKeyHash` from /config/local.yaml.
 
