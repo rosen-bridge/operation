@@ -52,6 +52,7 @@ There are a number of ways to compute a blake2b hash. We highly recommend comput
 
 - Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages/cli) to compute api key hash:
 - Utilize Swagger on a locally run node. Do not generate hash from a public node.
+
 or
 
 ```shell
