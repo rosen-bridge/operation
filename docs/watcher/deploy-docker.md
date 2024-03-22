@@ -50,10 +50,8 @@ To secure the Watcher action-based APIs (ex: lock, unlock, ...), you should set 
 
 There are a number of ways to compute a blake2b hash. We highly recommend computing the hash on a local machine. 
 
-1
-Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages/cli) to compute api key hash:
+- Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages/cli) to compute api key hash:
 
-2
 ```shell
   # use nodejs solution
   npx @rosen-bridge/cli blake2b-hash YOUR_API_KEY
@@ -61,8 +59,7 @@ Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages
   docker run -it --rm node:18.16 npx --yes @rosen-bridge/cli blake2b-hash YOUR_API_KEY```
 ```
 
-3
-Utilizing Swagger on a locally run node. Do not generate hash from a public node.
+- Utilizing Swagger on a locally run node. Do not generate hash from a public node.
 
 Example: Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
 
