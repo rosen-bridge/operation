@@ -2,6 +2,8 @@
 
 To participate as a watcher in the bridge, you need to deploy a watcher app, observing one of the supported networks. Each supported network has its own set of watchers, that are responsible for reporting users' actions on that specific network.
 
+We are utilizing Docker for ease of deployment and upgrading. Install Docker for your Operating System [here](https://www.docker.com/products/docker-desktop/). Once installed, proceed with the following instructions.
+
 ## Docker
 
 Clone [Operation repository](https://github.com/rosen-bridge/operation.git) and navigate to `operation/watcher` directory:
@@ -34,7 +36,34 @@ POSTGRES_USER= # a random name
 POSTGRES_DB= # a random name
 
 POSTGRES_PORT=5432 # 5432 is set as default, you can change it
+
+API_KEY_HASH= # blake2b hash of api_key, e.g. API_KEY_HASH=myHashHere
+
+MNEMONIC= # Ergo wallet mnemonic phrases, e.g. MNEMONIC=word1 word2 word3 ... wordn
 ```
+
+## API Key Hash
+To secure the Watcher action-based APIs (ex: lock, unlock, ...), you should set a unique and robust api key. We are using a blake2b hash to secure APIs.
+
+### Compute api_key's Hash
+Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages/cli) to compute api key hash:
+
+```shell
+  # use nodejs solution
+  npx @rosen-bridge/cli blake2b-hash YOUR_API_KEY
+  # or docker solution
+  docker run -it --rm node:18.16 npx --yes @rosen-bridge/cli blake2b-hash YOUR_API_KEY
+```  
+
+#### Update Environment Variable File
+After obtaining the hash, input it into your `.env` file. For example, the Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
+
+```shell
+# Example
+API_KEY_HASH=324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf # blake2b hash of api_key, e.g. API_KEY_HASH=myHashHere
+```
+
+> **⚠️ NOTE**: When using docker there is an `API_KEY_HASH` environment variable available for `apiKeyHash` that you can set instead of in the local configuration. See your `.env` file. We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your api key while troubleshooting etc. After updating, you can delete `apiKeyHash` from /config/local.yaml.
 
 Set required permissions and create `local.yaml` file in the `config` directory
 
@@ -71,34 +100,6 @@ To start your watcher, you should configure the local.yaml file. First, specify 
 ```yaml
 network: ergo
 ```
-
-## API
-
-```yaml
-api:
-  apiKeyHash: 'YOUR_API_KEY_HASH'
-```
-
-### apiKeyHash
-To secure the action-based APIs (ex: lock, unlock, ...), you should set a unique and robust api key.
-We are using a blake2b hash to secure APIs.
-
-#### Compute api_key's Hash
-Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages/cli) to compute api key hash:
-
-```shell
-  # use nodejs solution
-  npx @rosen-bridge/cli blake2b-hash YOUR_API_KEY
-  # or docker solution
-  docker run -it --rm node:18.16 npx --yes @rosen-bridge/cli blake2b-hash YOUR_API_KEY
-```  
-
-#### Update Configuration File
-After obtaining the hash, input it into your config file. For example, the Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
-
-> **⚠️ NOTE**: When using docker there is an `API_KEY_HASH` environment variable available for `apiKeyHash` that you can set instead of in the local configuration. See your `.env` file. We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your api key while troubleshooting etc. After updating, you can delete `apiKeyHash` from /config/local.yaml.
-
-
 
 ### Ergo Config (Essential for all watchers)
 
