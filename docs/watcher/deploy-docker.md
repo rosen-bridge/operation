@@ -43,11 +43,17 @@ MNEMONIC= # Ergo wallet mnemonic phrases, e.g. MNEMONIC=word1 word2 word3 ... wo
 ```
 
 ## API Key Hash
+
 To secure the Watcher action-based APIs (ex: lock, unlock, ...), you should set a unique and robust api key. We are using a blake2b hash to secure APIs.
 
 ### Compute api_key's Hash
+
+There are a number of ways to compute a blake2b hash. We highly recommend computing the hash on a local machine. 
+
+1.
 Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages/cli) to compute api key hash:
 
+2.
 ```shell
   # use nodejs solution
   npx @rosen-bridge/cli blake2b-hash YOUR_API_KEY
@@ -55,15 +61,19 @@ Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages
   docker run -it --rm node:18.16 npx --yes @rosen-bridge/cli blake2b-hash YOUR_API_KEY
 ```  
 
+3.
+Utilizing Swagger on a locally run node. Do not generate hash from a public node.
+
+Example: Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
+
 #### Update Environment Variable File
-After obtaining the hash, input it into your `.env` file. For example, the Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
+
+After obtaining the hash, input it into `API_KEY_HASH=` in your `.env` file.
+
+> **⚠️ NOTE**: We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your api key while troubleshooting etc. After updating, you can delete `apiKeyHash` from /config/local.yaml.
 
 
-Example
-`API_KEY_HASH=324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`
 
-
-> **⚠️ NOTE**: When using docker there is an `API_KEY_HASH` environment variable available for `apiKeyHash` that you can set instead of in the local configuration. See your `.env` file. We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your api key while troubleshooting etc. After updating, you can delete `apiKeyHash` from /config/local.yaml.
 
 Set required permissions and create `local.yaml` file in the `config` directory
 
