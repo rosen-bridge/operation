@@ -1,4 +1,4 @@
-# Watcher Deployment
+# Cardano Watcher Configuration
 
 To participate as a Watcher in Rosen Bridge, you need to deploy a Watcher app to observe over one of the supported networks. Each supported network has its own set of watchers that are responsible for reporting users' actions on that specific network.
 
