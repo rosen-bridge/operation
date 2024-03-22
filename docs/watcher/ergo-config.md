@@ -1,118 +1,20 @@
-# Watcher Deployment
+# Ergo Watcher Configuration
 
 To participate as a watcher in the bridge, you need to deploy a watcher app, observing one of the supported networks. Each supported network has its own set of watchers, that are responsible for reporting users' actions on that specific network.
 
-## Docker
+## Ergo Config (Essential for all watchers)
 
-Clone [Operation repository](https://github.com/rosen-bridge/operation.git) and navigate to `operation/watcher` directory:
+For all Watchers, even if you're targeting a different network than Ergo to watch, you still need to configure the Ergo section (Under the `ergo` keyword) in your `config.yaml` file:
 
-```shell
-git clone https://github.com/rosen-bridge/operation.git
-cd operation/watcher/
-```
-
-Create your environment file `.env` based on `env.template` file in the `watcher` directory:
+1. Create a new, empty wallet for your Watcher, and set the wallet mnemonic in the `MNEMONIC=` enviroment variable (`.env`). (you can use any wallet to generate a valid mnemonic on Ergo, and please use a new fresh wallet for this purpose only):
 
 ```shell
-cp env.template .env
+MNEMONIC=<your wallet mnemonic> # E.g. MNEMONIC=word1 word2 word3 ... wordn
 ```
 
-To view hidden .env later, use `ls -a`.
+> Note: Utilizing this mnemonic in a standard, previously used, multi-address wallet will lead to watcher misbehavior.
 
-## Environment Variable Configs
-You can configure some Environment Variables when deploying with docker, you can find all of them [here](./env-references.md).
-
-Set your parameters in `.env` file (make sure not to use spaces after the '=' sign):
-
-```shell
-# Required Environments
-
-POSTGRES_PASSWORD= # a random alphanumeric password without special characters (like $%!-#)
-
-POSTGRES_USER= # a random name
-
-POSTGRES_DB= # a random name
-
-POSTGRES_PORT=5432 # 5432 is set as default, you can change it
-```
-
-Set required permissions and create `local.yaml` file in the `config` directory
-
-```shell
-sudo chown -R 3000:3000 logs
-touch config/local.yaml
-```
-
-Only on `MacOS`: set `707` permission for the `logs` directory
-
-```shell
-# only on MacOS
-sudo chmod -R 707 logs
-```
-
-Pull the Docker image
-
-```shell
-docker compose pull # use `docker-compose pull` for older versions of Docker
-```
-
-Set up your `local.yaml` using the instructions in the next section (Local Config).
-
-Finally, after saving the 'local.yaml' changes, run the container:
-
-```shell
-docker compose up -d # use `docker-compose up -d` for older versions of Docker
-```
-
-## Local Config
-
-To start your watcher, you should configure the local.yaml file. First, specify the target network you're watching. Currently, we support `ergo` and `cardano`:
-
-```yaml
-network: ergo
-```
-
-## API
-
-```yaml
-api:
-  apiKeyHash: 'YOUR_API_KEY_HASH'
-```
-
-### apiKeyHash
-To secure the action-based APIs (ex: lock, unlock, ...), you should set a unique and robust api key.
-We are using a blake2b hash to secure APIs.
-
-#### Compute api_key's Hash
-Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages/cli) to compute api key hash:
-
-```shell
-  # use nodejs solution
-  npx @rosen-bridge/cli blake2b-hash YOUR_API_KEY
-  # or docker solution
-  docker run -it --rm node:18.16 npx --yes @rosen-bridge/cli blake2b-hash YOUR_API_KEY
-```  
-
-#### Update Configuration File
-After obtaining the hash, input it into your config file. For example, the Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
-
-> **⚠️ NOTE**: When using docker there is an `API_KEY_HASH` environment variable available for `apiKeyHash` that you can set instead of in the local configuration. See your `.env` file. We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your api key while troubleshooting etc. After updating, you can delete `apiKeyHash` from /config/local.yaml.
-
-
-
-### Ergo Config (Essential for all watchers)
-
-For all watchers, even if you're targeting a different network than Ergo to watch, you still need to configure the Ergo section (Under the `ergo` keyword):
-
-1. Create an empty wallet for your watcher, and set the wallet mnemonic in the config file (you can use any wallet to generate a valid mnemonic on Ergo, and please use a new fresh wallet for this purpose only):
-
-```yaml
-mnemonic: <your wallet mnemonic>
-```
-
-> Note: Utilizing this mnemonic in a standard multi-address wallet will lead to watcher misbehavior.
-
-> **⚠️ NOTE**: Instead of setting `mnemonic` in the local configuration file, consider using the `MNEMONIC` environment variable for ease of management. We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your seed phrase while troubleshooting etc. See your `.env` file. Once updated, in /config/local.yaml delete your mnemonic phrase and put in a comment like so "mnemonic: #see local config env file"
+> **⚠️ NOTE**: We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your seed phrase while troubleshooting etc. See your `.env` file. Once updated, in /config/local.yaml delete your mnemonic phrase and put in a comment like so "mnemonic: #see local config env file"
 
 1. Select your primary data source for the Ergo network; block and box information are retrieved from this source. You can use either `explorer` or `node` as the primary source:
 
@@ -120,9 +22,9 @@ mnemonic: <your wallet mnemonic>
 type: node
 ```
 
-Note: As you choose one of these and start, your watcher scans several blocks using that source. Changing the source might cause some issues since the watcher tries to scan all blocks from the beginning and it takes time to be synced again. So just in case of a serious problem change this config. In some cases, you may want to delete your volume and start over (Consider updating the initial height in such cases).
+Note: As you choose one of these and start, your Watcher scans several blocks using that source. Changing the source might cause some issues since the Watcher tries to scan all blocks from the beginning and it takes time to be synced again. So just in case of a serious problem change this config. In some cases, you may want to delete your volume and start over (Consider updating the initial height in such cases).
 
-3. Specify the node and explorer urls (Currently you are required to use an Ergo node for transaction submissions, even when you're using the explorer as your primary source. In contrast, when you rely on a node as your primary information source, you do not need to use the explorer.)
+3. Specify the node and explorer urls. **Currently you are required to use an Ergo node for transaction submissions, even when you're using the explorer as your primary source**. In contrast, when you rely on a node as your primary information source, you do not need to use the explorer.
 
 ```yaml
 node:
