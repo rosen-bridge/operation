@@ -63,7 +63,6 @@ To configure a Cardano watcher, you should set these configs under the `cardano`
 type: koios
 koios:
   url: https://api.koios.rest/api/beta
-  authToken: <your auth token> # Recommended to use KOIOS_AUTH_TOKEN environment variable, remove line if so.
 ```
 
 or
@@ -72,7 +71,6 @@ or
 type: blockfrost
 blockfrost:
   url: https://cardano-mainnet.blockfrost.io/api/v0
-  projectID: <your projectID token> # Recommended to use BLOCKFROST_PROJECT_ID environment variable, remove line if so.
 ```
 
 or
@@ -85,7 +83,12 @@ ogmios:
   useTls: false
 ```
 
-> **NOTE**: When using Docker, there is an environment variable available for `Koios` and `Blockfrost` tokens that you can set instead of in the local configuration. This is the preferred method.
+There is an environment variable available for `Koios` and `Blockfrost` tokens. Make the following entries, depending on your data source, to your `.env` file located in the `operation/watcher` directory. 
+
+```shell
+KOIOS_AUTH_TOKEN=<your_auth_token>
+
+BLOCKFROST_PROJECT_ID=<your_project_id>
 
 > Note: If you don't specify the koios url, it will use the https://api.koios.rest/api/beta by default, but in case you're using ogmios as your source you should specify the host address and port of an ogmios instance.
 
@@ -115,7 +118,7 @@ initial:
 
 > Note: Once the Watcher has started scanning from the initial block, changing this config wont affect the Watcher behavior. In case you need to restart the Watcher from an earlier block, consider removing volumes and updating both Ergo and Cardano initial heights.
 
-Finally, an example Cardano watcher `local.yaml` file would look like:
+Finally, example Cardano watcher `local.yaml` and `.env` files using Koios would look like:
 
 ```yaml
 network: cardano
@@ -129,12 +132,35 @@ ergo:
 cardano:
   type: koios
   koios:
-    authToken: "eyJhbGciOiJIUzI1NiIsInR5..." # Remove line if Token is entered as an enviroment variable.
+    url: https://api.koios.rest/api/beta
   initial:
     height: <latest height>
     hash: <latest hash>
     slot: <latest slot>
 ```
+
+
+
+```shell
+# Required Environments
+
+POSTGRES_PASSWORD= # a random alphanumeric password without special characters (like $%!-#)
+
+POSTGRES_USER= # a random name
+
+POSTGRES_DB= # a random name
+
+POSTGRES_PORT=5432 # 5432 is set as default, you can change it
+
+API_KEY_HASH= # blake2b hash of api_key, e.g. API_KEY_HASH=myHashHere
+
+MNEMONIC= # Ergo wallet mnemonic phrases, e.g. MNEMONIC=word1 word2 word3 ... wordn
+
+#Optional Enviroments
+
+KOIOS_AUTH_TOKEN=<your_auth_token>
+```
+
 
 ## Continue to Step 5
 Be sure to save the changes you have made to `local.yaml` and navigate to [Step 5](./deploy-docker.md#5-pull-and-deploy-watcher-application) to continue with the Watcher deployment.
