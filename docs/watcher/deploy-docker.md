@@ -50,6 +50,7 @@ To view hidden .env later, use `ls -a`.
 ## 2. Create Watcher wallet and API Key hash
 
 2.1 Create Ergo Wallet (Essential for all Watchers)
+
 Create a new, unused wallet for your Watcher. You can use any Ergo wallet to generate a valid mnemonic phrase. Please use a new, unused wallet for this purpose only.
 
 Later in step 3, we will set the wallet mnemonic phrase in the `.env` enviroment variable file.
