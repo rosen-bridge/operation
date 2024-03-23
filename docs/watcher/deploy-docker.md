@@ -1,8 +1,8 @@
 # Watcher Deployment
 
-To participate as a watcher in the bridge, you need to deploy a watcher app, observing one of the supported networks. Each supported network has its own set of watchers, that are responsible for reporting users' actions on that specific network.
+To participate as a Watcher in the bridge, you need to deploy a Watcher app, observing one of the supported networks. Each supported network has its own set of Watchers, that are responsible for reporting users' actions on that specific network.
 
-We are utilizing Docker for ease of deployment and upgrading. Install Docker for your Operating System [here](https://www.docker.com/products/docker-desktop/). Once installed, proceed with the following instructions.
+We are utilizing Docker for ease of deployment and upgrading. Install Docker for your Operating System [here](https://www.docker.com/products/docker-desktop/).
 
 In order to run a Watcher, a number of steps need to be taken:
 1. Create local directory and files
@@ -12,6 +12,7 @@ In order to run a Watcher, a number of steps need to be taken:
 5. Pull and run Watcher application
 6. Get Permits
 
+Proceed with the following instructions.
 
 ## 1. Create local directory and files
 
@@ -86,7 +87,7 @@ Later in step 3, we will set the API Hash Key in the `.env` enviroment variable 
 
 You can configure some Environment Variables when deploying with Docker, you can find all of the available variables [here](./env-references.md).
 
-3.1 Set your parameters in the `.env` file located in the `operation/watcher` directory. Make sure not to use spaces after the '=' sign:
+3.1 Set your parameters in the `.env` file located in the `watcher` directory. Make sure not to use spaces after the '=' sign:
 
 ```shell
 # Required Environments
