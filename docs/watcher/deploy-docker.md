@@ -45,6 +45,7 @@ cp env.template .env
 To view hidden .env later, use `ls -a`.
 
 
+
 ## 2. Create Watcher wallet and API Key hash
 
 2.1 Create Ergo Wallet (Essential for all Watchers)
