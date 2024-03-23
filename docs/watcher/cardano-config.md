@@ -89,6 +89,7 @@ There is an environment variable available for `Koios` and `Blockfrost` tokens. 
 KOIOS_AUTH_TOKEN=<your_auth_token>
 
 BLOCKFROST_PROJECT_ID=<your_project_id>
+```
 
 > Note: If you don't specify the koios url, it will use the https://api.koios.rest/api/beta by default, but in case you're using ogmios as your source you should specify the host address and port of an ogmios instance.
 
@@ -165,4 +166,4 @@ KOIOS_AUTH_TOKEN=<your_auth_token>
 
 
 ## Continue to Step 5
-Be sure to save the changes you have made to `local.yaml` and navigate to [Step 5](./deploy-docker.md#5-pull-and-deploy-watcher-application) to continue with the Watcher deployment.
+Be sure to save the changes you have made to `local.yaml` and `.env` files and navigate to [Step 5](./deploy-docker.md#5-pull-and-deploy-watcher-application) to continue with the Watcher deployment.
