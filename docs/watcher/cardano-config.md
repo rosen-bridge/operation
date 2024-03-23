@@ -122,6 +122,7 @@ Finally, example Cardano watcher `local.yaml` and `.env` files using Koios would
 
 ```yaml
 network: cardano
+
 ergo:
   type: explorer
   initialHeight: <latest height>
@@ -129,6 +130,7 @@ ergo:
     url: https://ergo-node.zoomout.io
   explorer:
     url: https://api.ergoplatform.com
+
 cardano:
   type: koios
   koios:
