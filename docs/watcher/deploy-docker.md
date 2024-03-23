@@ -111,8 +111,8 @@ MNEMONIC= # Ergo wallet mnemonic phrases, e.g. MNEMONIC=word1 word2 word3 ... wo
 Your Watcher will use a file called `local.yaml` located in the `operation/watcher/config` directory for network specific configuration. 
 
 4.1 Navigate to the following for network specific configuration instructions. After following the instructions, proceed to section 5.
--[Ergo](./ergo-config.md)
--[Cardano](./cardano-config.md)
+- [Ergo](./ergo-config.md)
+- [Cardano](./cardano-config.md)
 
 
 ## 5. Pull and deploy Watcher application
