@@ -9,7 +9,8 @@ In order to run a Watcher, a number of steps need to be taken:
 2. Create Watcher wallet and API Key hash
 3. Edit Watcher enviroment variable file
 4. Edit Watcher configuration file
-5. Pull and deploy Watcher application
+5. Pull and run Watcher application
+6. Get Permits
 
 
 ## 1. Create local directory and files
@@ -107,40 +108,36 @@ MNEMONIC= # Ergo wallet mnemonic phrases, e.g. MNEMONIC=word1 word2 word3 ... wo
 
 ## 4. Edit Watcher configuration file
 
-The Watcher will use a file called `local.yaml` for network specific configurations. 
+Your Watcher will use a file called `local.yaml` located in the `operation/watcher/config` directory for network specific configuration. 
+
+4.1 Navigate to the following for network specific configuration instructions. After following the instructions, proceed to section 5.
+[Ergo](./ergo-config.md)
+[Cardano](./cardano-config.md)
 
 
+## 5. Pull and deploy Watcher application
 
+5.1 Navigate to `operation/watcher` directory:
 
+```shell
+cd operation/watcher/
+```
 
-
-
-Pull the Docker image
+5.2 Pull the Docker image
 
 ```shell
 docker compose pull # use `docker-compose pull` for older versions of Docker
 ```
 
-Set up your `local.yaml` using the instructions in the next section (Local Config).
-
-
-
-Finally, after saving the 'local.yaml' changes, run the container:
+5.3 Finally, run the container:
 
 ```shell
 docker compose up -d # use `docker-compose up -d` for older versions of Docker
 ```
 
-## Local Config
-
-To start your watcher, you should configure the local.yaml file. First, specify the target network you're watching. Currently, we support `ergo` and `cardano`:
-
-```yaml
-network: ergo
-```
 
 
-## Get Watcher Permit
+## 6. Get Watcher Permit
 
 After setting up and running your watcher instance, access the watcher UI by visiting http://localhost:3030. From your dashboard, you can view network information, assets, and health status alongside action buttons. To activate your watcher, proceed to the 'LOCK' action, where you can utilize assets from the watcher wallet for registration and obtain reporting permits. Top up your wallet with the specified amounts of ERG and RSN and receive these permits.
 
@@ -149,5 +146,9 @@ As a watcher, your primary responsibility is to monitor your network and report 
 1. _Collateral:_ To obtain your initial report permits, you must provide one-time collateral in the form of ERG and RSN tokens. This collateral serves as a security measure to mitigate Sybil attacks, ensuring that one entity cannot create an excessive number of watchers on the bridge. When you register your watcher by locking collateral, you have the flexibility to increase or decrease your report permit counts as needed. When you return all your report permits, the collateral is automatically refunded, and your watcher is unregistered.
 
 2. _RSN for Permits:_ To obtain report permits, you must lock RSN tokens. In return for locking each RSN token, you receive a permit token. To initiate a report, you'll need to use a batch of permit tokens, which we refer to as a "report permit." The number of report permits you possess determines how many concurrent reports you can create. The specific number of permit tokens required for each report permit is a configuration that is specific to each blockchain. Note that, this configuration may vary across different chains and may change over time. In contrast to collateral, please be aware that these permit tokens are subject to potential seizure in the event of fraudulent activity.
+
+Current Collateral Requiement `800 ERG & 30,000 RSN`
+Current Permit Requiement `3,000 RSN`
+
 
 In the event of a valid report submission, the report permit used for that report will be refunded, in addition to your report reward. However, if your report is found to be invalid, your permit will be seized as a form of penalty. In such a case, you won't be able to retrieve your locked RSN tokens corresponding to the seized permit. If you do not possess a report permit, you won't be able to create new reports, until your permits have been refunded. Therefore, you should purchase enough report permits to manage concurrent event reports effectively.
