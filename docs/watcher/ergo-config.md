@@ -1,5 +1,9 @@
 # Ergo Watcher Configuration
 
+Before proceeding, be sure to have followed the initial deployment instructions found [here](./deploy-docker.md).
+
+> Note: For all Watchers, even if you're targeting a different network than Ergo to watch, you still need to configure Ergo Configuration section.
+
 To participate as a watcher in the bridge, you need to deploy a watcher app, observing one of the supported networks. Each supported network has its own set of watchers, that are responsible for reporting users' actions on that specific network.
 
 1. Select the network for your Watcher, this will be an `ergo` Watcher.
@@ -7,6 +11,7 @@ To participate as a watcher in the bridge, you need to deploy a watcher app, obs
 network: ergo
 ```
 
+## Ergo Configuration (Essential for all Watchers)
 
 2. For all Watchers, even if you're targeting a different network than Ergo to watch, you still need to configure the Ergo section (Under the `ergo` keyword) in your `config.yaml` file:
 
