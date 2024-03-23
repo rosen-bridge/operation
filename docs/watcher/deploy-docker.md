@@ -69,12 +69,12 @@ Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages
   # use nodejs solution
   npx @rosen-bridge/cli blake2b-hash YOUR_API_KEY
   # or docker solution
-  docker run -it --rm node:18.16 npx --yes @rosen-bridge/cli blake2b-hash YOUR_API_KEY```
+  docker run -it --rm node:18.16 npx --yes @rosen-bridge/cli blake2b-hash YOUR_API_KEY
 ```
 
 Alternatively, you could utilize Swagger on a locally run node. Do not generate hash from a public node.
 
-Example output Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
+Example Blake2b hash output of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
 
 
 Later in step 3, we will set the API Hash Key in the `.env` enviroment variable file.
