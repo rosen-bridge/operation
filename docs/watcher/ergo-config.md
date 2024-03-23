@@ -94,6 +94,7 @@ POSTGRES_PORT=5432 # 5432 is set as default, you can change it
 API_KEY_HASH= # blake2b hash of api_key, e.g. API_KEY_HASH=myHashHere
 
 MNEMONIC= # Ergo wallet mnemonic phrases, e.g. MNEMONIC=word1 word2 word3 ... wordn
+```
 
 ## Continue to Step 5
 Be sure to save the changes you have made to `local.yaml` and navigate to [Step 5](./deploy-docker.md#5-pull-and-deploy-watcher-application) to continue with the Watcher deployment.
