@@ -66,6 +66,7 @@ Finally, an example Ergo watcher `local.yaml` file would look like:
 
 ```yaml
 network: ergo
+
 ergo:
   type: explorer
   initialHeight: <latest height>
