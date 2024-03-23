@@ -49,9 +49,9 @@ To view hidden .env later, use `ls -a`.
 ## 2. Create Watcher wallet and API Key hash
 
 2.1 Create Ergo Wallet (Essential for all Watchers)
-Create a new, empty wallet for your Watcher, you can use any Ergo wallet to generate a valid mnemonic phrase. Please use a new, fresh wallet for this purpose only.
+Create a new, unused wallet for your Watcher. You can use any Ergo wallet to generate a valid mnemonic phrase. Please use a new, unused wallet for this purpose only.
 
-Later we will set the wallet mnemonic phrase in the `MNEMONIC=` enviroment variable (`.env`) file.
+Later in step 3, we will set the wallet mnemonic phrase in the `.env` enviroment variable file.
 
 
 2.2 Create API Key Hash
@@ -59,7 +59,7 @@ Later we will set the wallet mnemonic phrase in the `MNEMONIC=` enviroment varia
 To secure the Watcher action-based APIs (ex: lock, unlock, ...), you should set a unique and robust api key. We are using a blake2b hash to secure APIs.
 
 
-#### Compute api_key's Hash
+### Compute api_key's Hash
 
 Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages/cli) to compute api key hash:
 
@@ -72,19 +72,19 @@ Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages
 
 Alternatively, you could utilize Swagger on a locally run node. Do not generate hash from a public node.
 
+Example output Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
 
 
+Later in step 3, we will set the API Hash Key in the `.env` enviroment variable file.
 
-After obtaining the hash, input it into `API_KEY_HASH=` in your `.env` file. Example output Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
-
-> **⚠️ NOTE**: We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your api key while troubleshooting etc. After updating, you can delete `apiKeyHash` from /config/local.yaml.
+> **⚠️ NOTE**: We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your api key while troubleshooting etc.
 
 
 ## 3. Edit Watcher enviroment variable file
 
-You can configure some Environment Variables when deploying with docker, you can find all of them [here](./env-references.md).
+You can configure some Environment Variables when deploying with Docker, you can find all of the available variables [here](./env-references.md).
 
-Set your parameters in `.env` file (make sure not to use spaces after the '=' sign):
+3.1 Set your parameters in the `.env` file located in the `operation/watcher` directory. Make sure not to use spaces after the '=' sign:
 
 ```shell
 # Required Environments
@@ -102,46 +102,10 @@ API_KEY_HASH= # blake2b hash of api_key, e.g. API_KEY_HASH=myHashHere
 MNEMONIC= # Ergo wallet mnemonic phrases, e.g. MNEMONIC=word1 word2 word3 ... wordn
 ```
 
-### Ergo Wallet (Essential for all Watchers)
-
-Create a new, empty wallet for your Watcher, and set the wallet mnemonic in the `MNEMONIC=` enviroment variable (`.env`) file. (you can use any wallet to generate a valid mnemonic on Ergo, and please use a new fresh wallet for this purpose only):
-
-```shell
-MNEMONIC=<your wallet mnemonic> # E.g. MNEMONIC=word1 word2 word3 ... wordn
-```
-
-> Note: Utilizing this mnemonic in a standard, previously used, multi-address wallet will lead to watcher misbehavior. Use it wolely as the Watcher wallet.
-
-> **⚠️ NOTE**: We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your seed phrase while troubleshooting etc.
-
-
-### API Key Hash
-
-To secure the Watcher action-based APIs (ex: lock, unlock, ...), you should set a unique and robust api key. We are using a blake2b hash to secure APIs.
-
-
-#### Compute api_key's Hash
-
-Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages/cli) to compute api key hash:
-
-```shell
-  # use nodejs solution
-  npx @rosen-bridge/cli blake2b-hash YOUR_API_KEY
-  # or docker solution
-  docker run -it --rm node:18.16 npx --yes @rosen-bridge/cli blake2b-hash YOUR_API_KEY```
-```
-
-Alternatively, you could utilize Swagger on a locally run node. Do not generate hash from a public node.
 
 
 
-
-After obtaining the hash, input it into `API_KEY_HASH=` in your `.env` file. Example output Blake2b hash of `hello` is `324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf`.
-
-> **⚠️ NOTE**: We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your api key while troubleshooting etc. After updating, you can delete `apiKeyHash` from /config/local.yaml.
-
-
-## Local Configuration File
+## 4. Edit Watcher configuration file
 
 The Watcher will use a file called `local.yaml` for network specific configurations. 
 
