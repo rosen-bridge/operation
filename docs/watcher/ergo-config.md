@@ -21,7 +21,7 @@ Select your primary data source for the Ergo network; block and box information 
 type: node
 ```
 
-Note: As you choose one of these and start, your Watcher scans several blocks using that source. Changing the source might cause some issues since the Watcher tries to scan all blocks from the beginning and it takes time to be synced again. So just in case of a serious problem change this config. In some cases, you may want to delete your volume and start over (Consider updating the initial height in such cases).
+> Note: As you choose one of these and start, your Watcher scans several blocks using that source. Changing the source might cause some issues since the Watcher tries to scan all blocks from the beginning and it takes time to be synced again. So just in case of a serious problem change this config. In some cases, you may want to delete your volume and start over (Consider updating the initial height in such cases).
 
 3. Specify the node and explorer urls. Currently you are required to use an Ergo node for transaction submissions, even when you're using the explorer as your primary source. In contrast, when you rely on a node as your primary information source, you do not need to use the explorer. 
 
