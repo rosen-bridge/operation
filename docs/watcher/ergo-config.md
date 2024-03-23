@@ -55,6 +55,7 @@ observation:
   confirmation: 10
   validThreshold: 2160
 ```
+Save the changes you have made to `local.yaml`.
 
 Finally, an example Ergo watcher `local.yaml` file would look like:
 
@@ -73,4 +74,5 @@ observation:
   validThreshold: 2160
 ```
 
-
+## Continue to Step 5
+Navigate to Step 5 [here](./deploy-docker.md#5-pull-and-deploy-watcher-application) to continue with the Watcher deployment.
