@@ -64,6 +64,26 @@ Finally, after saving the 'local.yaml' changes, run the container:
 docker compose up -d # use `docker-compose up -d` for older versions of Docker
 ```
 
+### Note for Raspberry Pi ARM users
+To run the watcher on a ARM based raspberry pi, you'll need to use an arm-based db. To use an arm-based db, you can use this one:
+https://hub.docker.com/r/arm64v8/postgres/
+
+Change the db image in docker compose from:
+```
+services:
+  db:
+    image: rapidfort/postgresql:16.0.0
+```
+
+to 
+
+```
+services:
+  db:
+    image: arm64v8/postgres
+```
+
+
 ## Local Config
 
 To start your watcher, you should configure the local.yaml file. First, specify the target network you're watching. Currently, we support `ergo` and `cardano`:
