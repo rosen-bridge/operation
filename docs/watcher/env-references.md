@@ -18,7 +18,7 @@ POSTGRES_PORT=5432 # 5432 is set as default, you can change it.
 
 # Optional Environments
 ```
-API_KEY_HASH= # blake2b hash of api_key, e.g. API_KEY_HASH=myHashHere
+API_KEY_HASH= # blake2b saletd hash of api_key, please put your apiKeyHash between single quotes e.g. API_KEY_HASH='myHashHere'
 
 MNEMONIC= # watcher mnemonic phrases, e.g. MNEMONIC=word1 word2 word3 ... wordn
 
