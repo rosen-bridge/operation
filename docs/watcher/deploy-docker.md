@@ -50,6 +50,45 @@ Only on `MacOS`: set `707` permission for the `logs` directory
 sudo chmod -R 707 logs
 ```
 
+### Note for Raspberry Pi ARM users
+
+To run the watcher on a ARM based raspberry pi, you'll need to use an arm-based db. You can use the special db image according to you architecture:
+- [arm64v8](https://hub.docker.com/r/arm64v8/postgres/)
+- [arm32v7](https://hub.docker.com/r/arm32v7/postgres/)
+
+Change the db image in docker compose according to your OS architecture for example if you are using `arm64v8`, change this line in your docker-compose file:
+```diff
+services:
+  db:
+-   image: rapidfort/postgresql:16.0.0
++   image: arm64v8/postgres:16.0
+```
+and change volume of db to this:
+```diff
+    volumes:
+-     - postgres-data:/bitnami/postgresql
++     - postgres-data:/var/lib/postgresql/data/
+```
+
+Final changes for a `arm64v8` image is something like this:
+```
+  db:
+    image: arm64v8/postgres:16.0
+    env_file:
+      - .env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+    networks:
+      - rosen_network
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+```
+
+### Pull docker images and run service
 Pull the Docker image
 
 ```shell
