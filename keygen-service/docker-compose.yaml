@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  service:
+    image: ghcr.io/rosen-bridge/keygen-service:${KEYGEN_IMAGE_VERSION:-latest}
+    env_file:
+      - .env
+    volumes:
+      - type: bind
+        source: ./config/local.yaml
+        target: /app/config/local.yml
+      - ./logs/keygen-logs/:/app/logs/
+      - guard-data:/app/peer-dialer/
+      - ./logs/tss-api-logs/:/app/tss-api/logs/
+      - tss-api-data:/app/tss-api/home/
+    networks:
+      - rosen_network
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'curl --fail http://$$HOSTNAME:8080/swagger || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  guard-data:
+    external: true
+    name: guard_guard-data
+  tss-api-data:
+    external: true
+    name: guard_tss-api-data
+
+networks:
+  rosen_network:
