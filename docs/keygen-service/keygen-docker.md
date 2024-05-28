@@ -2,11 +2,11 @@
 
 Being a guard, you need a set of secret keys that will be used in multisig operations. One of these keys will be used by the `TSS library` for `EcDSA` and `EdDSA` multisig wallets. 
 
-The following document will help you through generating this key by connecting the `keygen service` to your `guard service` in a `key generation ceremony`.
+The following document will help you through generating these keys by connecting the `keygen service` to your `guard service` in a `key generation ceremony`.
 
 # Docker Deployment
 
-If this is the first participating in the Rosen key generation ceremony, clone [Operation repository](https://github.com/rosen-bridge/operation.git) and go to `operation/keygen-service` directory
+If you are participating in a Rosen key generation ceremony for the first time, clone [Operation repository](https://github.com/rosen-bridge/operation.git) and go to `operation/keygen-service` directory
 
 ```shell
 git clone https://github.com/rosen-bridge/operation.git
@@ -81,7 +81,7 @@ docker compose up # use `docker-compose up` for older versions of Docker
 ```
 
 > **Note:**
-> Each guard has a unique peerId that you should provide to the moderator of the keygen ceremony. Your peerId will be whitelisted in the network's relay. Upon starting your guard or keygen-service for the first time, you can find the value of this parameter in your guard's logs or keygen-service's logs. For example, you should see a line like this in your log file located at `./keygen-service/logs/keygen-logs/` or ./guard/logs/guard-logs/ or in your console:
+> Each guard has a unique peerId that you should provide to the moderator of the keygen ceremony. Your peerId will be whitelisted relays. Upon starting your guard or keygen-service for the first time, you can find the value of this parameter in your guard's logs or keygen-service's logs. For example, you should see a line like this in your log file located at `./keygen-service/logs/keygen-logs/` or ./guard/logs/guard-logs/ or in your console:
 > ```
 > info: Dialer node started with peerId: 12D3KooWNGaHx3EAdNeKUFxAKrg3EyKFN8gHHw9H5ZiBmRVjxHpG.
 > ```
@@ -90,7 +90,7 @@ docker compose up # use `docker-compose up` for older versions of Docker
 
 ## Successful Keygen
 
-After discovering all peers, the colaborative key genaration process will be started. In case of a successful key genaration you can see the following message in the console as well as in the log file located at `./keygen-service/logs/keygen-logs/`.
+After discovering all peers, the colaborative key genaration process will be started. In case of a successful key genaration, a message with the following structure could be seen in the console as well as in the log file located at `./keygen-service/logs/keygen-logs/`.
 
 ```
 info: [keygen] request start keygen with response {"shareID":"17919185987749025101810558434858548363703702891441976713238832618792983045264897561171919","pubKey":"9a685c62d667fd99c22dbd1d8e97b27a268003e146ac8af74b03c5a1f25f4f5f","status":"success"} called
