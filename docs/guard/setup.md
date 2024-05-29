@@ -1,11 +1,80 @@
 ## Guard Operation: Setup
 
-The following document will help you through setup your guard for production on Docker after a successful `key generation ceremony`.
+The following document will help you through setup your guard for production on Docker.
 
 ## Environment Variable Configs
 You can configure some Environment Variables when deploying with docker, you can find all of them [here](./env-references.md).
 
 Note: Set your parameters in `.env` file (make sure not to use spaces after the '=' sign)
+
+# Docker Deployment
+
+Clone [Operation repository](https://github.com/rosen-bridge/operation.git) and go to `operation/guard` directory
+
+```shell
+git clone https://github.com/rosen-bridge/operation.git
+cd operation/guard/
+```
+
+Create your environment file `.env` based on `env.template` file in the `guard` directory
+
+```shell
+cp env.template .env
+```
+
+Set your parameters in `.env` file 
+>**Note:** do not use space after `=` sign
+
+```shell
+# Required Environments
+
+POSTGRES_PASSWORD= # a random alphanumeric password without special characters (like $%!-#)
+
+POSTGRES_USER= # a random name
+
+POSTGRES_DB= # a random name
+
+POSTGRES_PORT=5432 # 5432 is set as default, you can change it.
+
+
+# Optional Environments
+
+GUARD_PORT= # (default is 8081 if no value is set)
+
+GUARD_IMAGE_VERSION= # Don't change it!
+
+UI_IMAGE_VERSION= # Don't change it!
+```
+
+Set required permissions and create `thresholds.json` and `local.yaml` files in the `config` directory
+
+```shell
+touch config/thresholds.json
+touch config/local.yaml
+sudo chown -R 8080:8080 logs config
+```
+
+Only on `MacOS`: set `707` permission for the `logs` directory
+
+```shell
+# only on MacOS
+sudo chmod -R 707 logs
+```
+
+Pull the Docker image
+
+  ```shell
+  docker compose pull # use `docker-compose pull` for older versions of Docker
+  ```
+
+In order to instruct the service to create require docker volumes, in the `guard` directory
+
+```shell
+docker compose create # use `docker-compose create` for older versions of Docker
+```
+
+Before commencing your guard service duties, you must take part in the key generation ceremony. For detailed instructions, please refer to [this guide](../keygen-service/keygen-docker.md).
+
 
 # Edit Config File
 
@@ -351,4 +420,12 @@ logs:
 coldStorage:
   ...
 discordWebHookUrl: 'YOUR_WEBHOOK_URL'
+```
+
+# Run Guard Service
+
+In the `guard` directory, run the container
+  
+```shell
+docker compose up # use `docker-compose up` for older versions of Docker
 ```
