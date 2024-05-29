@@ -3,7 +3,6 @@
 ### Table of Contents
 
 - [Guard](./docs/guard/)
-  - [Keygen Operation using docker](./docs/guard/keygen-docker.md)
   - [Production Setup](./docs/guard/setup.md)
   - [Environment Variable References](./docs/guard/env-references.md)
 - [Keygen Service](./docs/keygen-service/)
