@@ -73,7 +73,7 @@ In order to instruct the service to create require docker volumes, in the `guard
 docker compose create # use `docker-compose create` for older versions of Docker
 ```
 
-Before commencing your guard service duties, you must take part in the key generation ceremony. For detailed instructions, please refer to [this guide](../keygen-service/keygen-docker.md).
+> **NOTE**: Before running your guard service, you must take part in the key generation ceremony. For detailed instructions, please refer to [this guide](../keygen-service/keygen-docker.md).
 
 
 # Edit Config File

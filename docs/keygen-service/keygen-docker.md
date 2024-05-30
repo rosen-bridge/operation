@@ -6,10 +6,9 @@ The following document will help you through generating these keys by connecting
 
 # Docker Deployment
 
-If you are participating in a Rosen key generation ceremony for the first time, clone [Operation repository](https://github.com/rosen-bridge/operation.git) and go to `operation/keygen-service` directory
+If you are participating in a Rosen key generation ceremony for the first time, at the first you have to setup your `guard` directories and volumes according to this [article](../guard/setup.md#docker-deployment), after that go to the `operation/keygen-service` directory
 
 ```shell
-git clone https://github.com/rosen-bridge/operation.git
 cd operation/keygen-service/
 ```
  
