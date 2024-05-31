@@ -80,7 +80,7 @@ docker compose up # use `docker-compose up` for older versions of Docker
 ```
 
 > **Note:**
-> Each guard has a unique peerId that you should provide to the moderator of the keygen ceremony. Your peerId will be whitelisted relays. Upon starting your guard or keygen-service for the first time, you can find the value of this parameter in your guard's logs or keygen-service's logs. For example, you should see a line like this in your log file located at `./keygen-service/logs/keygen-logs/` or ./guard/logs/guard-logs/ or in your console:
+> Each guard has a unique peerId that you should provide to the moderator of the keygen ceremony. Your peerId will be whitelisted in relays. Upon starting your guard or keygen-service for the first time, you can find the value of this parameter in your guard's logs or keygen-service's logs. For example, you should see a line like this in your log file located at `./keygen-service/logs/keygen-logs/` or ./guard/logs/guard-logs/ or in your console:
 > ```
 > info: Dialer node started with peerId: 12D3KooWNGaHx3EAdNeKUFxAKrg3EyKFN8gHHw9H5ZiBmRVjxHpG.
 > ```
