@@ -203,6 +203,52 @@ cardano:
   coldStorageAddress: ''
 ```
 
+## Bitcoin
+
+### Network
+
+Specify your network. If you are using esplora, set `chainNetwork` field as
+`esplora` and set your esplora url.
+
+```yaml
+bitcoin:
+  chainNetwork: 'esplora' # 'esplora'
+  esplora:
+    url: 'https://blockstream.info'
+```
+
+### Address Info
+
+Other than network, you need to specify generated public key in `key generation ceremony`, chain code and derivation path selected by moderator and cold storage address on bitcoin.
+
+```yaml
+bitcoin:
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+  coldStorageAddress: 'COLD_ADDRESS'
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+> **NOTE**: Leave `coldStorageAddress` empty for now. This field will be set
+in further notice.
+
+### Overall
+
+Your Bitcoin config will be something like this:
+
+```yaml
+bitcoin:
+  chainNetwork: 'esplora' # 'esplora'
+  esplora:
+    url: 'https://blockstream.info'
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+  coldStorageAddress: ''
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
 ## Ergo
 
 ### Network
@@ -283,15 +329,19 @@ between all guards, so get these values from moderator. The structure will be:
 ```yaml
 tss:
   secret: 'TSS_SECRET'
-  publicKeys:
-    - 'PK_1'
-    - 'PK_2'
-    - 'PK_3'
-    ...
-  ks:
-    - 'SHARE_1'
-    - 'SHARE_2'
-    - 'SHARE_3'
+  pubs:
+    - curvePub: 'PK_1' # ECDSA
+      edwardPub: 'PK_1' # EdDSA
+      curveShareId: 'SHARE_1'
+      edwardShareId: 'SHARE_1'
+    - curvePub: 'PK_2' # ECDSA
+      edwardPub: 'PK_2' # EdDSA
+      curveShareId: 'SHARE_2'
+      edwardShareId: 'SHARE_2'
+    - curvePub: 'PK_3' # ECDSA
+      edwardPub: 'PK_3' # EdDSA
+      curveShareId: 'SHARE_3'
+      edwardShareId: 'SHARE_3'
     ...
 ```
 
@@ -300,10 +350,6 @@ tss:
 ## P2P
 
 Keep the config provided by keygen moderator for `key generation ceremony`.
-
-## Keygen
-
-Keygen mode should be deactivated. Delete whole `keygen` section from your config file.
 
 ## Mnemonic
 
@@ -404,6 +450,8 @@ api:
   isManualTxRequestActive: false
   apiKeyHash: ''
 cardano:
+  ...
+bitcoin:
   ...
 ergo:
   ...
