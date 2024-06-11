@@ -318,7 +318,7 @@ esplora:
 
 > Note: If you don't specify an esplora url, it will use the https://blockstram.info by default, but in case you're using RPC as your source you should specify your bitcoin node instance RPC url.
 
-> Note: You can use both configuration, but using RPC is recommended. An RPC connection to a bitcoin node is much faster and does not have limits on fetching data.
+> Note: You can use both configuration, but using RPC is recommended. An RPC connection to a bitcoin node is much faster and does not have limits on fetching data. To use RPC, you can find some public bitcoin nodes [here](https://bitnodes.io/nodes/).
 
 2. Set your watcher's initial height, where you start observing and reporting events. Like the Ergo network, we highly recommend using the latest block as your initial point. You should specify the initial block height.
 
