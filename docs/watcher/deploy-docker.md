@@ -105,20 +105,21 @@ docker compose up -d # use `docker-compose up -d` for older versions of Docker
 
 ## Local Config
 
-To start your watcher, you should configure the local.yaml file. First, specify the target network you're watching. Currently, we support `ergo` and `cardano`:
+To start your watcher, you should configure the local.yaml file.
+First, specify the target network you're watching. Currently, we support `ergo`, `cardano` and `bitcoin`:
 
 ```yaml
 network: ergo
 ```
 
-## API
+### API
 
 ```yaml
 api:
   apiKeyHash: 'YOUR_API_KEY_HASH'
 ```
 
-### apiKeyHash
+#### apiKeyHash
 To secure the action-based APIs (ex: lock, unlock, ...), you should set a unique and robust api key.
 We are using a blake2b hash to secure APIs.
 
@@ -186,14 +187,7 @@ initialHeight: <latest height>
 
 > Note: Once watcher started scanning from the initial block, changing this config wont affect the watcher behavior. In case you need to restart the watcher from an earlier block consider removing volumes.
 
-5. (JUST ERGO WATCHER) You need to update the commitment validity threshold to match with Ergo network:
-
-```yaml
-transaction:
-  commitmentTimeoutConfirmation: 720
-```
-
-6. (JUST ERGO WATCHER) To ensure the watcher's proper functionality, event observations should be confirmed enough to take action. You should customize observation confirmation and validity threshold to align with your watching network specification. By default, these settings are configured much higher. For Ergo, we recommend using the following configurations:
+5. (JUST ERGO WATCHER) To ensure the watcher's proper functionality, event observations should be sufficiently confirmed before taking action. You should customize observation confirmation and validity threshold to align with your watching network's specification. By default, these settings are configured much higher. For Ergo, we recommend using the following configurations:
 
 ```yaml
 observation:
@@ -209,14 +203,12 @@ api:
   apiKeyHash: 'YOUR_API_KEY_HASH'
 ergo:
   type: explorer
-  initialHeight: <latest height>
-  mnemonic: "pretty dad program ...."
+  initialHeight: LATEST_HEIGHT
+  mnemonic: 'YOUR_WALLET_MNEMONIC'
   node:
     url: https://example.node.com
   explorer:
     url: https://api.ergoplatform.com
-  transaction:
-    commitmentTimeoutConfirmation: 720
 
 observation:
   confirmation: 10
@@ -242,12 +234,12 @@ or
 ```yaml
 type: koios
 koios:
-  url: https://api.koios.rest/api/beta
-  authToken: <your auth token>
+  url: https://api.koios.rest/api
+  authToken: YOUR_AUTH_TOKEN
 ```
 > **NOTE**: When using docker there is an `KOIOS_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
 
-> Note: If you don't specify the koios url, it will use the https://api.koios.rest/api/beta by default, but in case you're using ogmios as your source you should specify the host address and port of an ogmios instance.
+> Note: If you don't specify the koios url, it will use the https://api.koios.rest/api by default, but in case you're using ogmios as your source you should specify the host address and port of an ogmios instance.
 
 > Note: If you're using a TLS enabled ogmios, set the useTls to true.
 
@@ -258,13 +250,13 @@ koios:
 > Note: As you choose one of these and start, your watcher scans several blocks using that source. Changing the source might cause some issues since the watcher tries to scan all blocks from the beginning and it takes time to be synced again. So just in case of a serious problem change this config. In some cases, you may want to delete your volume and start over (Consider updating the initial height in such cases).
 
 
-1. Set your watcher's initial height, where you start observing and reporting events. Like the Ergo network, you may choose to start from an older height but we highly recommend using the latest block as your initial point. You should specify the initial block height, hash, and slot.
+2. Set your watcher's initial height; this height is the point from which  you start observing and reporting events. Like the Ergo network, you may choose to start from an older height but we highly recommend using the latest block as your initial point. You should specify the initial block height, hash, and slot.
 
 ```yaml
 initial:
-  height: <latest height>
-  hash: <latest hash>
-  slot: <latest slot>
+  height: LATEST_CARDANO_HEIGHT
+  hash: LATEST_CARDANO_HASH
+  slot: LATEST_CARDANO_SLOT
 ```
 
 > Note: Koios utilizes block height, while Ogmios relies on the hash and slot of the initial block.
@@ -275,6 +267,14 @@ initial:
 
 > Note: Once watcher started scanning from the initial block, changing this config wont affect the watcher behavior. In case you need to restart the watcher from an earlier block consider removing volumes and updating both Ergo and Cardano initial heights.
 
+3. To ensure the watcher's proper functionality, event observations should be sufficiently confirmed before taking action. You should customize observation confirmation and validity threshold to align with your watching network's specification. For Cardano, we recommend using the following configurations:
+
+```yaml
+observation:
+  confirmation: 30
+  validThreshold: 12960
+```
+
 Finally, an example Cardano watcher `local.yaml` file would look like:
 
 ```yaml
@@ -283,18 +283,84 @@ api:
   apiKeyHash: 'YOUR_API_KEY_HASH'
 ergo:
   type: explorer
-  initialHeight: <latest height>
-  mnemonic: "pretty dad program ...."
+  initialHeight: LATEST_ERGO_HEIGHT
+  mnemonic: 'YOUR_MNEMONIC'
   node:
     url: https://example.node.com
 cardano:
   type: koios
   koios:
-    authToken: "eyJhbGciOiJIUzI1NiIsInR5..."
+    authToken: 'YOUR_AUTH_TOKEN'
   initial:
-    height: <latest height>
-    hash: <latest hash>
-    slot: <latest slot>
+    height: LATEST_CARDANO_HEIGHT
+    hash: LATEST_CARDANO_HASH
+    slot: LATEST_CARDANO_SLOT
+```
+
+### Bitcoin Config (Just for Bitcoin watchers)
+As a Bitcoin watcher, you should specify these configurations under `bitcoin` keyword:
+
+1. Choose your information source for Bitcoin network and specify its connection information. You can use either `rpc` or `esplora` as the data source.
+
+```yaml
+type: rpc
+rpc:
+  url: YOUR_RPC_URL
+```
+
+or
+
+```yaml
+type: esplora
+esplora:
+  url: https://blockstream.info
+```
+
+> Note: If you don't specify an esplora url, it will use the https://blockstram.info by default, but in case you're using RPC as your source you should specify your bitcoin node instance RPC url.
+
+> Note: You can use both configuration, but using RPC is recommended. An RPC connection to a bitcoin node is much faster and does not have limits on fetching data. To use RPC, you can find some public bitcoin nodes [here](https://bitnodes.io/nodes/).
+
+2. Set your watcher's initial height, where you start observing and reporting events. Like the Ergo network, we highly recommend using the latest block as your initial point. You should specify the initial block height.
+
+```yaml
+  initial:
+    height: LATEST_BITCOIN_HEIGHT
+```
+
+> Note: You can find latest bitcoin blocks [here](https://blockstream.info/).
+
+> Note: Once watcher started scanning from the initial block, changing this config wont affect the watcher behavior. In case you need to restart the watcher from an earlier block consider removing volumes and updating both Ergo and Bitcoin initial heights.
+
+3. To ensure the watcher's proper functionality, event observations should be sufficiently confirmed before taking action. You should customize observation confirmation and validity threshold to align with your watching network's specification. For Bitcoin, we recommend using the following configurations:
+
+```yaml
+observation:
+  confirmation: 2
+  validThreshold: 72
+```
+
+
+Finally, an example Bitcoin watcher `local.yaml` file would look like:
+
+```yaml
+network: bitcoin
+api:
+  apiKeyHash: 'YOUR_API_KEY_HASH'
+ergo:
+  type: explorer
+  initialHeight: LATEST_ERGO_HEIGHT
+  mnemonic: 'YOUR_MNEMONIC'
+  node:
+    url: https://example.node.com
+bitcoin:
+  type: rpc
+  rpc:
+    url: 'YOUR_BITCOIN_RPC_URL'
+  initial:
+    height: LATEST_BITCOIN_HEIGHT
+observation:
+  confirmation: 2
+  validThreshold: 72
 ```
 
 ## Get Watcher Permit
