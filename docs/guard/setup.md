@@ -219,7 +219,7 @@ bitcoin:
 
 ### Address Info
 
-Other than network, you need to specify generated public key in `key generation ceremony`, chain code and derivation path selected by moderator and cold storage address on bitcoin.
+Other than network, you need to specify bitcoin public key alongside it's chain code and derivation path. The key is derived from generated ECDSA key in `key generation ceremony`. Also cold storage address should be specified.
 
 ```yaml
 bitcoin:
