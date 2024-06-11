@@ -187,7 +187,7 @@ initialHeight: <latest height>
 
 > Note: Once watcher started scanning from the initial block, changing this config wont affect the watcher behavior. In case you need to restart the watcher from an earlier block consider removing volumes.
 
-5. (JUST ERGO WATCHER) To ensure the watcher's proper functionality, event observations should be confirmed enough to take action. You should customize observation confirmation and validity threshold to align with your watching network specification. By default, these settings are configured much higher. For Ergo, we recommend using the following configurations:
+5. (JUST ERGO WATCHER) To ensure the watcher's proper functionality, event observations should be sufficiently confirmed before taking action. You should customize observation confirmation and validity threshold to align with your watching network's specification. By default, these settings are configured much higher. For Ergo, we recommend using the following configurations:
 
 ```yaml
 observation:
@@ -250,7 +250,7 @@ koios:
 > Note: As you choose one of these and start, your watcher scans several blocks using that source. Changing the source might cause some issues since the watcher tries to scan all blocks from the beginning and it takes time to be synced again. So just in case of a serious problem change this config. In some cases, you may want to delete your volume and start over (Consider updating the initial height in such cases).
 
 
-2. Set your watcher's initial height, where you start observing and reporting events. Like the Ergo network, you may choose to start from an older height but we highly recommend using the latest block as your initial point. You should specify the initial block height, hash, and slot.
+2. Set your watcher's initial height; this height is the point from which  you start observing and reporting events. Like the Ergo network, you may choose to start from an older height but we highly recommend using the latest block as your initial point. You should specify the initial block height, hash, and slot.
 
 ```yaml
 initial:
@@ -266,6 +266,14 @@ initial:
 > Note: Fill with a recent block height (e.g. 10 blocks before). You can find Cardano latest blocks [here](https://cardanoscan.io/blocks).
 
 > Note: Once watcher started scanning from the initial block, changing this config wont affect the watcher behavior. In case you need to restart the watcher from an earlier block consider removing volumes and updating both Ergo and Cardano initial heights.
+
+3. To ensure the watcher's proper functionality, event observations should be sufficiently confirmed before taking action. You should customize observation confirmation and validity threshold to align with your watching network's specification. For Cardano, we recommend using the following configurations:
+
+```yaml
+observation:
+  confirmation: 30
+  validThreshold: 12960
+```
 
 Finally, an example Cardano watcher `local.yaml` file would look like:
 
@@ -308,7 +316,9 @@ esplora:
   url: https://blockstream.info
 ```
 
-> Note: If you don't specify the esplora url, it will use the https://blockstram.info by default, but in case you're using ogmios as your source you should specify your rpc instance URL.
+> Note: If you don't specify an esplora url, it will use the https://blockstram.info by default, but in case you're using RPC as your source you should specify your bitcoin node instance RPC url.
+
+> Note: You can use both configuration, but using RPC is recommended. An RPC connection to a bitcoin node is much faster and does not have limits on fetching data.
 
 2. Set your watcher's initial height, where you start observing and reporting events. Like the Ergo network, we highly recommend using the latest block as your initial point. You should specify the initial block height.
 
@@ -321,11 +331,11 @@ esplora:
 
 > Note: Once watcher started scanning from the initial block, changing this config wont affect the watcher behavior. In case you need to restart the watcher from an earlier block consider removing volumes and updating both Ergo and Bitcoin initial heights.
 
-3. To ensure the watcher's proper functionality, event observations should be confirmed enough to take action. You should customize observation confirmation and validity threshold to align with your watching network specification. By default, these settings are configured much higher. For Bitcoin, we recommend using the following configurations:
+3. To ensure the watcher's proper functionality, event observations should be sufficiently confirmed before taking action. You should customize observation confirmation and validity threshold to align with your watching network's specification. For Bitcoin, we recommend using the following configurations:
 
 ```yaml
 observation:
-  confirmation: 3
+  confirmation: 2
   validThreshold: 72
 ```
 
@@ -343,11 +353,13 @@ ergo:
   node:
     url: https://example.node.com
 bitcoin:
-  type: esplora
+  type: rpc
+  rpc:
+    url: 'YOUR_BITCOIN_RPC_URL'
   initial:
     height: LATEST_BITCOIN_HEIGHT
 observation:
-  confirmation: 3
+  confirmation: 2
   validThreshold: 72
 ```
 
@@ -362,4 +374,3 @@ As a watcher, your primary responsibility is to monitor your network and report 
 2. _RSN for Permits:_ To obtain report permits, you must lock RSN tokens. In return for locking each RSN token, you receive a permit token. To initiate a report, you'll need to use a batch of permit tokens, which we refer to as a "report permit." The number of report permits you possess determines how many concurrent reports you can create. The specific number of permit tokens required for each report permit is a configuration that is specific to each blockchain. Note that, this configuration may vary across different chains and may change over time. In contrast to collateral, please be aware that these permit tokens are subject to potential seizure in the event of fraudulent activity.
 
 In the event of a valid report submission, the report permit used for that report will be refunded, in addition to your report reward. However, if your report is found to be invalid, your permit will be seized as a form of penalty. In such a case, you won't be able to retrieve your locked RSN tokens corresponding to the seized permit. If you do not possess a report permit, you won't be able to create new reports, until your permits have been refunded. Therefore, you should purchase enough report permits to manage concurrent event reports effectively.
-x
