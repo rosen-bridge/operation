@@ -234,12 +234,12 @@ or
 ```yaml
 type: koios
 koios:
-  url: https://api.koios.rest/api
+  url: https://api.koios.rest/api/v1/
   authToken: YOUR_AUTH_TOKEN
 ```
 > **NOTE**: When using docker there is an `KOIOS_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
 
-> Note: If you don't specify the koios url, it will use the https://api.koios.rest/api by default, but in case you're using ogmios as your source you should specify the host address and port of an ogmios instance.
+> Note: If you don't specify the koios url, it will use the https://api.koios.rest/api/v1/ by default, but in case you're using ogmios as your source you should specify the host address and port of an ogmios instance.
 
 > Note: If you're using a TLS enabled ogmios, set the useTls to true.
 
