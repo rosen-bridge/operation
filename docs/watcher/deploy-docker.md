@@ -316,7 +316,7 @@ esplora:
   url: https://blockstream.info
 ```
 
-> Note: If you don't specify an esplora url, it will use the https://blockstram.info by default, but in case you're using RPC as your source you should specify your bitcoin node instance RPC url.
+> Note: If you don't specify an esplora url, it will use the https://blockstream.info by default, but in case you're using RPC as your source you should specify your bitcoin node instance RPC url.
 
 > Note: You can use both configuration, but using RPC is recommended. An RPC connection to a bitcoin node is much faster and does not have limits on fetching data.
 
