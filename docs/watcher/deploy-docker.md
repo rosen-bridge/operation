@@ -305,7 +305,9 @@ As a Bitcoin watcher, you should specify these configurations under `bitcoin` ke
 ```yaml
 type: rpc
 rpc:
-  url: YOUR_RPC_URL
+  url: 'YOUR_RPC_URL'
+  username: 'YOUR_RPC_USERNAME'
+  password: 'YOUR_RPC_PASSWORD'
 ```
 
 or
@@ -317,6 +319,8 @@ esplora:
 ```
 
 > Note: If you don't specify an esplora url, it will use the https://blockstream.info by default, but in case you're using RPC as your source you should specify your bitcoin node instance RPC url.
+
+> Note: RPC authentication configuration is optional, if you're using a public node you don't need to add username and password.
 
 > Note: You can use both configuration, but using RPC is recommended. An RPC connection to a bitcoin node is much faster and does not have limits on fetching data.
 
@@ -356,6 +360,8 @@ bitcoin:
   type: rpc
   rpc:
     url: 'YOUR_BITCOIN_RPC_URL'
+    username: 'YOUR_RPC_USERNAME'
+    password: 'YOUR_RPC_PASSWORD'
   initial:
     height: LATEST_BITCOIN_HEIGHT
 observation:
