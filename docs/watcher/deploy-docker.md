@@ -149,6 +149,19 @@ notification:
 ```
 
 
+## Reward Collection
+
+Watchers earn rewards in eRSN, but these need to be converted to RSN. The watcher service runs a regular task to collect and exchange eRSN for RSN once a certain amount is reached. It can also send the RSN rewards to a different address. You can set both the collection amount and the reward address by adding these configuration to the local config file (Otherwise it will use default threshold and send the exchanged RSN to the default watcher address):
+
+```yaml
+rewardCollection:
+  threshold: RSN_COLLECTION_THRESHOLD
+  address: YOUR_REWARD_COLLECTION_ADDRESS
+```
+
+> Note: Set the threshold considering the RSN token decimal places (3 decimal points). For example,  if you want to collect RSNs after reaching to 200 you should set `RSN_COLLECTION_THRESHOLD` to 200000.
+
+
 ### Ergo Config (Essential for all watchers)
 
 For all watchers, even if you're targeting a different network than Ergo to watch, you still need to configure the Ergo section (Under the `ergo` keyword):
