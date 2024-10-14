@@ -24,6 +24,8 @@ MNEMONIC= # watcher mnemonic phrases, e.g. MNEMONIC=word1 word2 word3 ... wordn
 
 KOIOS_AUTH_TOKEN=
 
+ETHEREUM_RPC_AUTH_TOKEN=
+
 BLOCKFROST_PROJECT_ID=
 
 OVERRIDE_LOKI_BASIC_AUTH=

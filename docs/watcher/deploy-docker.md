@@ -106,7 +106,7 @@ docker compose up -d # use `docker-compose up -d` for older versions of Docker
 ## Local Config
 
 To start your watcher, you should configure the local.yaml file.
-First, specify the target network you're watching. Currently, we support `ergo`, `cardano` and `bitcoin`:
+First, specify the target network you're watching. Currently, we support `ergo`, `cardano`, `bitcoin` and `ethereum`:
 
 ```yaml
 network: ergo
@@ -116,7 +116,7 @@ network: ergo
 
 ```yaml
 api:
-  apiKeyHash: 'YOUR_API_KEY_HASH'
+  apiKeyHash: <your api key hash>
 ```
 
 #### apiKeyHash
@@ -145,7 +145,7 @@ To be informed about your watcher health status you can configure the notificati
 
 ```yaml
 notification:
-  discordWebhookUrl: YOUR_WEBHOOK_URL
+  discordWebhookUrl: <your webhook url>
 ```
 
 
@@ -155,11 +155,11 @@ Watchers earn rewards in eRSN, but these need to be converted to RSN. The watche
 
 ```yaml
 rewardCollection:
-  threshold: RSN_COLLECTION_THRESHOLD
-  address: YOUR_REWARD_COLLECTION_ADDRESS
+  threshold: <rsn collection threshold>
+  address: <your reward collection address>
 ```
 
-> Note: Set the threshold considering the RSN token decimal places (3 decimal points). For example,  if you want to collect RSNs after reaching to 200 you should set `RSN_COLLECTION_THRESHOLD` to 200000.
+> Note: Set the threshold considering the RSN token decimal places (3 decimal points). For example,  if you want to collect RSNs after reaching to 200 you should set `rewardCollection.threshold` to 200000.
 
 
 ### Ergo Config (Essential for all watchers)
@@ -202,7 +202,7 @@ explorer:
 4. Set the initial height of your watcher. For the first time, you should check the current network height and set where to start watching and reporting. You may choose an older height but we highly recommend using the current network height. In case you stop your watcher and start it again later, it will continue its procedure from its last stored block, so you don't need to change the initial height in the future.
 
 ```yaml
-initialHeight: <latest height>
+initialHeight: <latest ergo height>
 ```
 
 > Note: Fill with a recent block height (e.g. 10 blocks before). You can find Ergo latest blocks [here](https://explorer.ergoplatform.com/en/latest-blocks).
@@ -222,11 +222,11 @@ Finally, an example Ergo watcher `local.yaml` file would look like:
 ```yaml
 network: ergo
 api:
-  apiKeyHash: 'YOUR_API_KEY_HASH'
+  apiKeyHash: <your api key hash>
 ergo:
   type: explorer
-  initialHeight: LATEST_HEIGHT
-  mnemonic: 'YOUR_WALLET_MNEMONIC'
+  initialHeight: <latest ergo height>
+  mnemonic: <your wallet mnemonic>
   node:
     url: https://example.node.com
   explorer:
@@ -257,7 +257,7 @@ or
 type: koios
 koios:
   url: https://api.koios.rest/api/v1/
-  authToken: YOUR_AUTH_TOKEN
+  authToken: <your koios auth token>
 ```
 > **NOTE**: When using docker there is an `KOIOS_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
 
@@ -276,9 +276,9 @@ koios:
 
 ```yaml
 initial:
-  height: LATEST_CARDANO_HEIGHT
-  hash: LATEST_CARDANO_HASH
-  slot: LATEST_CARDANO_SLOT
+  height: <latest cardano height>
+  hash: <latest cardano hash>
+  slot: <latest cardano slot>
 ```
 
 > Note: Koios utilizes block height, while Ogmios relies on the hash and slot of the initial block.
@@ -302,21 +302,21 @@ Finally, an example Cardano watcher `local.yaml` file would look like:
 ```yaml
 network: cardano
 api:
-  apiKeyHash: 'YOUR_API_KEY_HASH'
+  apiKeyHash: <your api key hash>
 ergo:
   type: explorer
-  initialHeight: LATEST_ERGO_HEIGHT
-  mnemonic: 'YOUR_MNEMONIC'
+  initialHeight: <latest ergo height>
+  mnemonic: <your wallet mnemonic>
   node:
     url: https://example.node.com
 cardano:
   type: koios
   koios:
-    authToken: 'YOUR_AUTH_TOKEN'
+    authToken: <your koios auth token>
   initial:
-    height: LATEST_CARDANO_HEIGHT
-    hash: LATEST_CARDANO_HASH
-    slot: LATEST_CARDANO_SLOT
+    height: <latest cardano height>
+    hash: <latest cardano hash>
+    slot: <latest cardano slot>
 ```
 
 ### Bitcoin Config (Just for Bitcoin watchers)
@@ -327,9 +327,9 @@ As a Bitcoin watcher, you should specify these configurations under `bitcoin` ke
 ```yaml
 type: rpc
 rpc:
-  url: 'YOUR_RPC_URL'
-  username: 'YOUR_RPC_USERNAME'
-  password: 'YOUR_RPC_PASSWORD'
+  url: <your rpc url>
+  username: <your rpc username>
+  password: <your rpc password>
 ```
 
 or
@@ -350,7 +350,7 @@ esplora:
 
 ```yaml
   initial:
-    height: LATEST_BITCOIN_HEIGHT
+    height: <latest bitcoin height>
 ```
 
 > Note: You can find latest bitcoin blocks [here](https://blockstream.info/).
@@ -371,25 +371,86 @@ Finally, an example Bitcoin watcher `local.yaml` file would look like:
 ```yaml
 network: bitcoin
 api:
-  apiKeyHash: 'YOUR_API_KEY_HASH'
+  apiKeyHash: <your api key hash>
 ergo:
   type: explorer
-  initialHeight: LATEST_ERGO_HEIGHT
-  mnemonic: 'YOUR_MNEMONIC'
+  initialHeight: <latest ergo height>
+  mnemonic: <your wallet mnemonic>
   node:
     url: https://example.node.com
 bitcoin:
   type: rpc
   rpc:
-    url: 'YOUR_BITCOIN_RPC_URL'
-    username: 'YOUR_RPC_USERNAME'
-    password: 'YOUR_RPC_PASSWORD'
+    url: <your rpc url>
+    username: <your rpc username>
+    password: <your rpc password>
   initial:
-    height: LATEST_BITCOIN_HEIGHT
+    height: <latest bitcoin height>
 observation:
   confirmation: 2
   validThreshold: 72
 ```
+
+### Ethereum Config (Just for Ethereum watchers)
+As a Ethereum watcher, you should specify these configurations under `ethereum` keyword:
+
+1. Currently Ethereum watchers only support rpc endpoints. You should specify the rpc endpoint connection information in the following format:
+
+```yaml
+type: rpc
+rpc:
+  url: <your rpc url>
+  authToken: <your rpc auth token>
+```
+
+> Note: RPC authentication token is optional, if you're using a public node you don't need to add authToken.
+
+> **NOTE**: When using docker there is an `ETHEREUM_RPC_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
+
+
+2. Set your watcher's initial height, where you start observing and reporting events. Like the Ergo network, we highly recommend using the latest block as your initial point. You should specify the initial block height.
+
+```yaml
+initial:
+  height: <latest ethereum height>
+```
+
+> Note: You can find latest ethereum blocks [here](https://etherscan.io/).
+
+> Note: Once watcher started scanning from the initial block, changing this config wont affect the watcher behavior. In case you need to restart the watcher from an earlier block consider removing volumes and updating both Ergo and Ethereum initial heights.
+
+3. To ensure the watcher's proper functionality, event observations should be sufficiently confirmed before taking action. You should customize observation confirmation and validity threshold to align with your watching network's specification. For Ethereum, we recommend using the following configurations:
+
+```yaml
+observation:
+  confirmation: 100
+  validThreshold: 7200
+```
+
+
+Finally, an example Ethereum watcher `local.yaml` file would look like:
+
+```yaml
+network: ethereum
+api:
+  apiKeyHash: <your api key hash>
+ergo:
+  type: explorer
+  initialHeight: <latest ergo height>
+  mnemonic: <your wallet mnemonic>
+  node:
+    url: https://example.node.com
+ethereum:
+  type: rpc
+  rpc:
+    url: <your rpc url>
+  initial:
+    height: <latest ethereum height>
+observation:
+  confirmation: 100
+  validThreshold: 7200
+```
+
 
 ## Get Watcher Permit
 
