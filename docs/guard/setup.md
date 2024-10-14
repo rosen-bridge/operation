@@ -308,6 +308,8 @@ ethereum:
     authToken: 'YOUR_AUTH_TOKEN'
 ```
 
+> **NOTE**: When using docker there is an `ETHEREUM_RPC_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
+
 ### Address Info
 
 Other than network, you need to specify chain code and derivation path for Ethereum. The key is derived from generated ECDSA key in `key generation ceremony`.
