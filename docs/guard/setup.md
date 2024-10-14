@@ -179,16 +179,12 @@ cardano:
 
 ### Address Info
 
-Other than network, you need to specify generated public key in `key generation ceremony` and cold storage address on cardano.
+Other than network, you need to specify generated public key in `key generation ceremony`.
 
 ```yaml
 cardano:
   bankPublicKey: 'GENERATED_PUBLIC_KEY'
-  coldStorageAddress: 'COLD_ADDRESS'
 ```
-
-> **NOTE**: Leave `coldStorageAddress` empty for now. This field will be set
-in further notice.
 
 ### Overall
 
@@ -200,7 +196,6 @@ cardano:
   koios:
     url: 'https://api.koios.rest/api/v1'
   bankPublicKey: 'GENERATED_PUBLIC_KEY'
-  coldStorageAddress: ''
 ```
 
 ## Bitcoin
@@ -219,19 +214,15 @@ bitcoin:
 
 ### Address Info
 
-Other than network, you need to specify bitcoin public key alongside it's chain code and derivation path. The key is derived from generated ECDSA key in `key generation ceremony`. Also cold storage address should be specified.
+Other than network, you need to specify Bitcoin public key alongside it's chain code and derivation path. The key is derived from generated ECDSA key in `key generation ceremony`.
 
 ```yaml
 bitcoin:
   bankPublicKey: 'GENERATED_PUBLIC_KEY'
-  coldStorageAddress: 'COLD_ADDRESS'
   tssChainCode: ''
   derivationPath:
     -
 ```
-
-> **NOTE**: Leave `coldStorageAddress` empty for now. This field will be set
-in further notice.
 
 ### Overall
 
@@ -243,7 +234,6 @@ bitcoin:
   esplora:
     url: 'https://blockstream.info'
   bankPublicKey: 'GENERATED_PUBLIC_KEY'
-  coldStorageAddress: ''
   tssChainCode: ''
   derivationPath:
     -
@@ -282,18 +272,6 @@ ergo:
   initialHeight: 1000000
 ```
 
-### Address Info
-
-You should also specify Ergo cold storage address.
-
-> **NOTE**: Leave `coldStorageAddress` empty for now. This field will be set
-in further notice.
-
-```yaml
-ergo:
-  coldStorageAddress: ''
-```
-
 ### Overall
 
 Your Ergo config will be something like this:
@@ -304,7 +282,57 @@ ergo:
   explorer:
     url: 'https://api.ergoplatform.com/'
   initialHeight: 1000000
-  coldStorageAddress: ''
+```
+
+## Ethereum
+
+### Network
+
+Specify your network. If you are using rpc, set `chainNetwork` field as
+`rpc` and set your rpc url.
+
+```yaml
+ethereum:
+  chainNetwork: 'rpc' # 'rpc'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+```
+
+If you have auth token for your RPC, you can specify that too.
+
+```yaml
+ethereum:
+  chainNetwork: 'rpc' # 'rpc'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+    authToken: 'YOUR_AUTH_TOKEN'
+```
+
+> **NOTE**: When using docker there is an `ETHEREUM_RPC_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
+
+### Address Info
+
+Other than network, you need to specify chain code and derivation path for Ethereum. The key is derived from generated ECDSA key in `key generation ceremony`.
+
+```yaml
+ethereum:
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+### Overall
+
+Your Ethereum config will be something like this:
+
+```yaml
+ethereum:
+  chainNetwork: 'rpc' # 'rpc'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+  tssChainCode: ''
+  derivationPath:
+    -
 ```
 
 ## Reward
@@ -313,11 +341,14 @@ Specify reward distribution configs. Ensure values with moderator. Config will b
 
 ```yaml
 reward:
+  emissionTokenId: 'dede2cf5c1a2966453ffec198a9b97b53d281e548903a905519b3525d59cdc3c'
+  emissionTokenName: 'eRSN'
+  emissionTokenDecimal: 3
   bridgeFeeRepoAddress: 'MULTISIG_FUND_ADDRESS'
-  RSNEmissionAddress: 'MULTISIG_REWARD_ADDRESS'
+  emissionAddress: 'MULTISIG_REWARD_ADDRESS'
   networkFeeRepoAddress: 'NETWORK_FEE_ADDRESS'
   watchersSharePercent: 0
-  watchersRSNSharePercent: 70
+  watchersEmissionSharePercent: 70
 ```
 
 ## TSS
@@ -360,7 +391,7 @@ guard:
   mnemonic: 'YOUR_MNEMONIC'
 ```
 
-> **⚠️ NOTE**: Instead of setting `mnemonic` in the local configuration file, consider using the `MNEMONIC` environment variable for ease of management. We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your seed phrase while troubleshooting etc. See your `.env` file. Once updated, in /config/local.yaml delete your mnemonic phrase and put in a comment like so "mnemonic: #see local config env file"
+> **⚠️ NOTE**: Instead of setting `mnemonic` in the local configuration file, consider using the `MNEMONIC` environment variable for ease of management. We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidentally share your seed phrase while troubleshooting etc. See your `.env` file. Once updated, in /config/local.yaml delete your mnemonic phrase and put in a comment like so "mnemonic: #see local config env file"
 
 ## Logs
 
@@ -454,6 +485,8 @@ cardano:
 bitcoin:
   ...
 ergo:
+  ...
+ethereum:
   ...
 reward:
   ...
