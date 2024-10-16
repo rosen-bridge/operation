@@ -289,13 +289,14 @@ ergo:
 ### Network
 
 Specify your network. If you are using rpc, set `chainNetwork` field as
-`rpc` and set your rpc url.
+`rpc` and set your rpc url. RPC network scans the blockchain, so it requires `initialHeight`.
 
 ```yaml
 ethereum:
   chainNetwork: 'rpc' # 'rpc'
   rpc:
     url: 'YOUR_JSON_RPC_PROVIDER_URL'
+    initialHeight: 20000000
 ```
 
 If you have auth token for your RPC, you can specify that too.
@@ -306,6 +307,7 @@ ethereum:
   rpc:
     url: 'YOUR_JSON_RPC_PROVIDER_URL'
     authToken: 'YOUR_AUTH_TOKEN'
+    initialHeight: 20000000
 ```
 
 > **NOTE**: When using docker there is an `ETHEREUM_RPC_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
@@ -330,6 +332,7 @@ ethereum:
   chainNetwork: 'rpc' # 'rpc'
   rpc:
     url: 'YOUR_JSON_RPC_PROVIDER_URL'
+    initialHeight: 20000000
   tssChainCode: ''
   derivationPath:
     -
