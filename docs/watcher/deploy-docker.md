@@ -340,6 +340,8 @@ esplora:
   url: https://blockstream.info
 ```
 
+> NOTE: When using docker there are `BITCOIN_RPC_USERNAME` and `BITCOIN_RPC_PASSWORD` environment variable available for rpc authentication that you can set instead of in the local configuration.
+
 > Note: If you don't specify an esplora url, it will use the https://blockstream.info by default, but in case you're using RPC as your source you should specify your bitcoin node instance RPC url.
 
 > Note: RPC authentication configuration is optional, if you're using a public node you don't need to add username and password.
