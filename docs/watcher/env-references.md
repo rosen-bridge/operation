@@ -30,6 +30,10 @@ BLOCKFROST_PROJECT_ID=
 
 OVERRIDE_LOKI_BASIC_AUTH=
 
+BITCOIN_RPC_USERNAME=
+
+BITCOIN_RPC_PASSWORD=
+
 WATCHER_HOST= # (default is 127.0.0.1 if no value is set)
 
 WATCHER_PORT= # (default is 3030 if no value is set)
