@@ -92,11 +92,11 @@ docker compose up -d db
 
 ### Restore the Backup
 ```shell
-docker compose exec -T db psql -U PUT_POSTGRES_USER_HERE < dump_watcher_db.bak
+docker compose exec -T db psql -U PUT_POSTGRES_USER_HERE -d PUT_POSTGRES_DB_HERE < dump_watcher_db.bak
 ```
 
 > **Notes:**  
-> - Replace `PUT_POSTGRES_USER_HERE` with the correct value from your `.env` file.  
+> - Replace `PUT_POSTGRES_USER_HERE` and `PUT_POSTGRES_DB_HERE` with the correct value from your `.env` file.  
 > - To verify the successful restoration of your database, run the following command and look for `block_entity` in the result:  
 
 ```shell
