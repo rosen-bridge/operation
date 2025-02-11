@@ -12,6 +12,25 @@ Follow the instructions below by navigating to the `operation/watcher` directory
 cd operation/watcher/
 ```
 
+---
+
+## Pull Changes
+
+### Update the `operation` Repository
+Pull the latest changes in the `operation` repository. If you have made manual changes to the `docker-compose` file, remove or stash them first:
+
+```shell
+git pull
+```
+
+Checkout on a stable commit:
+
+```shell
+git checkout 4673077008fe58e2b8eb3d986b80281fab1ae482
+```
+
+---
+
 If you want to preserve your database and data, follow the step-by-step instructions below. Otherwise, skip this section and pull your `initial height` forward in your config file (local.yaml file) then go to [Stop Services](#stop-services).
 
 ---
@@ -46,13 +65,13 @@ docker compose down --volumes
 
 ---
 
-## Pull Changes
+## Checkout on latest commit
 
 ### Update the `operation` Repository
-Pull the latest changes in the `operation` repository. If you have made manual changes to the `docker-compose` file, remove or stash them first:
+Checkout on the latest changes in the `operation` repository:
 
 ```shell
-git pull
+git checkout dev
 ```
 
 ### Pull Docker Images
