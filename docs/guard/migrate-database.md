@@ -76,7 +76,7 @@ docker compose exec -T db psql -U PUT_POSTGRES_USER_HERE -d PUT_POSTGRES_DB_HERE
 > - To verify the successful restoration of your database, run the following command and look for `block_entity` in the result:  
 
 ```shell
-docker compose exec -it db psql -U PUT_POSTGRES_USER_HERE -c "\dt"
+docker compose exec -it db psql -U PUT_POSTGRES_USER_HERE -d PUT_POSTGRES_DB_HERE -c "\dt"
 ```
 
 The expected output should look like this:
