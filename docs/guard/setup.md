@@ -85,16 +85,20 @@ You need to specify some required configs in `local.yaml`.
 ```yaml
 api:
   isManualTxRequestActive: false
+  isArbitraryOrderRequestActive: false
   apiKeyHash: 'YOUR_API_KEY_HASH'
 ```
-### isManualTxRequestActive
+### Manual Transaction and Arbitrary Order
 
 Default value of `isManualTxRequestActive` is `false`. This field prevents
 service from getting manual transactions. Whenever you want to request to
 sign a manual transaction, set this value to `true`, restart your guard, submit your transaction using guard app, reset this value to `false` and restart your guard.
 
-> **NOTE**: It is crucial to keep this config as `false` to prevent
-insertion of unwanted transactions in case of unauthorized access of malicious actor.
+Alternatively, `isArbitraryOrderRequestActive` field prevents service from getting arbitrary order requests. Whenever you want to request
+an order to be paid, set this value to `true`, restart your guard, submit your order using guard app, reset this value to `false` and restart your guard.
+
+> **NOTE**: It is crucial to keep these fields as `false` to prevent
+insertion of unwanted transactions and orders in case of unauthorized access of malicious actor.
 
 ### apiKeyHash
 To secure the action-based APIs, you should set a unique and robust api key.
@@ -536,6 +540,7 @@ Combine all of your configs in `local.yaml`. The structure will be:
 ```yaml
 api:
   isManualTxRequestActive: false
+  isArbitraryOrderRequestActive: false
   apiKeyHash: ''
 cardano:
   ...
