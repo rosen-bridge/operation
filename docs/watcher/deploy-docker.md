@@ -415,6 +415,67 @@ observation:
   validThreshold: 7200
 ```
 
+### Binance Config (Just for Binance watchers)
+If you're running a Binance watcher, configure it under the `binance` section as follows:
+
+1. **Connection configuration:** Binance watchers currently support only RPC endpoints. Specify your connection details in this format:
+
+
+```yaml
+type: rpc
+rpc:
+  url: <your rpc url>
+  authToken: <your rpc auth token>
+```
+
+> Note: RPC authentication token is optional, if you're using a public node you don't need to add authToken.
+
+> NOTE: If you're running the watcher in docker, you can set `BINANCE_RPC_AUTH_TOKEN` as an environment variable instead of storing it in the local configuration.
+
+
+2. **Initial Block Height:** Define the starting block height for observing and reporting events. We recommend using the latest Binance block:
+
+```yaml
+initial:
+  height: <latest binance height>
+```
+
+> Note: Find the latest Binance blocks [here](https://bscscan.com/).
+
+> Note: Once the watcher begins scanning from the initial block, updating this setting won't change its behavior. To restart from an earlier block, remove volumes and update both the Ergo and Binance initial heights.
+
+3. **Observation Confirmation & Validity:** To ensure accurate event tracking, set confirmation and validity thresholds based on Binance's network specifications. Recommended values:
+
+```yaml
+observation:
+  confirmation: 400
+  validThreshold: 28800
+```
+
+
+Finally, an example Binance watcher `local.yaml` file would look like:
+
+```yaml
+network: binance
+api:
+  apiKeyHash: <your api key hash>
+ergo:
+  type: node
+  initialHeight: <latest ergo height>
+  mnemonic: <your wallet mnemonic>
+  node:
+    url: https://example.node.com
+binance:
+  type: rpc
+  rpc:
+    url: <your rpc url>
+  initial:
+    height: <latest binance height>
+observation:
+  confirmation: 400
+  validThreshold: 28800
+```
+
 
 ## Get Watcher Permit
 
