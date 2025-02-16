@@ -68,7 +68,7 @@ docker compose up -d # use `docker-compose up -d` for older versions of Docker
 ## Local Config
 
 To start your watcher, you should configure the local.yaml file.
-First, specify the target network you're watching. Currently, we support `ergo`, `cardano`, `bitcoin` and `ethereum`:
+First, specify the target network you're watching. Currently, we support `ergo`, `cardano`, `bitcoin`, `ethereum` and `binance`:
 
 ```yaml
 network: ergo
