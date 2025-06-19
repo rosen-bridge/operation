@@ -492,7 +492,7 @@ rpc:
 
 > Note: RPC username and password is optional, if you're using a public node you don't need to add authorization configs.
 
-> NOTE: You can add multiple rpc instances to the doge configuration. The watcher will balance the load between all instances.
+> NOTE: You can add multiple RPC instances to the Doge configuration. The watcher will automatically balance the load across all instances. (For example, if you're using a GetBlock.io RPC node, you should add at least one additional RPC connection to avoid hitting rate limits.)
 
 2. **Initial Block Height:** Define the starting block height for observing and reporting events. We recommend using the latest Doge block:
 
