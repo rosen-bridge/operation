@@ -501,7 +501,7 @@ initial:
   height: <latest doge height>
 ```
 
-> Note: Find the latest Doge blocks [here](https://explorer.dogechain.dog/).
+> Note: Find the latest Doge blocks [here](https://sochain.com/DOGE).
 
 > Note: Once the watcher begins scanning from the initial block, updating this setting won't change its behavior. To restart from an earlier block, remove volumes and update both the Ergo and Doge initial heights.
 
