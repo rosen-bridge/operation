@@ -396,6 +396,65 @@ binance:
     -
 ```
 
+## Doge
+
+### Network
+
+Specify your network. If you are using combination of RPC and Blockcypher, set `chainNetwork` field as
+`rpc-blockcypher` and set your RPC config.
+
+```yaml
+doge:
+  chainNetwork: 'rpc-blockcypher'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+    username: 'YOUR_RPC_USERNAME'
+    password: 'YOUR_RPC_PASSWORD'
+    apiKey: 'YOUR_API_KEY'
+```
+
+> **NOTE**: Only `url` config of `rpc` is required. Depending on the endpoint provider, you may need to specify username and password, or the apiKey. You may also specify none of them.
+
+> **NOTE**: When using docker there are environment variables available for `apiKey`, `username` and `password` that you can set instead of in the local configuration. Please refer to [env-references](env-references.md) for the key.
+
+Alternatively, you can use Esplora for your network. Set `chainNetwork` field as `esplora` and set your esplora url.
+
+```yaml
+doge:
+  chainNetwork: 'esplora'
+  esplora:
+    url: 'YOUR_ESPLORA_URL'
+```
+
+> **NOTE**: Currently, there are no public Esplora instance available for Doge.
+
+### Address Info
+
+Other than network, you need to specify Doge public key alongside it's chain code and derivation path. The key is derived from generated ECDSA key in `key generation ceremony`.
+
+```yaml
+doge:
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+### Overall
+
+Your Doge config will be something like this:
+
+```yaml
+doge:
+  chainNetwork: 'rpc-blockcypher'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
 ## Reward
 
 Specify reward distribution configs. Ensure values with moderator. Config will be like this:
@@ -551,6 +610,8 @@ ergo:
 ethereum:
   ...
 binance:
+  ...
+doge:
   ...
 reward:
   ...
