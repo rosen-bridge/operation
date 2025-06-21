@@ -20,6 +20,7 @@ cp env.template .env
 To view hidden .env later, use `ls -a`.
 
 ## Environment Variable Configs
+
 You can configure some Environment Variables when deploying with docker, you can find all of them [here](./env-references.md).
 
 Set your parameters in `.env` file (make sure not to use spaces after the '=' sign):
@@ -51,6 +52,7 @@ sudo chmod -R 707 logs
 ```
 
 ### Pull docker images and run service
+
 Pull the Docker image
 
 ```shell
@@ -68,7 +70,7 @@ docker compose up -d # use `docker-compose up -d` for older versions of Docker
 ## Local Config
 
 To start your watcher, you should configure the local.yaml file.
-First, specify the target network you're watching. Currently, we support `ergo`, `cardano`, `bitcoin`, `ethereum` and `binance`:
+First, specify the target network you're watching. Currently, we support `ergo`, `cardano`, `bitcoin`, `ethereum`, `binance` and `doge`:
 
 ```yaml
 network: ergo
@@ -82,10 +84,12 @@ api:
 ```
 
 #### apiKeyHash
+
 To secure the action-based APIs (ex: lock, unlock, ...), you should set a unique and robust api key.
 We are using a blake2b hash to secure APIs.
 
 #### Compute api_key's Hash
+
 Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages/cli) to compute api key hash:
 
 ```shell
@@ -93,13 +97,13 @@ Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages
   npx @rosen-bridge/cli blake2b-hash YOUR_API_KEY
   # or docker solution
   docker run -it --rm node:18.16 npx --yes @rosen-bridge/cli blake2b-hash YOUR_API_KEY
-```  
+```
 
 #### Update Configuration File
+
 After obtaining the hash, input it into your config file. For example, the salted Blake2b hash of `hello` is `$USHxmI8E$7Bby9L7leeExrYFt2n3270K4+PMCCszZ+UwCV8klqBs=`.
 
 > **⚠️ NOTE**: When using docker there is an `API_KEY_HASH` environment variable available for `apiKeyHash` that you can set instead of in the local configuration. See your `.env` file. We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your api key while troubleshooting etc. After updating, you can delete `apiKeyHash` from /config/local.yaml. Note that you should set your hash between single quotes, for example: API_KEY_HASH='$USHxmI8E$7Bby9L7leeExrYFt2n3270K4+PMCCszZ+UwCV8klqBs='.
-
 
 ## Notification
 
@@ -109,7 +113,6 @@ To be informed about your watcher health status you can configure the notificati
 notification:
   discordWebhookUrl: <your webhook url>
 ```
-
 
 ## Reward Collection
 
@@ -121,8 +124,7 @@ rewardCollection:
   address: <your reward collection address>
 ```
 
-> Note: Set the threshold considering the RSN token decimal places (3 decimal points). For example,  if you want to collect RSNs after reaching to 200 you should set `rewardCollection.threshold` to 200000.
-
+> Note: Set the threshold considering the RSN token decimal places (3 decimal points). For example, if you want to collect RSNs after reaching to 200 you should set `rewardCollection.threshold` to 200000.
 
 ### Ergo Config (Essential for all watchers)
 
@@ -221,6 +223,7 @@ koios:
   url: https://api.koios.rest/api/v1/
   authToken: <your koios auth token>
 ```
+
 > **NOTE**: When using docker there is an `KOIOS_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
 
 > Note: If you don't specify the koios url, it will use the https://api.koios.rest/api/v1/ by default, but in case you're using ogmios as your source you should specify the host address and port of an ogmios instance.
@@ -233,8 +236,7 @@ koios:
 
 > Note: As you choose one of these and start, your watcher scans several blocks using that source. Changing the source might cause some issues since the watcher tries to scan all blocks from the beginning and it takes time to be synced again. So just in case of a serious problem change this config. In some cases, you may want to delete your volume and start over (Consider updating the initial height in such cases).
 
-
-2. Set your watcher's initial height; this height is the point from which  you start observing and reporting events. Like the Ergo network, you may choose to start from an older height but we highly recommend using the latest block as your initial point. You should specify the initial block height, hash, and slot.
+2. Set your watcher's initial height; this height is the point from which you start observing and reporting events. Like the Ergo network, you may choose to start from an older height but we highly recommend using the latest block as your initial point. You should specify the initial block height, hash, and slot.
 
 ```yaml
 initial:
@@ -282,6 +284,7 @@ cardano:
 ```
 
 ### Bitcoin Config (Just for Bitcoin watchers)
+
 As a Bitcoin watcher, you should specify these configurations under `bitcoin` keyword:
 
 1. Choose your information source for Bitcoin network and specify its connection information. You can use either `rpc` or `esplora` as the data source.
@@ -313,8 +316,8 @@ esplora:
 2. Set your watcher's initial height, where you start observing and reporting events. Like the Ergo network, we highly recommend using the latest block as your initial point. You should specify the initial block height.
 
 ```yaml
-  initial:
-    height: <latest bitcoin height>
+initial:
+  height: <latest bitcoin height>
 ```
 
 > Note: You can find latest bitcoin blocks [here](https://blockstream.info/).
@@ -328,7 +331,6 @@ observation:
   confirmation: 2
   validThreshold: 72
 ```
-
 
 Finally, an example Bitcoin watcher `local.yaml` file would look like:
 
@@ -356,6 +358,7 @@ observation:
 ```
 
 ### Ethereum Config (Just for Ethereum watchers)
+
 As a Ethereum watcher, you should specify these configurations under `ethereum` keyword:
 
 1. Currently Ethereum watchers only support rpc endpoints. You should specify the rpc endpoint connection information in the following format:
@@ -370,7 +373,6 @@ rpc:
 > Note: RPC authentication token is optional, if you're using a public node you don't need to add authToken.
 
 > **NOTE**: When using docker there is an `ETHEREUM_RPC_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
-
 
 2. Set your watcher's initial height, where you start observing and reporting events. Like the Ergo network, we highly recommend using the latest block as your initial point. You should specify the initial block height.
 
@@ -390,7 +392,6 @@ observation:
   confirmation: 100
   validThreshold: 7200
 ```
-
 
 Finally, an example Ethereum watcher `local.yaml` file would look like:
 
@@ -416,10 +417,10 @@ observation:
 ```
 
 ### Binance Config (Just for Binance watchers)
+
 If you're running a Binance watcher, configure it under the `binance` section as follows:
 
 1. **Connection configuration:** Binance watchers currently support only RPC endpoints. Specify your connection details in this format:
-
 
 ```yaml
 type: rpc
@@ -431,7 +432,6 @@ rpc:
 > Note: RPC authentication token is optional, if you're using a public node you don't need to add authToken.
 
 > NOTE: If you're running the watcher in docker, you can set `BINANCE_RPC_AUTH_TOKEN` as an environment variable instead of storing it in the local configuration.
-
 
 2. **Initial Block Height:** Define the starting block height for observing and reporting events. We recommend using the latest Binance block:
 
@@ -451,7 +451,6 @@ observation:
   confirmation: 400
   validThreshold: 28800
 ```
-
 
 Finally, an example Binance watcher `local.yaml` file would look like:
 
@@ -476,6 +475,71 @@ observation:
   validThreshold: 28800
 ```
 
+### Doge Config (Just for Doge watchers)
+
+If you're running a Doge watcher, configure it under the `doge` section as follows:
+
+1. **Connection configuration:** Doge watchers currently support only RPC endpoints. Specify your connection details in this format:
+
+```yaml
+type: rpc
+rpc:
+  - url: <your rpc url>
+    timeout: <your rpc timeout in seconds>
+    username: <your rpc username>
+    password: <your rpc password>
+```
+
+> Note: RPC username and password is optional, if you're using a public node you don't need to add authorization configs.
+
+> NOTE: You can add multiple RPC instances to the Doge configuration. The watcher will automatically balance the load across all instances. (For example, if you're using a GetBlock.io RPC node, you should add at least one additional RPC connection to avoid hitting rate limits.)
+
+2. **Initial Block Height:** Define the starting block height for observing and reporting events. We recommend using the latest Doge block:
+
+```yaml
+initial:
+  height: <latest doge height>
+```
+
+> Note: Find the latest Doge blocks [here](https://sochain.com/DOGE).
+
+> Note: Once the watcher begins scanning from the initial block, updating this setting won't change its behavior. To restart from an earlier block, remove volumes and update both the Ergo and Doge initial heights.
+
+3. **Observation Confirmation & Validity:** To ensure accurate event tracking, set confirmation and validity thresholds based on Doges's network specifications. Recommended values:
+
+```yaml
+observation:
+  confirmation: 20
+  validThreshold: 1440
+```
+
+Finally, an example Doge watcher `local.yaml` file would look like:
+
+```yaml
+network: doge
+api:
+  apiKeyHash: <your api key hash>
+ergo:
+  type: node
+  initialHeight: <latest ergo height>
+  mnemonic: <your wallet mnemonic>
+  node:
+    url: https://example.node.com
+doge:
+  type: rpc
+  rpc:
+    - url: <your first rpc instance url without username-password>
+      timeout: 10
+    - url: <your second rpc instance url>
+      timeout: 10
+      username: <your second rpc instance username>
+      password: <your second rpc instance password>
+  initial:
+    height: <latest doge height>
+observation:
+  confirmation: 20
+  validThreshold: 1440
+```
 
 ## Get Watcher Permit
 
