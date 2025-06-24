@@ -482,15 +482,12 @@ tss:
   secret: 'TSS_SECRET'
   pubs:
     - curvePub: 'PK_1' # ECDSA
-      edwardPub: 'PK_1' # EdDSA
       curveShareId: 'SHARE_1'
       edwardShareId: 'SHARE_1'
     - curvePub: 'PK_2' # ECDSA
-      edwardPub: 'PK_2' # EdDSA
       curveShareId: 'SHARE_2'
       edwardShareId: 'SHARE_2'
     - curvePub: 'PK_3' # ECDSA
-      edwardPub: 'PK_3' # EdDSA
       curveShareId: 'SHARE_3'
       edwardShareId: 'SHARE_3'
     ...
