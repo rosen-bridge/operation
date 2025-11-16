@@ -1,4 +1,4 @@
-## Guard Operation: Setup
+# Guard Operation: Setup
 
 The following document will help you through setup your guard for production on Docker.
 
@@ -411,6 +411,7 @@ doge:
     username: 'YOUR_RPC_USERNAME'
     password: 'YOUR_RPC_PASSWORD'
     apiKey: 'YOUR_API_KEY'
+    rps: 5 # request per second for RPC requests
 ```
 
 > **NOTE**: Only `url` config of `rpc` is required. Depending on the endpoint provider, you may need to specify username and password, or the apiKey. You may also specify none of them.
@@ -470,6 +471,7 @@ bitcoinRunes:
     username: 'YOUR_RPC_USERNAME'
     password: 'YOUR_RPC_PASSWORD'
     apiKey: 'YOUR_RPC_API_KEY'
+    rps: 5 # request per second for RPC requests
   unisat:
     apiKey: 'YOUR_UNISAT_API_KEY'
 ```
