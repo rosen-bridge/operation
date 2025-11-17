@@ -70,7 +70,7 @@ docker compose up -d # use `docker-compose up -d` for older versions of Docker
 ## Local Config
 
 To start your watcher, you should configure the local.yaml file.
-First, specify the target network you're watching. Currently, we support `ergo`, `cardano`, `bitcoin`, `ethereum`, `binance` and `doge`:
+First, specify the target network you're watching. Currently, we support `ergo`, `cardano`, `bitcoin`, `ethereum`, `binance`, `doge` and `bitcoin-runes`:
 
 ```yaml
 network: ergo
@@ -560,6 +560,61 @@ doge:
 observation:
   confirmation: 20
   validThreshold: 1440
+```
+
+### Bitcoin Config (Just for Bitcoin watchers)
+
+Since Bitcoin-Runes is not a separate chain from Bitcoin and is simply a standard on the Bitcoin network, running a Bitcoin-Runes bridge requires configuring both Bitcoin and Bitcoin-Runes.
+
+As with other Bitcoin watchers, configure the Bitcoin network connection according to the instructions in [its section](#bitcoin-config-just-for-bitcoin-watchers).
+
+In addition to the Bitcoin configuration, you must provide data sources for Runes. Add these configurations under the `bitcoinRunes` section. You can use either `ordiscan` or `unisat` as the data source:
+
+```yml
+type: ordiscan
+ordiscan:
+  apiKey: <your ordiscan api key>
+```
+
+or
+
+```yml
+type: unisat
+unisat:
+  url: <your unisat url>
+  apiKey: <your unisat api key>
+```
+
+> NOTE: You can set unisat or ordiscan api key as docker environment variables with keys `UNISAT_API_KEY` or `ORDISCAN_API_KEY` instead of storing it in the local configuration.
+
+Finally, an example Bitcoin-Runes watcher `local.yaml` file would look like:
+
+```yaml
+network: bitcoin-runes
+api:
+  apiKeyHash: <your api key hash>
+ergo:
+  type: explorer
+  initialHeight: <latest ergo height>
+  mnemonic: <your wallet mnemonic>
+  node:
+    url: https://example.node.com
+bitcoin:
+  type: rpc
+  rpc:
+    url: <your rpc url>
+    username: <your rpc username>
+    password: <your rpc password>
+  initial:
+    height: <latest bitcoin height>
+bitcoinRunes:
+  type: unisat
+  unisat:
+    url: <your unisat url>
+    apiKey: <your unisat api key>
+observation:
+  confirmation: 2
+  validThreshold: 72
 ```
 
 ## Get Watcher Permit
