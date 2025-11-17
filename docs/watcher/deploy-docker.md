@@ -250,12 +250,7 @@ koios:
 > Note: As you choose one of these and start, your watcher scans several blocks using that source. Changing the source might cause some issues since the watcher tries to scan all blocks from the beginning and it takes time to be synced again. So just in case of a serious problem change this config. In some cases, you may want to delete your volume and start over (Consider updating the initial height in such cases).
 
 > Note: To extract observation raw data using the Ogmios client, it must return the encoded transaction in `cbor` format. You can enable `cbor` output by running the Ogmios client with the `--include-cbor` or `--include-transaction-cbor` flag.
-> If the transaction data does not include `cbor`, the Ogmios scanner will get stuck. If you do not have access to the client configuration, or you simply do not need raw-data storage, you can disable it by adding the following configuration to the watcher:
-
-```yaml
-observation:
-  storeRawData: false
-```
+> If the transaction data does not include `cbor`, the Ogmios scanner will get stuck. If you do not have access to the client configuration, or you simply do not need raw-data storage, you can disable obsreavtion raw-data storage. Please refer to [this section](#observation-raw-data) for the raw-data storage configuration.
 
 2. Set your watcher's initial height; this height is the point from which you start observing and reporting events. Like the Ergo network, you may choose to start from an older height but we highly recommend using the latest block as your initial point. You should specify the initial block height, hash, and slot.
 
