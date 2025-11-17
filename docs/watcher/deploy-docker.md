@@ -557,7 +557,7 @@ observation:
   validThreshold: 1440
 ```
 
-### Bitcoin Config (Just for Bitcoin watchers)
+### Bitcoin-Runes Config (Just for Bitcoin-Runes watchers)
 
 Since Bitcoin-Runes is not a separate chain from Bitcoin and is simply a standard on the Bitcoin network, running a Bitcoin-Runes bridge requires configuring both Bitcoin and Bitcoin-Runes.
 
