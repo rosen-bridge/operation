@@ -1,4 +1,4 @@
-## Guard Operation: Setup
+# Guard Operation: Setup
 
 The following document will help you through setup your guard for production on Docker.
 
@@ -411,6 +411,7 @@ doge:
     username: 'YOUR_RPC_USERNAME'
     password: 'YOUR_RPC_PASSWORD'
     apiKey: 'YOUR_API_KEY'
+    rps: 5 # request per second for RPC requests
 ```
 
 > **NOTE**: Only `url` config of `rpc` is required. Depending on the endpoint provider, you may need to specify username and password, or the apiKey. You may also specify none of them.
@@ -449,6 +450,59 @@ doge:
   chainNetwork: 'rpc-blockcypher'
   rpc:
     url: 'YOUR_JSON_RPC_PROVIDER_URL'
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+## Bitcoin Runes
+
+### Network
+
+Specify your network. If you are using combination of RPC and Unisat, set `chainNetwork` field as
+`rpc` and set your RPC and Unisat config (You can get Unisat API key from [here](https://developer.unisat.io/account/login)).
+
+```yaml
+bitcoinRunes:
+  chainNetwork: 'rpc'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+    username: 'YOUR_RPC_USERNAME'
+    password: 'YOUR_RPC_PASSWORD'
+    apiKey: 'YOUR_RPC_API_KEY'
+    rps: 5 # request per second for RPC requests
+  unisat:
+    apiKey: 'YOUR_UNISAT_API_KEY'
+```
+
+> **NOTE**: Only `url` config of `rpc` is required. Depending on the endpoint provider, you may need to specify username and password, or the apiKey. You may also specify none of them.
+
+> **NOTE**: When using docker there are environment variables available for `apiKey` (both RPC and Unisat), `username` and `password` that you can set instead of in the local configuration. Please refer to [env-references](env-references.md) for the key.
+
+### Address Info
+
+Other than network, you need to specify Bitcoin Runes public key alongside it's chain code and derivation path. The key is derived from generated ECDSA key in `key generation ceremony`.
+
+```yaml
+bitcoinRunes:
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+### Overall
+
+Your Bitcoin Runes config will be something like this:
+
+```yaml
+bitcoinRunes:
+  chainNetwork: 'rpc'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+  unisat:
+    apiKey: 'YOUR_UNISAT_API_KEY'
   bankPublicKey: 'GENERATED_PUBLIC_KEY'
   tssChainCode: ''
   derivationPath:
@@ -609,6 +663,8 @@ ethereum:
 binance:
   ...
 doge:
+  ...
+bitcoinRunes:
   ...
 reward:
   ...

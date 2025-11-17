@@ -36,6 +36,8 @@ services:
     networks:
       - rosen_network
     restart: always
+    ports:
+      - ${P2P_PORT:-5243}:${P2P_PORT:-5243}
     depends_on:
       db:
         condition: service_healthy
