@@ -561,7 +561,7 @@ observation:
 
 Since Bitcoin-Runes is not a separate chain from Bitcoin and is simply a standard on the Bitcoin network, running a Bitcoin-Runes bridge requires configuring both Bitcoin and Bitcoin-Runes.
 
-As with other Bitcoin watchers, configure the Bitcoin network connection according to the instructions in [its section](#bitcoin-config-just-for-bitcoin-watchers).
+As with other Bitcoin watchers, configure the Bitcoin network connection according to the instructions in [this section](#bitcoin-config-just-for-bitcoin-watchers).
 
 In addition to the Bitcoin configuration, you must provide data sources for Runes. Add these configurations under the `bitcoinRunes` section. You can use either `ordiscan` or `unisat` as the data source:
 
