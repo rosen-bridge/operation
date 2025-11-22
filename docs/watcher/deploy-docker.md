@@ -126,6 +126,19 @@ rewardCollection:
 
 > Note: Set the threshold considering the RSN token decimal places (3 decimal points). For example, if you want to collect RSNs after reaching to 200 you should set `rewardCollection.threshold` to 200000.
 
+## Observation Raw Data
+
+When a transfer request is initiated on any chain, the transaction containing the request must include some data that can be processed by watchers. The raw data observed by watchers has a structure specific to each source chain. Watchers extract the Rosen-compatible data from this raw data but store both forms in the database.
+
+You can disable raw-data storage without affecting watcher behavior. Raw data is stored only to provide additional insights for advanced users in the watcher UI. Note that storing raw data does not add any computational overhead to the watcher.
+
+Observation raw-data storage is enabled by default, but you can turn it off by adding the following configuration:
+
+```yaml
+observation:
+  storeRawData: false
+```
+
 ### Ergo Config (Essential for all watchers)
 
 For all watchers, even if you're targeting a different network than Ergo to watch, you still need to configure the Ergo section (Under the `ergo` keyword):
@@ -235,6 +248,9 @@ koios:
 > Note: Currently, the watcher is only compatible with Ogmios v6. Utilizing other versions of Ogmios may result in improper functionality.
 
 > Note: As you choose one of these and start, your watcher scans several blocks using that source. Changing the source might cause some issues since the watcher tries to scan all blocks from the beginning and it takes time to be synced again. So just in case of a serious problem change this config. In some cases, you may want to delete your volume and start over (Consider updating the initial height in such cases).
+
+> Note: To extract observation raw data using the Ogmios client, it must return the encoded transaction in `cbor` format. You can enable `cbor` output by running the Ogmios client with the `--include-cbor` or `--include-transaction-cbor` flag.
+> If the transaction data does not include `cbor`, the Ogmios scanner will get stuck. If you do not have access to the client configuration, or you simply do not need raw-data storage, you can disable obsreavtion raw-data storage. Please refer to [this section](#observation-raw-data) for the raw-data storage configuration.
 
 2. Set your watcher's initial height; this height is the point from which you start observing and reporting events. Like the Ergo network, you may choose to start from an older height but we highly recommend using the latest block as your initial point. You should specify the initial block height, hash, and slot.
 
