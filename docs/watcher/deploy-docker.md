@@ -576,7 +576,6 @@ or
 ```yml
 type: unisat
 unisat:
-  url: <your unisat url>
   apiKey: <your unisat api key>
 ```
 
@@ -607,7 +606,6 @@ bitcoin:
 bitcoinRunes:
   type: unisat
   unisat:
-    url: <your unisat url>
     apiKey: <your unisat api key>
 observation:
   confirmation: 2
