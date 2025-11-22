@@ -580,7 +580,9 @@ unisat:
   apiKey: <your unisat api key>
 ```
 
-> NOTE: You can set unisat or ordiscan api key as docker environment variables with keys `UNISAT_API_KEY` or `ORDISCAN_API_KEY` instead of storing it in the local configuration.
+> Note: You can get a Unisat API key from [here](https://developer.unisat.io/account/login) or Ordiscan API Key from [here](https://ordiscan.com/docs/api/login).
+
+> NOTE: You can set Unisat or Ordiscan api key as docker environment variables with keys `UNISAT_API_KEY` or `ORDISCAN_API_KEY` instead of storing it in the local configuration.
 
 Finally, an example Bitcoin-Runes watcher `local.yaml` file would look like:
 
