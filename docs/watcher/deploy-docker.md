@@ -190,7 +190,7 @@ initialHeight: <latest ergo height>
 
 ```yaml
 observation:
-  confirmation: 10
+  confirmation: 9
   validThreshold: 720
 ```
 
@@ -210,7 +210,7 @@ ergo:
     url: https://api.ergoplatform.com
 
 observation:
-  confirmation: 10
+  confirmation: 9
   validThreshold: 720
 ```
 
@@ -273,7 +273,7 @@ initial:
 
 ```yaml
 observation:
-  confirmation: 30
+  confirmation: 25
   validThreshold: 12960
 ```
 
@@ -297,6 +297,9 @@ cardano:
     height: <latest cardano height>
     hash: <latest cardano hash>
     slot: <latest cardano slot>
+observation:
+  confirmation: 25
+  validThreshold: 12960
 ```
 
 ### Bitcoin Config (Just for Bitcoin watchers)
@@ -344,7 +347,7 @@ initial:
 
 ```yaml
 observation:
-  confirmation: 2
+  confirmation: 1
   validThreshold: 72
 ```
 
@@ -369,7 +372,7 @@ bitcoin:
   initial:
     height: <latest bitcoin height>
 observation:
-  confirmation: 2
+  confirmation: 1
   validThreshold: 72
 ```
 
@@ -405,7 +408,7 @@ initial:
 
 ```yaml
 observation:
-  confirmation: 100
+  confirmation: 20
   validThreshold: 7200
 ```
 
@@ -428,7 +431,7 @@ ethereum:
   initial:
     height: <latest ethereum height>
 observation:
-  confirmation: 100
+  confirmation: 20
   validThreshold: 7200
 ```
 
@@ -464,7 +467,7 @@ initial:
 
 ```yaml
 observation:
-  confirmation: 400
+  confirmation: 300
   validThreshold: 28800
 ```
 
@@ -487,7 +490,7 @@ binance:
   initial:
     height: <latest binance height>
 observation:
-  confirmation: 400
+  confirmation: 300
   validThreshold: 28800
 ```
 
@@ -525,7 +528,7 @@ initial:
 
 ```yaml
 observation:
-  confirmation: 20
+  confirmation: 10
   validThreshold: 1440
 ```
 
@@ -553,7 +556,7 @@ doge:
   initial:
     height: <latest doge height>
 observation:
-  confirmation: 20
+  confirmation: 10
   validThreshold: 1440
 ```
 
@@ -608,7 +611,7 @@ bitcoinRunes:
   unisat:
     apiKey: <your unisat api key>
 observation:
-  confirmation: 2
+  confirmation: 1
   validThreshold: 72
 ```
 
