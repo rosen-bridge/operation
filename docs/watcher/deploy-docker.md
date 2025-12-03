@@ -191,7 +191,7 @@ initialHeight: <latest ergo height>
 ```yaml
 observation:
   confirmation: 9
-  validThreshold: 720
+  validThreshold: 2160
 ```
 
 Finally, an example Ergo watcher `local.yaml` file would look like:
@@ -211,7 +211,7 @@ ergo:
 
 observation:
   confirmation: 9
-  validThreshold: 720
+  validThreshold: 2160
 ```
 
 ### Cardano Config (Just for Cardano watchers)
@@ -348,7 +348,7 @@ initial:
 ```yaml
 observation:
   confirmation: 1
-  validThreshold: 72
+  validThreshold: 432
 ```
 
 Finally, an example Bitcoin watcher `local.yaml` file would look like:
@@ -373,7 +373,7 @@ bitcoin:
     height: <latest bitcoin height>
 observation:
   confirmation: 1
-  validThreshold: 72
+  validThreshold: 432
 ```
 
 ### Ethereum Config (Just for Ethereum watchers)
@@ -409,7 +409,7 @@ initial:
 ```yaml
 observation:
   confirmation: 20
-  validThreshold: 7200
+  validThreshold: 21600
 ```
 
 Finally, an example Ethereum watcher `local.yaml` file would look like:
@@ -432,7 +432,7 @@ ethereum:
     height: <latest ethereum height>
 observation:
   confirmation: 20
-  validThreshold: 7200
+  validThreshold: 21600
 ```
 
 ### Binance Config (Just for Binance watchers)
@@ -468,7 +468,7 @@ initial:
 ```yaml
 observation:
   confirmation: 300
-  validThreshold: 28800
+  validThreshold: 345600
 ```
 
 Finally, an example Binance watcher `local.yaml` file would look like:
@@ -491,7 +491,7 @@ binance:
     height: <latest binance height>
 observation:
   confirmation: 300
-  validThreshold: 28800
+  validThreshold: 345600
 ```
 
 ### Doge Config (Just for Doge watchers)
@@ -529,7 +529,7 @@ initial:
 ```yaml
 observation:
   confirmation: 10
-  validThreshold: 1440
+  validThreshold: 4320
 ```
 
 Finally, an example Doge watcher `local.yaml` file would look like:
@@ -557,7 +557,7 @@ doge:
     height: <latest doge height>
 observation:
   confirmation: 10
-  validThreshold: 1440
+  validThreshold: 4320
 ```
 
 ### Bitcoin-Runes Config (Just for Bitcoin-Runes watchers)
@@ -612,7 +612,7 @@ bitcoinRunes:
     apiKey: <your unisat api key>
 observation:
   confirmation: 1
-  validThreshold: 72
+  validThreshold: 432
 ```
 
 ## Get Watcher Permit
