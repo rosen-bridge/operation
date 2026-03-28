@@ -25,14 +25,14 @@ services:
     volumes:
       - type: bind
         source: ./config/local.yaml
-        target: /app/config/local.yml
+        target: /app/services/guard-service/config/local.yml
       - type: bind
         source: ./config/thresholds.json
-        target: /app/config/thresholds.json
-      - ./logs/guard-logs/:/app/logs/
-      - guard-data:/app/peer-dialer/
-      - ./logs/tss-api-logs/:/app/tss-api/logs/
-      - tss-api-data:/app/tss-api/home/
+        target: /app/services/guard-service/config/thresholds.json
+      - ./logs/guard-logs/:/app/services/guard-service/logs/
+      - guard-data:/app/services/guard-service/peer-dialer/
+      - ./logs/tss-api-logs/:/app/services/guard-service/tss-api/logs/
+      - tss-api-data:/app/services/guard-service/tss-api/home/
     networks:
       - rosen_network
     restart: always
