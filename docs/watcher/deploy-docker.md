@@ -186,12 +186,11 @@ initialHeight: <latest ergo height>
 
 > Note: Once watcher started scanning from the initial block, changing this config wont affect the watcher behavior. In case you need to restart the watcher from an earlier block consider removing volumes.
 
-5. (JUST ERGO WATCHER) To ensure the watcher's proper functionality, event observations should be sufficiently confirmed before taking action. You should customize observation confirmation and validity threshold to align with your watching network's specification. By default, these settings are configured much higher. For Ergo, we recommend using the following configurations:
+5. (JUST ERGO WATCHER) To ensure the watcher's proper functionality, event observations should be sufficiently confirmed before taking action. You should customize observation confirmation to align with your watching network's specification. By default, this setting is configured much higher. For Ergo, we recommend using the following configuration:
 
 ```yaml
 observation:
   confirmation: 9
-  validThreshold: 2160
 ```
 
 Finally, an example Ergo watcher `local.yaml` file would look like:
@@ -211,7 +210,6 @@ ergo:
 
 observation:
   confirmation: 9
-  validThreshold: 2160
 ```
 
 ### Cardano Config (Just for Cardano watchers)
@@ -269,12 +267,11 @@ initial:
 
 > Note: Once watcher started scanning from the initial block, changing this config wont affect the watcher behavior. In case you need to restart the watcher from an earlier block consider removing volumes and updating both Ergo and Cardano initial heights.
 
-3. To ensure the watcher's proper functionality, event observations should be sufficiently confirmed before taking action. You should customize observation confirmation and validity threshold to align with your watching network's specification. For Cardano, we recommend using the following configurations:
+3. To ensure the watcher's proper functionality, event observations should be sufficiently confirmed before taking action. You should customize observation confirmation to align with your watching network's specification. For Cardano, we recommend using the following configuration:
 
 ```yaml
 observation:
   confirmation: 25
-  validThreshold: 12960
 ```
 
 Finally, an example Cardano watcher `local.yaml` file would look like:
@@ -299,7 +296,6 @@ cardano:
     slot: <latest cardano slot>
 observation:
   confirmation: 25
-  validThreshold: 12960
 ```
 
 ### Bitcoin Config (Just for Bitcoin watchers)
@@ -343,12 +339,11 @@ initial:
 
 > Note: Once watcher started scanning from the initial block, changing this config wont affect the watcher behavior. In case you need to restart the watcher from an earlier block consider removing volumes and updating both Ergo and Bitcoin initial heights.
 
-3. To ensure the watcher's proper functionality, event observations should be sufficiently confirmed before taking action. You should customize observation confirmation and validity threshold to align with your watching network's specification. For Bitcoin, we recommend using the following configurations:
+3. To ensure the watcher's proper functionality, event observations should be sufficiently confirmed before taking action. You should customize observation confirmation to align with your watching network's specification. For Bitcoin, we recommend using the following configuration:
 
 ```yaml
 observation:
   confirmation: 1
-  validThreshold: 432
 ```
 
 Finally, an example Bitcoin watcher `local.yaml` file would look like:
@@ -373,7 +368,6 @@ bitcoin:
     height: <latest bitcoin height>
 observation:
   confirmation: 1
-  validThreshold: 432
 ```
 
 ### Ethereum Config (Just for Ethereum watchers)
@@ -404,12 +398,11 @@ initial:
 
 > Note: Once watcher started scanning from the initial block, changing this config wont affect the watcher behavior. In case you need to restart the watcher from an earlier block consider removing volumes and updating both Ergo and Ethereum initial heights.
 
-3. To ensure the watcher's proper functionality, event observations should be sufficiently confirmed before taking action. You should customize observation confirmation and validity threshold to align with your watching network's specification. For Ethereum, we recommend using the following configurations:
+3. To ensure the watcher's proper functionality, event observations should be sufficiently confirmed before taking action. You should customize observation confirmation to align with your watching network's specification. For Ethereum, we recommend using the following configuration:
 
 ```yaml
 observation:
   confirmation: 20
-  validThreshold: 21600
 ```
 
 Finally, an example Ethereum watcher `local.yaml` file would look like:
@@ -432,7 +425,6 @@ ethereum:
     height: <latest ethereum height>
 observation:
   confirmation: 20
-  validThreshold: 21600
 ```
 
 ### Binance Config (Just for Binance watchers)
@@ -463,12 +455,11 @@ initial:
 
 > Note: Once the watcher begins scanning from the initial block, updating this setting won't change its behavior. To restart from an earlier block, remove volumes and update both the Ergo and Binance initial heights.
 
-3. **Observation Confirmation & Validity:** To ensure accurate event tracking, set confirmation and validity thresholds based on Binance's network specifications. Recommended values:
+3. **Observation Confirmation:** To ensure accurate event tracking, set confirmation based on Binance's network specifications. Recommended value:
 
 ```yaml
 observation:
   confirmation: 300
-  validThreshold: 345600
 ```
 
 Finally, an example Binance watcher `local.yaml` file would look like:
@@ -491,7 +482,6 @@ binance:
     height: <latest binance height>
 observation:
   confirmation: 300
-  validThreshold: 345600
 ```
 
 ### Doge Config (Just for Doge watchers)
@@ -524,12 +514,11 @@ initial:
 
 > Note: Once the watcher begins scanning from the initial block, updating this setting won't change its behavior. To restart from an earlier block, remove volumes and update both the Ergo and Doge initial heights.
 
-3. **Observation Confirmation & Validity:** To ensure accurate event tracking, set confirmation and validity thresholds based on Doges's network specifications. Recommended values:
+3. **Observation Confirmation:** To ensure accurate event tracking, set confirmation based on Doge's network specifications. Recommended value:
 
 ```yaml
 observation:
   confirmation: 10
-  validThreshold: 4320
 ```
 
 Finally, an example Doge watcher `local.yaml` file would look like:
@@ -557,7 +546,6 @@ doge:
     height: <latest doge height>
 observation:
   confirmation: 10
-  validThreshold: 4320
 ```
 
 ### Bitcoin-Runes Config (Just for Bitcoin-Runes watchers)
@@ -612,7 +600,6 @@ bitcoinRunes:
     apiKey: <your unisat api key>
 observation:
   confirmation: 1
-  validThreshold: 432
 ```
 
 ## Get Watcher Permit
