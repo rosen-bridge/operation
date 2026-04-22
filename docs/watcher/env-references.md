@@ -24,6 +24,8 @@ MNEMONIC= # watcher mnemonic phrases, e.g. MNEMONIC=word1 word2 word3 ... wordn
 
 KOIOS_AUTH_TOKEN=
 
+BASE_RPC_AUTH_TOKEN=
+
 ETHEREUM_RPC_AUTH_TOKEN=
 
 BINANCE_RPC_AUTH_TOKEN=

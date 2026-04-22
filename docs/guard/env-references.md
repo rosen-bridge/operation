@@ -26,6 +26,8 @@ TSS_SECRET= # the secret used to encrypt messages to start the signing process
 
 KOIOS_AUTH_TOKEN=
 
+BASE_RPC_AUTH_TOKEN=
+
 ETHEREUM_RPC_AUTH_TOKEN=
 
 BINANCE_RPC_AUTH_TOKEN=

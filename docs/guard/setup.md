@@ -288,6 +288,60 @@ ergo:
   initialHeight: 1000000
 ```
 
+## Base
+
+### Network
+
+Specify your network. If you are using rpc, set `chainNetwork` field as
+`rpc` and set your rpc url. RPC network scans the blockchain, so it requires `initialHeight`.
+
+```yaml
+base:
+  chainNetwork: 'rpc' # 'rpc'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+    initialHeight: 20000000
+```
+
+If you have auth token for your RPC, you can specify that too.
+
+```yaml
+base:
+  chainNetwork: 'rpc' # 'rpc'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+    authToken: 'YOUR_AUTH_TOKEN'
+    initialHeight: 20000000
+```
+
+> **NOTE**: When using docker there is a `BASE_RPC_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
+
+### Address Info
+
+Other than network, you need to specify chain code and derivation path for Base. The key is derived from generated ECDSA key in `key generation ceremony`.
+
+```yaml
+base:
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+### Overall
+
+Your Base config will be something like this:
+
+```yaml
+base:
+  chainNetwork: 'rpc' # 'rpc'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+    initialHeight: 20000000
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
 ## Ethereum
 
 ### Network
