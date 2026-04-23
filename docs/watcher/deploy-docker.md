@@ -396,7 +396,7 @@ initial:
   height: <latest base height>
 ```
 
-> Note: You can find the latest Base blocks [here](https://base.blockscout.com/blocks).
+> Note: You can find the latest Base blocks [here](https://basescan.org/blocks).
 
 > Note: Once watcher started scanning from the initial block, changing this config won't affect the watcher behavior. If you need to restart from an earlier block, remove volumes and update both Ergo and Base initial heights.
 
