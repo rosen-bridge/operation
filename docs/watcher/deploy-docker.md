@@ -385,6 +385,8 @@ rpc:
 
 > Note: RPC authentication token is optional, if you're using a public node you don't need to add authToken.
 
+> Note: The public Base endpoint is rate-limited and should not be used for production watchers. Use a dedicated RPC provider or your own node.
+
 > **NOTE**: When using docker there is a `BASE_RPC_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
 
 2. Set the initial height for the watcher. We recommend using the latest Base block:
@@ -420,7 +422,7 @@ ergo:
 base:
   type: rpc
   rpc:
-    url: https://mainnet.base.org
+    url: https://your-base-rpc-provider.example
   initial:
     height: <latest base height>
 observation:

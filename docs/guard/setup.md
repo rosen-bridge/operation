@@ -316,6 +316,8 @@ base:
 
 > **NOTE**: When using docker there is a `BASE_RPC_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
 
+> Note: The public Base endpoint is rate-limited and should not be used for production guards. Use a dedicated RPC provider or your own node.
+
 ### Address Info
 
 Other than network, you need to specify chain code and derivation path for Base. The key is derived from generated ECDSA key in `key generation ceremony`.
