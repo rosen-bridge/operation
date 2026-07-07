@@ -38,6 +38,8 @@ runs:
         )
         if [[ "$PERM" == "admin" || "$PERM" == "maintain" ]]; then
           echo "is_admin=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "$ACTOR triggers publish: permission denied" && exit 1
         fi
 
     - name: Publish to npm
