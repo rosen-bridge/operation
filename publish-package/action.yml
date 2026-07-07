@@ -1,0 +1,75 @@
+name: "Package Release"
+description: "Publishes a release or snapshot-release to npm and announces on Discord"
+
+inputs:
+  type:
+    description: "The type of release. Must be 'release' or 'snapshot-release'"
+    required: true
+  npm_token:
+    description: "NPM token for publishing"
+    required: true
+  discord_hook:
+    description: "Discord webhook URL for announcement"
+    required: true
+  github_token:
+    description: "GitHub token for permission check"
+    required: true
+  publish_prefix:
+    description: "Prefix for release commits"
+    required: false
+    default: 'rosen-version:'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Release Verification
+      id: perm
+      if: ${{ inputs.type == 'snapshot-release' || (startsWith(github.event.head_commit.message, inputs.publish_prefix) && github.ref == 'refs/heads/dev') }}
+      shell: bash
+      env:
+        TOKEN: ${{ inputs.github_token }}
+        REPO: ${{ github.repository }}
+        ACTOR: ${{ github.actor }}
+      run: |
+        PERM=$(
+          curl -fsSL -H "Authorization: Bearer $TOKEN" \
+            "https://api.github.com/repos/$REPO/collaborators/$ACTOR/permission" \
+          | jq -r '.role_name'
+        )
+        if [[ "$PERM" == "admin" || "$PERM" == "maintain" ]]; then
+          echo "is_admin=true" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Publish to npm
+      if: ${{ steps.perm.outputs.is_admin == 'true' }}
+      id: publish
+      shell: bash
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.npm_token }}
+      run: |
+        echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+        if [[ "${{ inputs.type }}" == "snapshot-release" ]]; then
+          npx changeset version --snapshot "$(git rev-parse --short=8 HEAD)"
+          npx changeset publish --no-git-tag --tag develop | tee .changeset_log
+        elif [[ "${{ inputs.type }}" == "release" ]]; then
+          npx changeset publish | tee .changeset_log
+        else
+          echo "Invalid type: ${{ inputs.type }}. Must be 'release' or 'snapshot-release'"
+          exit 1
+        fi
+        { echo 'CHANGESET_LOG<<_LOG_'; cat .changeset_log; echo '_LOG_'; } >> "$GITHUB_ENV"
+
+    - name: Discord Announce
+      if: ${{ steps.publish.outcome == 'success' }}
+      shell: bash
+      run: |
+        PATTERN_START='success.*packages published successfully:'
+        PATTERN_END='Creating git tag...'
+
+        published_versions=$(printf '%s\n' "$CHANGESET_LOG" \
+          | sed -n "/$PATTERN_START/,/$PATTERN_END/{/$PATTERN_START/d;/$PATTERN_END/d;p}")
+
+        msg=$(printf '%s\n' "$published_versions" | grep -o '@.*')
+        if [[ -n "$msg" ]]; then
+          curl -s -X POST --form-string $'content=```text\n'"$msg"$'\n```' "${{ inputs.discord_hook }}"
+        fi
