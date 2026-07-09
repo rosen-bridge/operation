@@ -1,0 +1,690 @@
+# Guard Operation: Setup
+
+The following document will help you through setup your guard for production on Docker.
+
+## Environment Variable Configs
+You can configure some Environment Variables when deploying with docker, you can find all of them [here](./env-references.md).
+
+Note: Set your parameters in `.env` file (make sure not to use spaces after the '=' sign)
+
+# Docker Deployment
+
+Clone [Operation repository](https://github.com/rosen-bridge/operation.git) and go to `operation/guard` directory
+
+```shell
+git clone https://github.com/rosen-bridge/operation.git
+cd operation/guard/
+```
+
+Create your environment file `.env` based on `env.template` file in the `guard` directory
+
+```shell
+cp env.template .env
+```
+
+Set your parameters in `.env` file 
+>**Note:** do not use space after `=` sign
+
+```shell
+# Required Environments
+
+POSTGRES_PASSWORD= # a random alphanumeric password without special characters (like $%!-#)
+
+POSTGRES_USER= # a random name
+
+POSTGRES_DB= # a random name
+
+POSTGRES_PORT=5432 # 5432 is set as default, you can change it.
+
+
+# Optional Environments
+
+GUARD_PORT= # (default is 8081 if no value is set)
+
+GUARD_IMAGE_VERSION= # Don't change it!
+
+UI_IMAGE_VERSION= # Don't change it!
+```
+
+Set required permissions and create `thresholds.json` and `local.yaml` files in the `config` directory
+
+```shell
+touch config/thresholds.json
+touch config/local.yaml
+sudo chown -R 8080:8080 logs config
+```
+
+Only on `MacOS`: set `707` permission for the `logs` directory
+
+```shell
+# only on MacOS
+sudo chmod -R 707 logs
+```
+
+Pull the Docker image
+
+  ```shell
+  docker compose pull # use `docker-compose pull` for older versions of Docker
+  ```
+
+In order to instruct the service to create require docker volumes, in the `guard` directory
+
+```shell
+docker compose create # use `docker-compose create` for older versions of Docker
+```
+
+> **NOTE**: Before running your guard service, you must take part in the key generation ceremony. For detailed instructions, please refer to [this guide](../keygen-service/keygen-docker.md).
+
+
+# Edit Config File
+
+You need to specify some required configs in `local.yaml`.
+
+## API
+
+```yaml
+api:
+  isManualTxRequestActive: false
+  isArbitraryOrderRequestActive: false
+  apiKeyHash: 'YOUR_API_KEY_HASH'
+```
+### Manual Transaction and Arbitrary Order
+
+Default value of `isManualTxRequestActive` is `false`. This field prevents
+service from getting manual transactions. Whenever you want to request to
+sign a manual transaction, set this value to `true`, restart your guard, submit your transaction using guard app, reset this value to `false` and restart your guard.
+
+Alternatively, `isArbitraryOrderRequestActive` field prevents service from getting arbitrary order requests. Whenever you want to request
+an order to be paid, set this value to `true`, restart your guard, submit your order using guard app, reset this value to `false` and restart your guard.
+
+> **NOTE**: It is crucial to keep these fields as `false` to prevent
+insertion of unwanted transactions and orders in case of unauthorized access of malicious actor.
+
+### apiKeyHash
+To secure the action-based APIs, you should set a unique and robust api key.
+We are using a blake2b hash to secure APIs.
+
+#### Compute api_key's Hash
+Use [rosen command line](https://github.com/rosen-bridge/utils/tree/dev/packages/cli) to compute api key hash:
+
+```shell
+  # use nodejs solution
+  npx @rosen-bridge/cli blake2b-hash YOUR_API_KEY
+  # or docker solution
+  docker run -it --rm node:18.16 npx --yes @rosen-bridge/cli blake2b-hash YOUR_API_KEY
+```  
+
+#### Update Configuration File
+After obtaining the hash, input it into your config file. For example, the salted Blake2b hash of `hello` is `$USHxmI8E$7Bby9L7leeExrYFt2n3270K4+PMCCszZ+UwCV8klqBs=`.
+
+> **⚠️ NOTE**: When using docker there is an `API_KEY_HASH` environment variable available for `apiKeyHash` that you can set instead of in the local configuration. See your `.env` file. We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your api key while troubleshooting etc. After updating, you can delete `apiKeyHash` from /config/local.yaml. Note that you should set your hash between single quotes, for example: API_KEY_HASH='$USHxmI8E$7Bby9L7leeExrYFt2n3270K4+PMCCszZ+UwCV8klqBs='.
+
+## DATABASE
+Specify your database connection and credentials.
+
+```yaml
+  type: 'postgres'
+  host: ''         # database host (for postgres)
+  port: 5432       # database port (for postgres)
+  user: ''         # database user (for postgres)
+  password: ''     # database password (for postgres)
+  name: ''         # database name (for postgres)
+```
+> **NOTE**: When using docker there are some environment variables (POSTGRES_PORT, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB) for database configuration that you can set instead of in the local configuration.
+
+
+## Cardano
+
+### Network
+
+Specify your network. If you are using Koios, set `chainNetwork` field as
+`koios` and set your koios url.
+
+```yaml
+cardano:
+  chainNetwork: 'koios'
+  koios:
+    url: 'https://api.koios.rest/api/v1'
+```
+
+If you have auth token for koios, you can specify that too.
+
+```yaml
+cardano:
+  chainNetwork: 'koios'
+  koios:
+    url: 'https://api.koios.rest/api/v1'
+    authToken: 'YOUR_AUTH_TOKEN'
+```
+
+> **NOTE**: When using docker there is an `KOIOS_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
+
+If you plan to use Blockfrost for your network, set `chainNetwork` field
+as `blockfrost` and set your project Id.
+
+```yaml
+cardano:
+  chainNetwork: 'blockfrost'
+  blockfrost:
+    projectId: 'YOUR_PROJECT_ID'
+```
+
+You can also use custom blockfrost instance. In this case, also set url:
+
+```yaml
+cardano:
+  chainNetwork: 'blockfrost'
+  blockfrost:
+    projectId: 'YOUR_PROJECT_ID'
+    url: 'YOUR_BLOCKFROST_URL'
+```
+
+> **NOTE**: When using docker there is an `BLOCKFROST_PROJECT_ID` environment variable available for `projectId` that you can set instead of in the local configuration.
+
+### Address Info
+
+Other than network, you need to specify generated public key in `key generation ceremony`.
+
+```yaml
+cardano:
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+```
+
+### Overall
+
+Your Cardano config will be something like this:
+
+```yaml
+cardano:
+  chainNetwork: 'koios'
+  koios:
+    url: 'https://api.koios.rest/api/v1'
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+```
+
+## Bitcoin
+
+### Network
+
+Specify your network. If you are using esplora, set `chainNetwork` field as
+`esplora` and set your esplora url.
+
+```yaml
+bitcoin:
+  chainNetwork: 'esplora' # 'esplora'
+  esplora:
+    url: 'https://blockstream.info'
+```
+
+### Address Info
+
+Other than network, you need to specify Bitcoin public key alongside it's chain code and derivation path. The key is derived from generated ECDSA key in `key generation ceremony`.
+
+```yaml
+bitcoin:
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+### Overall
+
+Your Bitcoin config will be something like this:
+
+```yaml
+bitcoin:
+  chainNetwork: 'esplora' # 'esplora'
+  esplora:
+    url: 'https://blockstream.info'
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+## Ergo
+
+### Network
+
+Similar to Cardano, you need to specify your network on Ergo. In case of using Explorer, set `chainNetwork` field as `explorer` and specify url:
+
+```yaml
+ergo:
+  chainNetwork: 'explorer'
+  explorer:
+    url: 'https://api.ergoplatform.com/'
+```
+
+In case of using node, set `chainNetwork` field as `node` and specify url:
+
+```yaml
+ergo:
+  chainNetwork: 'node'
+  node:
+    url: 'YOUR_NODE_URL'
+```
+
+> Note: Make sure the Ergo node has extra indexing turned on. Read more about extra indexing [here](https://docs.ergoplatform.com/node/conf/conf-node/#extra-index).
+
+### Initial Height
+
+Specify **current height** of Ergo blockchain as initial height. The scanner will start on this height to capture any reported events.
+
+```yaml
+ergo:
+  initialHeight: 1000000
+```
+
+### Overall
+
+Your Ergo config will be something like this:
+
+```yaml
+ergo:
+  chainNetwork: 'explorer'
+  explorer:
+    url: 'https://api.ergoplatform.com/'
+  initialHeight: 1000000
+```
+
+## Ethereum
+
+### Network
+
+Specify your network. If you are using rpc, set `chainNetwork` field as
+`rpc` and set your rpc url. RPC network scans the blockchain, so it requires `initialHeight`.
+
+```yaml
+ethereum:
+  chainNetwork: 'rpc' # 'rpc'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+    initialHeight: 20000000
+```
+
+If you have auth token for your RPC, you can specify that too.
+
+```yaml
+ethereum:
+  chainNetwork: 'rpc' # 'rpc'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+    authToken: 'YOUR_AUTH_TOKEN'
+    initialHeight: 20000000
+```
+
+> **NOTE**: When using docker there is an `ETHEREUM_RPC_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
+
+### Address Info
+
+Other than network, you need to specify chain code and derivation path for Ethereum. The key is derived from generated ECDSA key in `key generation ceremony`.
+
+```yaml
+ethereum:
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+### Overall
+
+Your Ethereum config will be something like this:
+
+```yaml
+ethereum:
+  chainNetwork: 'rpc' # 'rpc'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+    initialHeight: 20000000
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+## Binance
+
+### Network
+
+Specify your network. If you are using rpc, set `chainNetwork` field as
+`rpc` and set your rpc url. RPC network scans the blockchain, so it requires `initialHeight`.
+
+```yaml
+binance:
+  chainNetwork: 'rpc' # 'rpc'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+    initialHeight: 20000000
+```
+
+If you have auth token for your RPC, you can specify that too.
+
+```yaml
+binance:
+  chainNetwork: 'rpc' # 'rpc'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+    authToken: 'YOUR_AUTH_TOKEN'
+    initialHeight: 20000000
+```
+
+> **NOTE**: When using docker there is an `BINANCE_RPC_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
+
+### Address Info
+
+Other than network, you need to specify chain code and derivation path for Binance. The key is derived from generated ECDSA key in `key generation ceremony`.
+
+```yaml
+binance:
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+### Overall
+
+Your Binance config will be something like this:
+
+```yaml
+binance:
+  chainNetwork: 'rpc' # 'rpc'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+    initialHeight: 20000000
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+## Doge
+
+### Network
+
+Specify your network. If you are using combination of RPC and Blockcypher, set `chainNetwork` field as
+`rpc-blockcypher` and set your RPC config.
+
+```yaml
+doge:
+  chainNetwork: 'rpc-blockcypher'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+    username: 'YOUR_RPC_USERNAME'
+    password: 'YOUR_RPC_PASSWORD'
+    apiKey: 'YOUR_API_KEY'
+    rps: 5 # request per second for RPC requests
+```
+
+> **NOTE**: Only `url` config of `rpc` is required. Depending on the endpoint provider, you may need to specify username and password, or the apiKey. You may also specify none of them.
+
+> **NOTE**: When using docker there are environment variables available for `apiKey`, `username` and `password` that you can set instead of in the local configuration. Please refer to [env-references](env-references.md) for the key.
+
+Alternatively, you can use Esplora for your network. Set `chainNetwork` field as `esplora` and set your esplora url.
+
+```yaml
+doge:
+  chainNetwork: 'esplora'
+  esplora:
+    url: 'YOUR_ESPLORA_URL'
+```
+
+> **NOTE**: Currently, there are no public Esplora instance available for Doge.
+
+### Address Info
+
+Other than network, you need to specify Doge public key alongside it's chain code and derivation path. The key is derived from generated ECDSA key in `key generation ceremony`.
+
+```yaml
+doge:
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+### Overall
+
+Your Doge config will be something like this:
+
+```yaml
+doge:
+  chainNetwork: 'rpc-blockcypher'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+## Bitcoin Runes
+
+### Network
+
+Specify your network. If you are using combination of RPC and Unisat, set `chainNetwork` field as
+`rpc` and set your RPC and Unisat config (You can get Unisat API key from [here](https://developer.unisat.io/account/login)).
+
+```yaml
+bitcoinRunes:
+  chainNetwork: 'rpc'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+    username: 'YOUR_RPC_USERNAME'
+    password: 'YOUR_RPC_PASSWORD'
+    apiKey: 'YOUR_RPC_API_KEY'
+    rps: 5 # request per second for RPC requests
+  unisat:
+    apiKey: 'YOUR_UNISAT_API_KEY'
+```
+
+> **NOTE**: Only `url` config of `rpc` is required. Depending on the endpoint provider, you may need to specify username and password, or the apiKey. You may also specify none of them.
+
+> **NOTE**: When using docker there are environment variables available for `apiKey` (both RPC and Unisat), `username` and `password` that you can set instead of in the local configuration. Please refer to [env-references](env-references.md) for the key.
+
+### Address Info
+
+Other than network, you need to specify Bitcoin Runes public key alongside it's chain code and derivation path. The key is derived from generated ECDSA key in `key generation ceremony`.
+
+```yaml
+bitcoinRunes:
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+### Overall
+
+Your Bitcoin Runes config will be something like this:
+
+```yaml
+bitcoinRunes:
+  chainNetwork: 'rpc'
+  rpc:
+    url: 'YOUR_JSON_RPC_PROVIDER_URL'
+  unisat:
+    apiKey: 'YOUR_UNISAT_API_KEY'
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+## Reward
+
+Specify reward distribution configs. Ensure values with moderator. Config will be like this:
+
+```yaml
+reward:
+  emissionTokenId: 'dede2cf5c1a2966453ffec198a9b97b53d281e548903a905519b3525d59cdc3c'
+  emissionTokenName: 'eRSN'
+  emissionTokenDecimal: 3
+  bridgeFeeRepoAddress: 'MULTISIG_FUND_ADDRESS'
+  emissionAddress: 'MULTISIG_REWARD_ADDRESS'
+  networkFeeRepoAddress: 'NETWORK_FEE_ADDRESS'
+  watchersSharePercent: 0
+  watchersEmissionSharePercent: 70
+```
+
+## TSS
+
+You should specify your TSS secret along side public key and share ids
+of all other guards. The public keys and share ids list should be the same 
+between all guards, so get these values from moderator. The structure will be:
+
+```yaml
+tss:
+  secret: 'TSS_SECRET'
+  pubs:
+    - curvePub: 'PK_1' # ECDSA
+      curveShareId: 'SHARE_1'
+      edwardShareId: 'SHARE_1'
+    - curvePub: 'PK_2' # ECDSA
+      curveShareId: 'SHARE_2'
+      edwardShareId: 'SHARE_2'
+    - curvePub: 'PK_3' # ECDSA
+      curveShareId: 'SHARE_3'
+      edwardShareId: 'SHARE_3'
+    ...
+```
+
+> **NOTE**: When using docker there is an `TSS_SECRET` environment variable available for `secret` that you can set instead of in the local configuration.
+
+## P2P
+
+Keep the config provided by keygen moderator for `key generation ceremony`.
+
+## Mnemonic
+
+Specify your Ergo address mnemonic under `guard` path:
+
+```yaml
+guard:
+  mnemonic: 'YOUR_MNEMONIC'
+```
+
+> **⚠️ NOTE**: Instead of setting `mnemonic` in the local configuration file, consider using the `MNEMONIC` environment variable for ease of management. We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidentally share your seed phrase while troubleshooting etc. See your `.env` file. Once updated, in /config/local.yaml delete your mnemonic phrase and put in a comment like so "mnemonic: #see local config env file"
+
+## Logs
+
+You have 3 options for your logs.
+
+- console
+
+  service logs will be only printed on console, you just need to specify
+  log level.
+
+  ```yaml
+  - type: 'console'
+    level: 'info' # [debug, info, warn, error]
+  ```
+
+- file
+
+  service logs will be printed in files in give path.
+
+  ```yaml
+  - type: 'file'
+    path: './logs/'
+    maxSize: '20m' # maximum size of each log file (20 MB)
+    maxFiles: '14d' # maximum number of log files (14 days)
+    level: 'info' # [debug, info, warn, error]
+  ```
+
+  > **NOTE**: Don't change `path`, since it's hard coded in Dockerfile.
+
+- loki
+
+  service logs will be sent to Grafana server.
+
+  ```yaml
+  - type: 'loki'
+    host: 'YOUR_LOKI_URL'
+    level: 'info' # [debug, info, warn, error]
+    basicAuth: '' # Required if you have a remote loki server
+  ```
+
+  > **NOTE**: When using docker there is an `OVERRIDE_LOKI_BASIC_AUTH` environment variable available for `basicAuth` that you can set instead of in the local configuration.
+
+You also can set multiple logs config. Therefore your config will be something like this:
+
+```yaml
+logs:
+  - type: 'console'
+    level: 'info'
+  - type: 'file' # [file, console]
+    path: './logs/' # path to log files (only for rotateFile type)
+    maxSize: '20m' # maximum size of each log file (20 MB)
+    maxFiles: '14d' # maximum number of log files (14 days)
+    level: 'info' # [debug, info, warn, error]
+```
+
+## Cold Storage Active hour
+
+Specify the period which your guard will generate cold storage transaction.
+Note that this config is personal and is independent from other guards. The
+hour will be in UTC timezone.
+
+```yaml
+coldStorage:
+  startHour: 17 # start of cold storage transaction generation period
+  endHour: 19 # end of cold storage transaction generation period
+```
+
+## Discord Notification
+
+Setup a webhook on discord. Some notification (such as cases where hot
+address does not have enough assets to pay an event) will be sent to discord
+using this hook. Set it in config like this:
+
+```yaml
+discordWebHookUrl: 'YOUR_WEBHOOK_URL' # Discord webhook url for sending notifications
+```
+
+> **NOTE**: When using docker there is an `DISCORD_WEBHOOK_URL` environment variable available for `discordWebHookUrl` that you can set instead of in the local configuration.
+
+
+## Overall
+
+Combine all of your configs in `local.yaml`. The structure will be:
+
+```yaml
+api:
+  isManualTxRequestActive: false
+  isArbitraryOrderRequestActive: false
+  apiKeyHash: ''
+cardano:
+  ...
+bitcoin:
+  ...
+ergo:
+  ...
+ethereum:
+  ...
+binance:
+  ...
+doge:
+  ...
+bitcoinRunes:
+  ...
+reward:
+  ...
+tss:
+  ...
+p2p:
+  ...
+guard:
+  mnemonic: 'YOUR_MNEMONIC'
+logs:
+  ...
+coldStorage:
+  ...
+discordWebHookUrl: 'YOUR_WEBHOOK_URL'
+```
+
+# Run Guard Service
+
+In the `guard` directory, run the container
+  
+```shell
+docker compose up # use `docker-compose up` for older versions of Docker
+```

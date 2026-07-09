@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:17.0
+    env_file:
+      - .env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - rosen_network
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  service:
+    image: ghcr.io/rosen-bridge/guard-service:${GUARD_IMAGE_VERSION:-latest}
+    environment:
+      - POSTGRES_HOST=db
+    env_file:
+      - .env
+    volumes:
+      - type: bind
+        source: ./config/local.yaml
+        target: /app/services/guard-service/config/local.yml
+      - type: bind
+        source: ./config/thresholds.json
+        target: /app/services/guard-service/config/thresholds.json
+      - ./logs/guard-logs/:/app/services/guard-service/logs/
+      - guard-data:/app/services/guard-service/peer-dialer/
+      - ./logs/tss-api-logs/:/app/services/guard-service/tss-api/logs/
+      - tss-api-data:/app/services/guard-service/tss-api/home/
+    networks:
+      - rosen_network
+    restart: always
+    ports:
+      - ${P2P_PORT:-5243}:${P2P_PORT:-5243}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'curl --fail http://$$HOSTNAME:8080/swagger || exit 1']
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  ui:
+    image: ghcr.io/rosen-bridge/ui-guard:${UI_IMAGE_VERSION:-latest}
+    networks:
+      - rosen_network
+    restart: always
+    ports:
+      - 127.0.0.1:${GUARD_PORT:-8081}:80
+    volumes:
+      - nginx-logs:/var/log/nginx
+    depends_on:
+      service:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
+  guard-data:
+  tss-api-data:
+  nginx-logs:
+
+networks:
+  rosen_network:
