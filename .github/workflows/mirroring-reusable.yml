@@ -1,0 +1,23 @@
+name: Reusable Mirroring
+
+on:
+  workflow_call:
+    secrets:
+      DESTINATION_USER:
+        required: true
+      DESTINATION_TOKEN:
+        required: true
+      DESTINATION_SERVER:
+        required: true
+
+jobs:
+  git-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: git-sync
+        uses: wei/git-sync@v3
+        with:
+          source_repo: ${{ github.repository }}
+          source_branch: ${{ github.ref_name }}
+          destination_repo: 'https://${{ secrets.DESTINATION_USER }}:${{ secrets.DESTINATION_TOKEN }}@${{ secrets.DESTINATION_SERVER }}/ergo/${{ github.repository }}.git'
+          destination_branch: ${{ github.ref_name }}
