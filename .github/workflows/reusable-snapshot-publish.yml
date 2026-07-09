@@ -1,0 +1,71 @@
+name: Reusable Snapshot Publish
+
+on:
+  workflow_call:
+    inputs:
+      pr:
+        description: 'Pull Request Number'
+        type: string
+        required: true
+      enable_setup_npm_version:
+        description: "Enable setup custom npm version step"
+        type: boolean
+        default: true
+        required: false
+      build_command:
+        description: "Build command"
+        type: string
+        default: 'npm run build'
+        required: false
+      discord_announce:
+        description: "Enable discord announcement"
+        type: boolean
+        default: false
+        required: false
+    secrets:
+      NPM_TOKEN:
+        required: true
+      DISCORD_HOOK:
+        required: true
+
+jobs:
+  snapshot-publish:
+    name: snapshot publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout to PR
+        run: |
+          git fetch origin pull/${{ inputs.pr }}/head:pr-${{ inputs.pr }}
+          git checkout pr-${{ inputs.pr }}
+          git rev-parse --short=12 HEAD
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup npm 11.6.2
+        if: ${{ inputs.enable_setup_npm_version }}
+        run: npm i -g npm@11.6.2
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build
+        if: ${{ inputs.build_command != '' }}
+        run: ${{ inputs.build_command }}
+
+      - name: Publish Package Action
+        uses: rosen-bridge/operation/publish-package@master
+        with:
+          type: 'snapshot-release'
+          npm_token: ${{ secrets.NPM_TOKEN }}
+          discord_hook: ${{ secrets.DISCORD_HOOK }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          discord_announce: ${{ inputs.discord_announce }}
