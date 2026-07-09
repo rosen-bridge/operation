@@ -17,7 +17,11 @@ inputs:
   publish_prefix:
     description: "Prefix for release commits"
     required: false
-    default: 'rosen-version:'
+    default: "rosen-version:"
+  discord_announce:
+    description: "Enable discord announcement"
+    required: false
+    default: false
 
 runs:
   using: "composite"
@@ -62,7 +66,7 @@ runs:
         { echo 'CHANGESET_LOG<<_LOG_'; cat .changeset_log; echo '_LOG_'; } >> "$GITHUB_ENV"
 
     - name: Discord Announce
-      if: ${{ steps.publish.outcome == 'success' }}
+      if: ${{ steps.publish.outcome == 'success' && inputs.discord_announce == 'true' }}
       shell: bash
       run: |
         PATTERN_START='success.*packages published successfully:'
