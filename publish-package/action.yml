@@ -45,15 +45,13 @@ runs:
       if: ${{ steps.perm.outputs.is_admin == 'true' }}
       id: publish
       shell: bash
-      env:
-        NODE_AUTH_TOKEN: ${{ inputs.npm_token }}
       run: |
-        echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+        echo "//registry.npmjs.org/:_authToken=${{ inputs.npm_token }}" >> .npmrc
         if [[ "${{ inputs.type }}" == "snapshot-release" ]]; then
           npx changeset version --snapshot "$(git rev-parse --short=8 HEAD)"
           npx changeset publish --no-git-tag --tag develop | tee .changeset_log
         elif [[ "${{ inputs.type }}" == "release" ]]; then
-          npx changeset publish | tee .changeset_log
+          npx changeset publish --no-git-tag | tee .changeset_log
         else
           echo "Invalid type: ${{ inputs.type }}. Must be 'release' or 'snapshot-release'"
           exit 1
