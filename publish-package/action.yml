@@ -14,10 +14,6 @@ inputs:
   github_token:
     description: "GitHub token for permission check"
     required: true
-  publish_prefix:
-    description: "Prefix for release commits"
-    required: false
-    default: "rosen-version:"
   discord_announce:
     description: "Enable discord announcement"
     required: false
@@ -28,7 +24,6 @@ runs:
   steps:
     - name: Release Verification
       id: perm
-      if: ${{ inputs.type == 'snapshot-release' || (startsWith(github.event.head_commit.message, inputs.publish_prefix) && github.ref == 'refs/heads/dev') }}
       shell: bash
       env:
         TOKEN: ${{ inputs.github_token }}
