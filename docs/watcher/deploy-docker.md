@@ -114,6 +114,64 @@ notification:
   discordWebhookUrl: <your webhook url>
 ```
 
+## Logs
+
+You have 3 options for your logs.
+
+- console
+
+  service logs will be only printed on console, you just need to specify
+  log level.
+
+  ```yaml
+  - type: 'console'
+    level: 'info' # [debug, info, warn, error]
+  ```
+
+- file
+
+  service logs will be printed in files in give path.
+
+  ```yaml
+  - type: 'file'
+    path: './logs/'
+    maxSize: '20m' # maximum size of each log file (20 MB)
+    maxFiles: '14d' # maximum number of log files (14 days)
+    level: 'info' # [debug, info, warn, error]
+  ```
+
+  > **NOTE**: Don't change `path`, since it's hard coded in Dockerfile.
+
+- loki
+
+  service logs will be sent to Grafana server.
+
+  ```yaml
+  - type: 'loki'
+    host: 'YOUR_LOKI_URL'
+    level: 'info' # [debug, info, warn, error]
+    basicAuth: '' # Required if you have a remote loki server
+  ```
+
+  > **NOTE**: When using docker there is an `OVERRIDE_LOKI_BASIC_AUTH` environment variable available for `basicAuth` that you can set instead of in the local configuration.
+
+  > **⚠️ NOTE**: Using the `loki` type logger with the `winston-logger` package may sometimes result in missed logs. recommended to use the `file` logger type instead and let **Alloy** handle shipping the logs.
+  > 
+  > For the exact `file` logger configuration required and the complete setup for the Alloy service, please refer to the [Monitoring Stack Configuration](#monitoring-stack-configuration) section.
+
+You also can set multiple logs config. Therefore your config will be something like this:git
+
+```yaml
+logs:
+  - type: 'console'
+    level: 'info'
+  - type: 'file' # [file, console]
+    path: './logs/' # path to log files (only for rotateFile type)
+    maxSize: '20m' # maximum size of each log file (20 MB)
+    maxFiles: '14d' # maximum number of log files (14 days)
+    level: 'info' # [debug, info, warn, error]
+```
+
 ## Reward Collection
 
 Watchers earn rewards in eRSN, but these need to be converted to RSN. The watcher service runs a regular task to collect and exchange eRSN for RSN once a certain amount is reached. It can also send the RSN rewards to a different address. You can set both the collection amount and the reward address by adding these configuration to the local config file (Otherwise it will use default threshold and send the exchanged RSN to the default watcher address):
@@ -601,6 +659,42 @@ bitcoinRunes:
 observation:
   confirmation: 1
 ```
+
+## Monitoring Agents Configuration
+
+You have two deployment options depending on where your Observability Stack (Grafana, Prometheus and Loki) is located:
+
+### Mode 1: Single-Server Deployment (Same Machine)
+If you intend to host both this Watcher service and the Observability Stack on the **same machine**, the agents here will connect directly to the external networks created by the Observability Stack.
+* Ensure you set `IS_SAME_HOST=true` in your `.env` file (this is the default).
+* **Requirement:** You MUST deploy the Observability Stack first. If you try to run this service with monitoring profiles enabled before the Observability Stack is up, you will get a "network not found" error. Please follow the [Monitoring Setup Guide](../monitoring/setup.md) to bring up the Observability Stack before proceeding.
+
+### Mode 2: Multi-Server Deployment (Different Machines)
+If your Observability Stack is already deployed on a **different machine**, the agents will push data remotely over HTTP and do not need to share local Docker networks.
+* Ensure you set `IS_SAME_HOST=false` in your `.env` file. Also, pay attention that you must set the Loki & Prometheus URLs to your remote machine's addresses in the env files.
+
+---
+
+The monitoring agents stack (Alloy, Node Exporter, cAdvisor, and Prometheus Agent) is defined in `docker-compose.override.yaml` and will be automatically applied alongside the main `docker-compose.yaml` file. To activate the monitoring agents, you must set the `COMPOSE_PROFILES` variable in your `.env` file. You can set it to `logger` (to manage Watcher logs), `monitoring` (to monitor the machine and container metrics), or both separated by a comma (e.g., `COMPOSE_PROFILES=logger,monitoring`). If left empty, no monitoring agents will start.
+
+If you activate the `logger` profile, you must also configure your `local.yaml` to write logs to a file so Alloy can ship them to Loki. Ensure your `logs` section in `local.yaml` contains the following `file` logger configuration:
+
+```yaml
+logs:
+  - type: 'file'
+    path: './logs/'
+    maxSize: '20m' # maximum size of each log file (20 MB)
+    maxFiles: '14d' # maximum number of log files (14 days)
+    level: 'info' # [debug, info, warn, error]
+    serviceName: 'watcher' # set custom string for the service name
+    format: 'json' # recommended format against of plain format when you want ship logs to loki
+    createSymlink: true # creates a symlink tailable file to current log file named current.log
+```
+
+Make sure to copy `env.logger.template` to `.env.logger` and `env.monitoring.template` to `.env.monitoring`, then replace the values appropriately.
+
+
+> **Note:** If you need the `container_fs_*` (Filesystem/Disk I/O) metrics to be fully populated in your Grafana dashboards, your host machine must be running **cgroup v1**. Modern systems running **cgroup v2** have known limitations with `cAdvisor` parsing disk metrics for Docker containers, which will result in "No Data" for sector reads/writes.
 
 ## Get Watcher Permit
 

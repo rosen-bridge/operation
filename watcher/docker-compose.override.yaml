@@ -1,0 +1,94 @@
+version: "3.8"
+
+services:
+  alloy:
+    image: grafana/alloy:v1.17.0
+    profiles:
+      - "logger"
+    restart: always
+    env_file:
+      - .env.logger
+    environment:
+      LOKI_URL: ${LOKI_URL:-http://monitoring-proxy:3100/loki/api/v1/push}
+    volumes:
+      - alloy_data:/var/lib/alloy/data
+      - ./alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - ./logs/:/var/log/watcher_logs/:ro
+    networks:
+      - logger
+
+  prometheus-agent:
+    image: prom/prometheus:v3.13.1
+    profiles:
+      - "monitoring"
+    container_name: watcher-prometheus-agent
+    restart: unless-stopped
+    volumes:
+      - ./prometheus-agent:/tmp/prometheus-agent:ro
+      - prometheus_agent_data:/prometheus
+    depends_on:
+      - node-exporter
+      - cadvisor
+    networks:
+      - monitoring
+      - exporters-metrics
+    env_file:
+      - .env.monitoring
+    entrypoint:
+      - /tmp/prometheus-agent/entrypoint.sh
+    command:
+      - "--agent"
+      - "--config.file=/etc/prometheus/prometheus-agent.yaml"
+      - "--storage.agent.path=/prometheus"
+      - "--web.listen-address=0.0.0.0:9095"
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.55.1
+    profiles:
+      - "monitoring"
+    container_name: watcher-cadvisor
+    restart: unless-stopped
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    networks:
+      - exporters-metrics
+    command:
+      - --docker_only=true
+
+  node-exporter:
+    image: prom/node-exporter:v1.12.1
+    profiles:
+      - "monitoring"
+    container_name: watcher-node-exporter
+    restart: unless-stopped
+    pid: host
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - "--path.procfs=/host/proc"
+      - "--path.rootfs=/rootfs"
+      - "--path.sysfs=/host/sys"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)"
+      - "--path.udev.data=/rootfs/run/udev/data"
+    networks:
+      - exporters-metrics
+
+volumes:
+  alloy_data:
+  prometheus_agent_data:
+
+networks:
+  monitoring:
+    external: ${IS_SAME_HOST:-true}
+    name: monitoring
+  logger:
+    external: ${IS_SAME_HOST:-true}
+    name: logger
+  exporters-metrics:
+

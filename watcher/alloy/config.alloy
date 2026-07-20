@@ -1,0 +1,46 @@
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+local.file_match "watcher_logs" {
+  path_targets = [
+    {
+      __path__ = "/var/log/watcher_logs/current.log",
+    },
+  ]
+}
+
+loki.process "add_labels" {
+  forward_to = [loki.write.remote.receiver]
+
+  stage.regex { expression = "(?P<json_part>\\{.*\\})" }
+  
+  stage.json {
+    source      = "json_part"
+    expressions = {"level" = "level", "serviceName" = "serviceName", "fileName" = "fileName"}
+  }
+  
+  stage.labels {
+    values = {"level" = "", "serviceName" = "", "fileName" = ""}
+  }
+}
+
+loki.source.file "watcher_log_scraper" {
+  targets    = local.file_match.watcher_logs.targets
+  forward_to = [loki.process.add_labels.receiver]
+}
+
+loki.write "remote" {
+  endpoint {
+    url = env("LOKI_URL")
+
+    basic_auth {
+      username = env("LOKI_USERNAME")
+      password = env("LOKI_PASSWORD")
+    }
+  }
+  wal {
+    enabled = true
+  }
+}
