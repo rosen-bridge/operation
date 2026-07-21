@@ -1,13 +1,13 @@
 # Monitoring Stack Deployment
 
-To deploy a monitoring stack, you need to set up the unified monitoring services (Prometheus, Grafana, Loki, and Alertmanager) with Docker. This stack is designed to monitor and collect logs for both Guard and Watcher services, so if you use either (or both) of them, this monitoring stack will be highly useful.
+To deploy a monitoring stack, you need to set up the unified monitoring services (Prometheus, Grafana, Loki and Alertmanager) with Docker. This stack is designed to monitor and collect logs for both Guard and Watcher services, so if you use either (or both) of them, this monitoring stack can be useful.
 
 ## Setting Up the Stack
 
 ### Minimum Requirements
 The monitoring stack requires a minimum of **2 GB RAM** and **1 CPU core** to operate smoothly.
 
-> **Warning**: If you are monitoring multiple services or containers and you notice a container (such as Prometheus) exiting with code `137` (which indicates an **OOM Kill**), it means the service consumed more memory than available. To resolve this, you must icrease the machine memory (even with swap) or limit its memory usage in your `docker-compose.yaml` (or `docker-compose.override.yaml`) under the `deploy` section. For example:
+> **Warning**: If you are monitoring multiple services or containers and you notice a container (such as Prometheus) exiting with code `137` (which indicates an **OOM Kill**), it means the service consumed more memory than available. To resolve this, you must increase the machine memory (even with swap) or limit its memory usage in your `docker-compose.yaml` (or `docker-compose.override.yaml`) under the `deploy` section. For example:
 > ```yaml
 >     deploy:
 >       resources:
@@ -70,7 +70,14 @@ Prometheus evaluates alerting rules from the `prometheus/rules/` directory. We h
 
 You can start the services by activating the required profiles using the `COMPOSE_PROFILES` environment variable in `.env` file. You can run only the logging stack (`logger`), only the monitoring stack (`monitoring`), or both separated by a comma (e.g., `COMPOSE_PROFILES=logger,monitoring`).
 
-Then run docker compose services:
+Then run the commands below to correct the files permissions:
+
+```shell
+chmod -R a+rX ./prometheus ./loki ./alertmanager ./nginx ./grafana
+chmod +x ./alertmanager/entrypoint.sh ./nginx/entrypoint.sh
+```
+
+Finally run docker compose services:
 
 ```shell
 docker compose up -d
