@@ -1,0 +1,19 @@
+groups:
+- name: disk-alerts
+  rules:
+  - alert: NodeDiskUsageHigh
+    expr: |
+      100 * (1 - (
+        node_filesystem_avail_bytes{fstype!~"tmpfs|overlay|squashfs|aufs|nsfs",mountpoint!~"/run.*|/var/lib/docker/.*|/var/lib/containerd/.*"}
+        /
+        node_filesystem_size_bytes{fstype!~"tmpfs|overlay|squashfs|aufs|nsfs",mountpoint!~"/run.*|/var/lib/docker/.*|/var/lib/containerd/.*"}
+      )) > 90
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Disk usage > 90% on {{ $labels.host }}"
+      description: |
+        Disk usage is {{ printf "%.1f" $value }}% on {{ $labels.instance }}.
+        Mountpoint: {{ $labels.mountpoint }}
+        Device: {{ $labels.device }}

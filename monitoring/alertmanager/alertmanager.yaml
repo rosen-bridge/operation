@@ -1,0 +1,16 @@
+global:
+  resolve_timeout: 1m
+
+route:
+  receiver: discord
+  group_by: ['alertname', 'instance', 'check', 'path', 'target']
+  group_wait: 0s
+  group_interval: 1m
+  repeat_interval: 20m
+
+receivers:
+  - name: discord
+    discord_configs:
+      - webhook_url_file: /etc/alertmanager/secrets/discord_webhook_url
+        send_resolved: true
+        username: Infrustructure Alerting

@@ -1,0 +1,17 @@
+groups:
+  - name: host-availability
+    rules:
+      - alert: HostDown
+        expr: |
+          max_over_time(up{job="node-exporter"}[30m]) == 0
+        for: 0s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Host {{ $labels.instance }} is Down"
+          description: |
+            No successful node-exporter scrape for 30 minutes.
+            instance={{ $labels.instance }}
+            job={{ $labels.job }}
+            host={{ $labels.host }}
+
