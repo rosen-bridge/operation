@@ -376,8 +376,6 @@ binance:
     initialHeight: 20000000
 ```
 
-> **NOTE**: When using docker there is an `BINANCE_RPC_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
-
 ### Address Info
 
 Other than network, you need to specify chain code and derivation path for Binance. The key is derived from generated ECDSA key in `key generation ceremony`.
@@ -511,6 +509,58 @@ bitcoinRunes:
     url: 'YOUR_JSON_RPC_PROVIDER_URL'
   unisat:
     apiKey: 'YOUR_UNISAT_API_KEY'
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+## Firo
+
+### Network
+
+Specify your network. If you are using ElectrumX, set `chainNetwork` field as
+`electrumx` and set your ElectrumX host. 
+
+```yaml
+firo:
+  chainNetwork: 'electrumx' # 'electrumx'
+  electrumx:
+    host: 'YOUR_ELECTRUMX_URL'
+```
+
+ElectrumX network uses socket connection, so reconnection delay can be configured too. Alternatively, you can change the port, which is `50002` by default.
+
+```yaml
+firo:
+  chainNetwork: 'electrumx' # 'electrumx'
+  electrumx:
+    host: 'YOUR_ELECTRUMX_URL'
+    port: 50002
+    reconnectDelay: 5
+```
+
+### Address Info
+
+Other than network, you need to specify Firo public key alongside it's chain code and derivation path. The key is derived from generated ECDSA key in `key generation ceremony`.
+
+```yaml
+firo:
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+### Overall
+
+Your Firo config will be something like this:
+
+```yaml
+firo:
+  chainNetwork: 'electrumx' # 'electrumx'
+  electrumx:
+    host: 'YOUR_ELECTRUMX_URL'
   bankPublicKey: 'GENERATED_PUBLIC_KEY'
   tssChainCode: ''
   derivationPath:
