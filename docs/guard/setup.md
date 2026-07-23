@@ -376,6 +376,8 @@ binance:
     initialHeight: 20000000
 ```
 
+> **NOTE**: When using docker there is an `BINANCE_RPC_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
+
 ### Address Info
 
 Other than network, you need to specify chain code and derivation path for Binance. The key is derived from generated ECDSA key in `key generation ceremony`.
@@ -527,9 +529,10 @@ firo:
   chainNetwork: 'electrumx' # 'electrumx'
   electrumx:
     host: 'YOUR_ELECTRUMX_URL'
+    port: 50002
 ```
 
-ElectrumX network uses socket connection, so reconnection delay can be configured too. Alternatively, you can change the port, which is `50002` by default.
+ElectrumX network uses socket connection, so reconnection delay can be configured too.
 
 ```yaml
 firo:
@@ -561,6 +564,7 @@ firo:
   chainNetwork: 'electrumx' # 'electrumx'
   electrumx:
     host: 'YOUR_ELECTRUMX_URL'
+    port: 50002
   bankPublicKey: 'GENERATED_PUBLIC_KEY'
   tssChainCode: ''
   derivationPath:

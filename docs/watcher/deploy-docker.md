@@ -670,6 +670,7 @@ If you're running a Firo watcher, configure it under the `firo` section as follo
 type: electrumx
 electrumx:
   host: <your electrumX host>
+  port: 50002
 ```
 
 or
@@ -685,6 +686,8 @@ rpc:
 > Note: ElectrumX network uses socket connection, so reconnection delay (with `reconnectDelay` key) can be configured too. Alternatively, you can change the port, which is `50002` by default.
 
 > Note: RPC username and password is optional, if you're using a public node you don't need to add authorization configs.
+
+> NOTE: When using docker there are `FIRO_RPC_USERNAME` and `FIRO_RPC_PASSWORD` environment variable available for rpc authentication that you can set instead of in the local configuration.
 
 2. **Initial Block Height:** Define the starting block height for observing and reporting events. We recommend using the latest Firo block:
 
@@ -720,6 +723,7 @@ firo:
   type: electrumx
   electrumx:
     host: <your electrumX host>
+    port: 50002
   initial:
     height: <latest firo height>
 observation:
