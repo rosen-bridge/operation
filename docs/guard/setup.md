@@ -119,7 +119,15 @@ After obtaining the hash, input it into your config file. For example, the salte
 
 > **⚠️ NOTE**: When using docker there is an `API_KEY_HASH` environment variable available for `apiKeyHash` that you can set instead of in the local configuration. See your `.env` file. We recommend utilizing environment variables over direct configuration file settings for **security** purpose to not accidently share your api key while troubleshooting etc. After updating, you can delete `apiKeyHash` from /config/local.yaml. Note that you should set your hash between single quotes, for example: API_KEY_HASH='$USHxmI8E$7Bby9L7leeExrYFt2n3270K4+PMCCszZ+UwCV8klqBs='.
 
-## DATABASE
+## Public Status
+To enable the **Public Event Status** feature, specify the Rosen application URL in the configuration as shown below. When configured, every status change for events and their associated transactions is sent to the Rosen application, where it is made available through the event details page.
+
+```yaml
+publicStatus:
+  baseUrl: 'https://app.rosen.tech'
+```
+
+## Database
 Specify your database connection and credentials.
 
 ```yaml
@@ -503,6 +511,60 @@ bitcoinRunes:
     url: 'YOUR_JSON_RPC_PROVIDER_URL'
   unisat:
     apiKey: 'YOUR_UNISAT_API_KEY'
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+## Firo
+
+### Network
+
+Specify your network. If you are using ElectrumX, set `chainNetwork` field as
+`electrumx` and set your ElectrumX host. 
+
+```yaml
+firo:
+  chainNetwork: 'electrumx' # 'electrumx'
+  electrumx:
+    host: 'YOUR_ELECTRUMX_URL'
+    port: 50002
+```
+
+ElectrumX network uses socket connection, so reconnection delay can be configured too.
+
+```yaml
+firo:
+  chainNetwork: 'electrumx' # 'electrumx'
+  electrumx:
+    host: 'YOUR_ELECTRUMX_URL'
+    port: 50002
+    reconnectDelay: 5
+```
+
+### Address Info
+
+Other than network, you need to specify Firo public key alongside it's chain code and derivation path. The key is derived from generated ECDSA key in `key generation ceremony`.
+
+```yaml
+firo:
+  bankPublicKey: 'GENERATED_PUBLIC_KEY'
+  tssChainCode: ''
+  derivationPath:
+    -
+```
+
+### Overall
+
+Your Firo config will be something like this:
+
+```yaml
+firo:
+  chainNetwork: 'electrumx' # 'electrumx'
+  electrumx:
+    host: 'YOUR_ELECTRUMX_URL'
+    port: 50002
   bankPublicKey: 'GENERATED_PUBLIC_KEY'
   tssChainCode: ''
   derivationPath:

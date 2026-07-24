@@ -660,6 +660,76 @@ observation:
   confirmation: 1
 ```
 
+### Firo Config (Just for Firo watchers)
+
+If you're running a Firo watcher, configure it under the `firo` section as follows:
+
+1. **Connection configuration:** Firo watchers currently supports direct JSON-RPC and ElectrumX endpoints. The ElectrumX is recommended as the JSON-RPC might be removed in near future. Specify your connection details in this format:
+
+```yaml
+type: electrumx
+electrumx:
+  host: <your electrumX host>
+  port: 50002
+```
+
+or
+
+```yaml
+type: rpc
+rpc:
+  url: <your json-rpc url>
+  username: <your rpc username>
+  password: <your rpc password>
+```
+
+> Note: ElectrumX network uses socket connection, so reconnection delay (with `reconnectDelay` key) can be configured too. Alternatively, you can change the port, which is `50002` by default.
+
+> Note: RPC username and password is optional, if you're using a public node you don't need to add authorization configs.
+
+> NOTE: When using docker there are `FIRO_RPC_USERNAME` and `FIRO_RPC_PASSWORD` environment variable available for rpc authentication that you can set instead of in the local configuration.
+
+2. **Initial Block Height:** Define the starting block height for observing and reporting events. We recommend using the latest Firo block:
+
+```yaml
+initial:
+  height: <latest firo height>
+```
+
+> Note: Find the latest Firo blocks [here](https://explorer.firo.org).
+
+> Note: Once the watcher begins scanning from the initial block, updating this setting won't change its behavior. To restart from an earlier block, remove volumes and update both the Ergo and Firo initial heights.
+
+3. **Observation Confirmation:** To ensure accurate event tracking, set confirmation based on Firo's network specifications. Recommended value:
+
+```yaml
+observation:
+  confirmation: 8
+```
+
+Finally, an example Firo watcher `local.yaml` file would look like:
+
+```yaml
+network: firo
+api:
+  apiKeyHash: <your api key hash>
+ergo:
+  type: node
+  initialHeight: <latest ergo height>
+  mnemonic: <your wallet mnemonic>
+  node:
+    url: https://example.node.com
+firo:
+  type: electrumx
+  electrumx:
+    host: <your electrumX host>
+    port: 50002
+  initial:
+    height: <latest firo height>
+observation:
+  confirmation: 8
+```
+
 ## Monitoring Agents Configuration
 
 You have two deployment options depending on where your Observability Stack (Grafana, Prometheus and Loki) is located:
