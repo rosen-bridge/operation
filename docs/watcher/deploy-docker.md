@@ -114,6 +114,64 @@ notification:
   discordWebhookUrl: <your webhook url>
 ```
 
+## Logs
+
+You have 3 options for your logs.
+
+- console
+
+  service logs will be only printed on console, you just need to specify
+  log level.
+
+  ```yaml
+  - type: 'console'
+    level: 'info' # [debug, info, warn, error]
+  ```
+
+- file
+
+  service logs will be printed in files in give path.
+
+  ```yaml
+  - type: 'file'
+    path: './logs/'
+    maxSize: '20m' # maximum size of each log file (20 MB)
+    maxFiles: '14d' # maximum number of log files (14 days)
+    level: 'info' # [debug, info, warn, error]
+  ```
+
+  > **NOTE**: Don't change `path`, since it's hard coded in Dockerfile.
+
+- loki
+
+  service logs will be sent to Grafana server.
+
+  ```yaml
+  - type: 'loki'
+    host: 'YOUR_LOKI_URL'
+    level: 'info' # [debug, info, warn, error]
+    basicAuth: '' # Required if you have a remote loki server
+  ```
+
+  > **NOTE**: When using docker there is an `OVERRIDE_LOKI_BASIC_AUTH` environment variable available for `basicAuth` that you can set instead of in the local configuration.
+
+  > **⚠️ NOTE**: Using the `loki` type logger with the `winston-logger` package may sometimes result in missed logs. recommended to use the `file` logger type instead and let **Alloy** handle shipping the logs.
+  > 
+  > For the exact `file` logger configuration required and the complete setup for the Alloy service, please refer to the [Monitoring Agents Configuration](#monitoring-agents-configuration) section.
+
+You also can set multiple logs config. Therefore your config will be something like this:git
+
+```yaml
+logs:
+  - type: 'console'
+    level: 'info'
+  - type: 'file' # [file, console]
+    path: './logs/' # path to log files (only for rotateFile type)
+    maxSize: '20m' # maximum size of each log file (20 MB)
+    maxFiles: '14d' # maximum number of log files (14 days)
+    level: 'info' # [debug, info, warn, error]
+```
+
 ## Reward Collection
 
 Watchers earn rewards in eRSN, but these need to be converted to RSN. The watcher service runs a regular task to collect and exchange eRSN for RSN once a certain amount is reached. It can also send the RSN rewards to a different address. You can set both the collection amount and the reward address by adding these configuration to the local config file (Otherwise it will use default threshold and send the exchanged RSN to the default watcher address):
@@ -601,6 +659,124 @@ bitcoinRunes:
 observation:
   confirmation: 1
 ```
+
+### Firo Config (Just for Firo watchers)
+
+If you're running a Firo watcher, configure it under the `firo` section as follows:
+
+1. **Connection configuration:** Firo watchers currently supports direct JSON-RPC and ElectrumX endpoints. The ElectrumX is recommended as the JSON-RPC might be removed in near future. Specify your connection details in this format:
+
+```yaml
+type: electrumx
+electrumx:
+  host: <your electrumX host>
+  port: 50002
+```
+
+or
+
+```yaml
+type: rpc
+rpc:
+  url: <your json-rpc url>
+  username: <your rpc username>
+  password: <your rpc password>
+```
+
+> Note: ElectrumX network uses socket connection, so reconnection delay (with `reconnectDelay` key) can be configured too. Alternatively, you can change the port, which is `50002` by default.
+
+> Note: RPC username and password is optional, if you're using a public node you don't need to add authorization configs.
+
+> NOTE: When using docker there are `FIRO_RPC_USERNAME` and `FIRO_RPC_PASSWORD` environment variable available for rpc authentication that you can set instead of in the local configuration.
+
+2. **Initial Block Height:** Define the starting block height for observing and reporting events. We recommend using the latest Firo block:
+
+```yaml
+initial:
+  height: <latest firo height>
+```
+
+> Note: Find the latest Firo blocks [here](https://explorer.firo.org).
+
+> Note: Once the watcher begins scanning from the initial block, updating this setting won't change its behavior. To restart from an earlier block, remove volumes and update both the Ergo and Firo initial heights.
+
+3. **Observation Confirmation:** To ensure accurate event tracking, set confirmation based on Firo's network specifications. Recommended value:
+
+```yaml
+observation:
+  confirmation: 8
+```
+
+Finally, an example Firo watcher `local.yaml` file would look like:
+
+```yaml
+network: firo
+api:
+  apiKeyHash: <your api key hash>
+ergo:
+  type: node
+  initialHeight: <latest ergo height>
+  mnemonic: <your wallet mnemonic>
+  node:
+    url: https://example.node.com
+firo:
+  type: electrumx
+  electrumx:
+    host: <your electrumX host>
+    port: 50002
+  initial:
+    height: <latest firo height>
+observation:
+  confirmation: 8
+```
+
+## Monitoring Agents Configuration
+
+You have two deployment options depending on where your Observability Stack (Grafana, Prometheus and Loki) is located:
+
+### Mode 1: Single-Server Deployment (Same Machine)
+If you intend to host both this Watcher service and the Observability Stack on the **same machine**, the agents here will connect directly to the Observability Stack.
+* Ensure you set `IS_SAME_HOST=true` in your `.env` file (this is the default).
+* **Requirement:** You MUST deploy the Observability Stack first. If you try to run this service with monitoring profiles enabled before the Observability Stack is up, you will get a "network not found" error. Please follow the [Monitoring Setup Guide](../monitoring/setup.md) to bring up the Observability Stack before proceeding.
+
+### Mode 2: Multi-Server Deployment (Different Machines)
+If your Observability Stack is already deployed on a **different machine**, you just need to replace the URL and Basic Auth values with the correct ones in the `.env.monitoring` and `.env.logger` files (these files are explained below).
+If you have not deployed it yet and intend to deploy the Observability Stack on a separate machine, you can follow the [Monitoring Setup Guide](../monitoring/setup.md) to do so.
+* In this case, ensure you set `IS_SAME_HOST=false` in the `.env` file of your Watcher server.
+
+The monitoring agents stack (Alloy, Node Exporter, cAdvisor, and Prometheus Agent) is defined in `docker-compose.override.yaml` and will be automatically applied alongside the main `docker-compose.yaml` file. To activate the monitoring agents, you must set the `COMPOSE_PROFILES` variable in your `.env` file. You can set it to `logger` (to manage Watcher logs), `monitoring` (to monitor the machine and container metrics), or both separated by a comma (e.g., `COMPOSE_PROFILES=logger,monitoring`). If left empty, no monitoring agents will start.
+
+If you activate the `logger` profile, you must also configure your `local.yaml` to write logs to a file so Alloy can ship them to Loki. Ensure your `logs` section in `local.yaml` contains the following `file` logger configuration:
+
+```yaml
+logs:
+  - type: 'file'
+    path: './logs/'
+    maxSize: '20m' # maximum size of each log file (20 MB)
+    maxFiles: '14d' # maximum number of log files (14 days)
+    level: 'info' # [debug, info, warn, error]
+    serviceName: 'watcher' # set custom string for the service name
+    format: 'json' # recommended format against of plain format when you want ship logs to loki
+    createSymlink: true # creates a symlink tailable file to current log file named current.log
+```
+
+Create the environment files `.env.logger` and `.env.monitoring` based on `env.logger.template` and `env.monitoring.template` files in the `watcher` directory:
+
+```shell
+cp env.logger.template .env.logger
+cp env.monitoring.template .env.monitoring
+```
+
+> **Note**: If you are deploying using **Mode 2** (Observability on Different Machine), ensure you replace the URL and Basic Auth values in these files appropriately.
+
+Finally run the commands below before starting the services.
+
+```shell
+chmod -R a+rX ./alloy ./prometheus-agent
+chmod +x ./prometheus-agent/entrypoint.sh
+```
+
+> **Note:** If you need the `container_fs_*` (Filesystem/Disk I/O) metrics to be fully populated in your Grafana dashboards, your host machine must be running **cgroup v1**. Modern systems running **cgroup v2** have known limitations with `cAdvisor` parsing disk metrics for Docker containers, which will result in "No Data" for sector reads/writes.
 
 ## Get Watcher Permit
 

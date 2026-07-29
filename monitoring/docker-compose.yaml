@@ -1,0 +1,128 @@
+version: '3.8'
+
+services:
+  prometheus:
+    image: prom/prometheus:v3.13.1
+    container_name: prometheus
+    profiles:
+      - "monitoring"
+    restart: always
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yaml"
+      - "--storage.tsdb.retention.time=${PROMETHEUS_RETENTION_TIME:-15d}"
+      - "--storage.tsdb.retention.size=${PROMETHEUS_RETENTION_SIZE:-10GB}"
+      - "--web.enable-remote-write-receiver"
+      - "--web.external-url=${PROMETHEUS_EXTERNAL_URL}"
+    volumes:
+      - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+      - ./prometheus/rules:/etc/prometheus/rules:ro
+      - prometheus-data:/prometheus
+    networks:
+      - monitoring
+
+  loki:
+    image: grafana/loki:2.8.0
+    container_name: loki
+    profiles:
+      - "logger"
+    restart: always
+    volumes:
+      - ./loki/loki-config.yaml:/etc/loki/loki-config.yaml
+      - ./loki/rules:/loki/rules:ro
+      - loki-data:/loki
+    command: -config.file=/etc/loki/loki-config.yaml
+    networks:
+      - logger
+
+  grafana:
+    image: grafana/grafana:11.6.16
+    container_name: grafana
+    profiles:
+      - "logger"
+      - "monitoring"
+    ports:
+      - "${GRAFANA_PUBLISHED_PORT:-127.0.0.1:3000}:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - ./grafana/provisioning/datasources/:/etc/grafana/provisioning/datasources/:ro
+      - ./grafana/provisioning/dashboards/:/etc/grafana/provisioning/dashboards/:ro
+    restart: always
+    networks:
+      - monitoring
+      - logger
+    depends_on:
+      prometheus:
+        condition: service_started
+        required: false
+      loki:
+        condition: service_started
+        required: false
+
+  alertmanager:
+    image: prom/alertmanager:v0.33.1
+    container_name: alertmanager
+    profiles:
+      - "logger"
+      - "monitoring"
+    restart: unless-stopped
+    environment:
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+    entrypoint:
+      - /etc/alertmanager/entrypoint.sh
+    volumes:
+      - ./alertmanager/alertmanager.yaml:/etc/alertmanager/alertmanager.yaml:ro
+      - ./alertmanager/entrypoint.sh:/etc/alertmanager/entrypoint.sh:ro
+      - alertmanager-data:/alertmanager
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yaml
+      - --storage.path=/alertmanager
+      - --web.listen-address=0.0.0.0:9093
+    networks:
+      - monitoring
+      - logger
+
+  monitoring-proxy:
+    image: nginx:alpine
+    container_name: monitoring-proxy
+    profiles:
+      - "monitoring"
+      - "logger"
+    restart: always
+    environment:
+      - MONITORING_ADMIN_USER=${MONITORING_ADMIN_USER}
+      - MONITORING_ADMIN_PASSWORD=${MONITORING_ADMIN_PASSWORD}
+      - COMPOSE_PROFILES=${COMPOSE_PROFILES}
+    entrypoint:
+      - /etc/nginx/entrypoint.sh
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - ./nginx/entrypoint.sh:/etc/nginx/entrypoint.sh:ro
+    ports:
+      - "${PROMETHEUS_PUBLISHED_PORT:-127.0.0.1:9090}:9090"
+      - "${LOKI_PUBLISHED_PORT:-127.0.0.1:3100}:3100"
+    networks:
+      - monitoring
+      - logger
+    depends_on:
+      prometheus:
+        condition: service_started
+        required: false
+      loki:
+        condition: service_started
+        required: false
+
+volumes:
+  prometheus-data:
+  loki-data:
+  grafana-data:
+  alertmanager-data:
+
+networks:
+  monitoring:
+    name: monitoring
+  logger:
+    name: logger

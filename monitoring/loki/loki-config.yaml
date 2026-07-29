@@ -1,0 +1,78 @@
+auth_enabled: false                           # Disable Loki native auth (handled by Nginx)
+
+server:
+  http_listen_port: 3100                      # Port for incoming HTTP requests
+  grpc_server_max_recv_msg_size: 33554432     # Max size for incoming internal gRPC messages (32MB)
+  grpc_server_max_send_msg_size: 33554432     # Max size for outgoing internal gRPC messages (32MB)
+
+ingester:
+  lifecycler:
+    address: 127.0.0.1                        # Internal IP for the ring (127.0.0.1 for single-node)
+    ring:
+      kvstore:
+        store: inmemory                       # Store ring state in RAM (no external DB needed)
+      replication_factor: 1                   # Do not copy logs to other nodes (single-node)
+    final_sleep: 0s                           # Shut down immediately without waiting
+  chunk_idle_period: 1h                       # Save chunk to disk if no new logs arrive for 1 hour
+  max_chunk_age: 1h                           # Force save chunk to disk after 1 hour anyway
+  chunk_target_size: 1048576                  # Try to compress chunks to exactly 1MB before saving
+  chunk_retain_period: 30s                    # Keep chunk in RAM for 30s after saving (speeds up recent searches)
+  max_transfer_retries: 0                     # Disable transferring chunks on shutdown (single-node)
+  concurrent_flushes: 16                      # Use 16 parallel threads to save chunks to disk
+  wal:
+    dir: /loki/wal                            # Path to Write-Ahead Log (prevents data loss on crash)
+
+schema_config:
+  configs:
+    - from: 2026-07-01                        # Apply this storage schema for logs starting from this date
+      store: boltdb-shipper                   # Use boltdb engine to create and ship index files
+      object_store: filesystem                # Save compressed logs directly on the local hard drive
+      schema: v11                             # Use version 11 for data formatting structure
+      index:
+        prefix: index_                        # Add 'index_' prefix to all index filenames
+        period: 24h                           # Create a brand new index file every 24 hours
+
+storage_config:
+  boltdb_shipper:
+    active_index_directory: /loki/boltdb-shipper-active  # Temp folder for building today's index
+    cache_location: /loki/boltdb-shipper-cache           # Cache folder for downloading older indexes
+    cache_ttl: 24h                                       # Keep downloaded indexes in cache for 24 hours
+    shared_store: filesystem                             # Archive finished indexes to the local hard drive
+  filesystem:
+    directory: /loki/chunks                              # Main folder where compressed logs are saved
+
+compactor:
+  working_directory: /loki/boltdb-shipper-compactor      # Temp folder for merging and cleaning index files
+  shared_store: filesystem                               # Where to find index files to compact
+  retention_enabled: true                                # Allow compactor to automatically delete old logs
+
+limits_config:
+  reject_old_samples: true                    # Reject incoming logs with very old timestamps
+  reject_old_samples_max_age: 164h            # Max allowed age for incoming logs (approx 7 days)
+  
+  ingestion_rate_mb: 128                      # Global max allowed log ingestion speed (128 MB/s)
+  ingestion_burst_size_mb: 256                # Global max allowed sudden spike in log ingestion (256 MB)
+  
+  per_stream_rate_limit: 64MB                 # Max allowed log ingestion speed per app (64 MB/s)
+  per_stream_rate_limit_burst: 128MB          # Max allowed sudden spike per app (128 MB)
+  max_line_size: 16MB                         # Max allowed size for a single log line
+  max_line_size_truncate: true                # If a log line is over 16MB, cut it instead of throwing error
+  retention_period: 164h                      # Keep logs for 180 hours (7 days) then delete them
+  
+  query_timeout: 10m                          # Kill any search query that takes longer than 10 minutes
+  split_queries_by_interval: 30m              # Break heavy searches into 30-minute chunks for speed
+  max_query_parallelism: 8                    # Run up to 8 search chunks at the same time
+  max_query_lookback: 164h                    # Do not allow searching for logs older than 164 hours
+
+ruler:
+  storage:
+    type: local
+    local:
+      directory: /loki/rules
+  rule_path: /loki/rules-temp
+  alertmanager_url: http://alertmanager:9093
+  enable_alertmanager_v2: true
+  ring:
+    kvstore:
+      store: inmemory
+  enable_api: true
