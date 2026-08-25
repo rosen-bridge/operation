@@ -6,14 +6,14 @@ groups:
           max by (host, container_label_com_docker_compose_project, container_label_com_docker_compose_service) (
             present_over_time(container_last_seen{
               container_label_com_docker_compose_service!="",
-              name=~"^/?(guard|watcher).*"
+              name=~".*(guard|watcher|monitoring).*"
             }[1d])
           )
           unless on (host, container_label_com_docker_compose_project, container_label_com_docker_compose_service)
           max by (host, container_label_com_docker_compose_project, container_label_com_docker_compose_service) (
             present_over_time(container_last_seen{
               container_label_com_docker_compose_service!="",
-              name=~"^/?(guard|watcher).*"
+              name=~".*(guard|watcher|monitoring).*"
             }[1m])
           )
         for: 0s
@@ -27,8 +27,17 @@ groups:
         expr: |
           changes(container_start_time_seconds{
             container_label_com_docker_compose_service!="",
-            name=~"^/?(guard|watcher).*"
+            name=~".*(guard|watcher|monitoring).*"
           }[5m]) > 3
+          or
+          (
+            count by (container_label_com_docker_compose_project, container_label_com_docker_compose_service, name) (
+              present_over_time(container_start_time_seconds{
+                container_label_com_docker_compose_service!="",
+                name=~".*(guard|watcher|monitoring).*"
+              }[5m])
+            ) > 3
+          )
         for: 0s
         labels:
           severity: warning
