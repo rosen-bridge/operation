@@ -3,7 +3,6 @@ version: '3.8'
 services:
   prometheus:
     image: prom/prometheus:v3.13.1
-    container_name: monitoring-prometheus
     profiles:
       - "monitoring"
     restart: always
@@ -22,7 +21,6 @@ services:
 
   loki:
     image: grafana/loki:2.8.0
-    container_name: monitoring-loki
     profiles:
       - "logger"
     restart: always
@@ -36,7 +34,6 @@ services:
 
   grafana:
     image: grafana/grafana:11.6.16
-    container_name: monitoring-grafana
     profiles:
       - "logger"
       - "monitoring"
@@ -64,7 +61,6 @@ services:
 
   alertmanager:
     image: prom/alertmanager:v0.33.1
-    container_name: monitoring-alertmanager
     profiles:
       - "logger"
       - "monitoring"
@@ -87,7 +83,6 @@ services:
 
   monitoring-proxy:
     image: nginx:alpine
-    container_name: monitoring-proxy
     profiles:
       - "monitoring"
       - "logger"
