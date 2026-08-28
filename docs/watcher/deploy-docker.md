@@ -776,8 +776,6 @@ chmod -R ao+rX ./alloy ./prometheus-agent
 chmod o+x ./prometheus-agent/entrypoint.sh
 ```
 
-> **Note:** If you need the `container_fs_*` (Filesystem/Disk I/O) metrics to be fully populated in your Grafana dashboards, your host machine must be running **cgroup v1**. Modern systems running **cgroup v2** have known limitations with `cAdvisor` parsing disk metrics for Docker containers, which will result in "No Data" for sector reads/writes.
-
 ## Get Watcher Permit
 
 After setting up and running your watcher instance, access the watcher UI by visiting http://localhost:3030. From your dashboard, you can view network information, assets, and health status alongside action buttons. To activate your watcher, proceed to the 'LOCK' action, where you can utilize assets from the watcher wallet for registration and obtain reporting permits. Top up your wallet with the specified amounts of ERG and RSN and receive these permits.

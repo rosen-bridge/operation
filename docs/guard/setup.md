@@ -793,8 +793,6 @@ chmod -R ao+rX ./alloy ./prometheus-agent
 chmod o+x ./prometheus-agent/entrypoint.sh
 ```
 
-> **Note:** If you need the `container_fs_*` (Filesystem/Disk I/O) metrics to be fully populated in your Grafana dashboards, your host machine must be running **cgroup v1**. Modern systems running **cgroup v2** have known limitations with `cAdvisor` parsing disk metrics for Docker containers, which will result in "No Data" for sector reads/writes.
-
 # Run Guard Service
 
 In the `guard` directory, run the container

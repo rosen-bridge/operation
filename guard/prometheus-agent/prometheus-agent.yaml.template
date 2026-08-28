@@ -22,7 +22,7 @@ scrape_configs:
   - job_name: "node-exporter"
     static_configs:
       - targets:
-          - "guard-node-exporter:9100"
+          - "node-exporter:9100"
         labels:
           instance: "guard-service"
 
@@ -30,6 +30,6 @@ scrape_configs:
     honor_timestamps: false
     static_configs:
       - targets:
-          - "guard-cadvisor:8080"
+          - "cadvisor:8080"
         labels:
           instance: "guard-service"
