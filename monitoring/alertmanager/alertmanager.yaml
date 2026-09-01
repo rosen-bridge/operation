@@ -13,4 +13,3 @@ receivers:
     discord_configs:
       - webhook_url_file: /etc/alertmanager/secrets/discord_webhook_url
         send_resolved: true
-        username: Infrustructure Alerting
