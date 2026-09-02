@@ -303,14 +303,14 @@
       },
       "id": 2,
       "options": {
-        "showLabels": true,
-        "showTime": false,
+        "showLabels": false,
+        "showTime": true,
         "sortOrder": "Descending",
         "wrapLogMessage": false
       },
       "targets": [
         {
-          "expr": "{serviceName=~\"$service\", level=~\"$level\"} |= \"$search\" ",
+          "expr": "{serviceName=~\"$service\", level=~\"$level\"} |= \"$search\" | json fileName=\"fileName\", message=\"message\" | line_format \"[{{.serviceName}}] [{{.fileName}}] {{.level}}: {{.message}}\"",
           "hide": false,
           "refId": "A"
         }
