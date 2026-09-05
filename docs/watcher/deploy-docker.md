@@ -70,7 +70,7 @@ docker compose up -d # use `docker-compose up -d` for older versions of Docker
 ## Local Config
 
 To start your watcher, you should configure the local.yaml file.
-First, specify the target network you're watching. Currently, we support `ergo`, `cardano`, `bitcoin`, `ethereum`, `binance`, `doge` and `bitcoin-runes`:
+First, specify the target network you're watching. Currently, we support `ergo`, `cardano`, `bitcoin`, `base`, `ethereum`, `binance`, `doge` and `bitcoin-runes`:
 
 ```yaml
 network: ergo
@@ -426,6 +426,65 @@ bitcoin:
     height: <latest bitcoin height>
 observation:
   confirmation: 1
+```
+
+### Base Config (Just for Base watchers)
+
+As a Base watcher, you should specify these configurations under `base` keyword:
+
+1. Base watchers currently support only RPC endpoints. Specify the RPC connection details like this:
+
+```yaml
+type: rpc
+rpc:
+  url: <your rpc url>
+  authToken: <your rpc auth token>
+```
+
+> Note: RPC authentication token is optional, if you're using a public node you don't need to add authToken.
+
+> Note: The public Base endpoint is rate-limited and should not be used for production watchers. Use a dedicated RPC provider or your own node.
+
+> **NOTE**: When using docker there is a `BASE_RPC_AUTH_TOKEN` environment variable available for `authToken` that you can set instead of in the local configuration.
+
+2. Set the initial height for the watcher. We recommend using the latest Base block:
+
+```yaml
+initial:
+  height: <latest base height>
+```
+
+> Note: You can find the latest Base blocks [here](https://basescan.org/blocks).
+
+> Note: Once watcher started scanning from the initial block, changing this config won't affect the watcher behavior. If you need to restart from an earlier block, remove volumes and update both Ergo and Base initial heights.
+
+3. Use a fast-L2 confirmation policy for observations. Recommended value:
+
+```yaml
+observation:
+  confirmation: 20
+```
+
+Finally, an example Base watcher `local.yaml` file would look like:
+
+```yaml
+network: base
+api:
+  apiKeyHash: <your api key hash>
+ergo:
+  type: explorer
+  initialHeight: <latest ergo height>
+  mnemonic: <your wallet mnemonic>
+  node:
+    url: https://example.node.com
+base:
+  type: rpc
+  rpc:
+    url: https://your-base-rpc-provider.example
+  initial:
+    height: <latest base height>
+observation:
+  confirmation: 20
 ```
 
 ### Ethereum Config (Just for Ethereum watchers)
