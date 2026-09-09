@@ -1,3 +1,4 @@
+
 {
   "__inputs": [
     {
@@ -163,7 +164,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(count_over_time(({serviceName=~\"$service\", level=~\"$level\"})[$__interval]))",
+          "expr": "sum(count_over_time(({serviceName=~\".*$service_search.*\", serviceName=~\"$service\", level=~\"$level\"})[$__interval]))",
           "hide": false,
           "refId": "A"
         }
@@ -262,7 +263,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(count_over_time(({serviceName=~\"$service\", level=~\"$level\"} |= \"$search\")[$__interval]))",
+          "expr": "sum(count_over_time(({serviceName=~\".*$service_search.*\", serviceName=~\"$service\", level=~\"$level\"} |= \"$search\")[$__interval]))",
           "hide": false,
           "refId": "A"
         }
@@ -310,7 +311,7 @@
       },
       "targets": [
         {
-          "expr": "{serviceName=~\"$service\", level=~\"$level\"} |= \"$search\" | json fileName=\"fileName\", message=\"message\" | line_format \"[{{.serviceName}}] [{{.fileName}}] {{.level}}: {{.message}}\"",
+          "expr": "{serviceName=~\".*$service_search.*\", serviceName=~\"$service\", level=~\"$level\"} |= \"$search\" | json message=\"message\" | line_format \"[{{.serviceName}}] [{{.fileName}}] {{.level}}: {{.message}}\"",
           "hide": false,
           "refId": "A"
         }
@@ -398,7 +399,7 @@
       "strokeWidth": "1.5",
       "targets": [
         {
-          "expr": "sum by (serviceName) (count_over_time({serviceName=~\"$service\", level=~\"$level\"}[$__interval]))",
+          "expr": "sum by (serviceName) (count_over_time({serviceName=~\".*$service_search.*\", serviceName=~\"$service\", level=~\"$level\"}[$__interval]))",
           "legendFormat": "{{serviceName}}",
           "hide": false,
           "refId": "A"
@@ -456,7 +457,7 @@
       "strokeWidth": "0.4",
       "targets": [
         {
-          "expr": "sum by (serviceName) (count_over_time({serviceName=~\"$service\", level=~\"$level\"}[$__interval]))",
+          "expr": "sum by (serviceName) (count_over_time({serviceName=~\".*$service_search.*\", serviceName=~\"$service\", level=~\"$level\"}[$__interval]))",
           "legendFormat": "{{serviceName}}",
           "refId": "A"
         }
@@ -535,7 +536,7 @@
       "pluginVersion": "7.0.4",
       "targets": [
         {
-          "expr": "sum(count_over_time(({serviceName=~\"$service\", level=~\"$level\"} |= \"$search\")[$__interval])) * 100 / sum(count_over_time(({serviceName=~\"$service\", level=~\"$level\"})[$__interval]))",
+          "expr": "sum(count_over_time(({serviceName=~\".*$service_search.*\", serviceName=~\"$service\", level=~\"$level\"} |= \"$search\")[$__interval])) * 100 / sum(count_over_time(({serviceName=~\".*$service_search.*\", serviceName=~\"$service\", level=~\"$level\"})[$__interval]))",
           "hide": false,
           "refId": "A"
         }
@@ -607,7 +608,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (serviceName) (count_over_time(({serviceName=~\"$service\", level=~\"$level\"} |= \"$search\")[$__interval]))",
+          "expr": "sum by (serviceName) (count_over_time(({serviceName=~\".*$service_search.*\", serviceName=~\"$service\", level=~\"$level\"} |= \"$search\")[$__interval]))",
           "legendFormat": "{{serviceName}}",
           "refId": "A"
         }
@@ -713,7 +714,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (serviceName) (rate(({serviceName=~\"$service\", level=~\"$level\"} |= \"$search\")[30s]))",
+          "expr": "sum by (serviceName) (rate(({serviceName=~\".*$service_search.*\", serviceName=~\"$service\", level=~\"$level\"} |= \"$search\")[30s]))",
           "legendFormat": "{{serviceName}}",
           "hide": false,
           "refId": "A"
@@ -862,7 +863,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (serviceName) (count_over_time({serviceName=~\"$service\", level=~\"$level\"}[$__interval]))",
+          "expr": "sum by (serviceName) (count_over_time({serviceName=~\".*$service_search.*\", serviceName=~\"$service\", level=~\"$level\"}[$__interval]))",
           "legendFormat": "{{serviceName}}",
           "hide": false,
           "refId": "A"
@@ -920,6 +921,25 @@
   ],
   "templating": {
     "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "Service Name Contains:",
+        "name": "service_search",
+        "options": [
+          {
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
       {
         "allValue": ".+",
         "current": {
@@ -985,7 +1005,7 @@
           "value": ""
         },
         "hide": 0,
-        "label": "String Match",
+        "label": "Log Messages Contains:",
         "name": "search",
         "options": [
           {
