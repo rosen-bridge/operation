@@ -1,0 +1,21 @@
+name: 'Setup npm'
+description: 'Installs npm version from input or package.json'
+
+inputs:
+  npm_version:
+    description: 'Version of npm to install. If empty, reads from package.json engines.npm'
+    required: false
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Extract package.json npm version
+      if: ${{ inputs.npm_version == '' }}
+      id: pkg
+      shell: bash
+      run: echo "version=$(node -p "require('./package.json').engines.npm")" >> $GITHUB_OUTPUT
+
+    - name: Install npm ${{ inputs.npm_version || steps.pkg.outputs.version }}
+      shell: bash
+      run: npm i -g npm@${{ inputs.npm_version || steps.pkg.outputs.version }}
