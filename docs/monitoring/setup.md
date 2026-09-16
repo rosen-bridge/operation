@@ -73,8 +73,8 @@ You can start the services by activating the required profiles using the `COMPOS
 Then run the commands below to correct the files permissions:
 
 ```shell
-chmod -R a+rX ./prometheus ./loki ./alertmanager ./nginx ./grafana
-chmod +x ./alertmanager/entrypoint.sh ./nginx/entrypoint.sh
+chmod -R ao+rX ./prometheus ./loki ./alertmanager ./nginx ./grafana
+chmod o+x ./alertmanager/entrypoint.sh ./nginx/entrypoint.sh
 ```
 
 Finally run docker compose services:
