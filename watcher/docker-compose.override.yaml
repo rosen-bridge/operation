@@ -21,7 +21,6 @@ services:
     image: prom/prometheus:v3.13.1
     profiles:
       - "monitoring"
-    container_name: watcher-prometheus-agent
     restart: unless-stopped
     volumes:
       - ./prometheus-agent:/tmp/prometheus-agent:ro
@@ -43,10 +42,9 @@ services:
       - "--web.listen-address=0.0.0.0:9095"
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.55.1
+    image: ghcr.io/google/cadvisor:v0.60.5
     profiles:
       - "monitoring"
-    container_name: watcher-cadvisor
     restart: unless-stopped
     volumes:
       - /:/rootfs:ro
@@ -63,7 +61,6 @@ services:
     image: prom/node-exporter:v1.12.1
     profiles:
       - "monitoring"
-    container_name: watcher-node-exporter
     restart: unless-stopped
     pid: host
     volumes:
@@ -91,4 +88,3 @@ networks:
     external: ${IS_SAME_HOST:-true}
     name: logger
   exporters-metrics:
-
