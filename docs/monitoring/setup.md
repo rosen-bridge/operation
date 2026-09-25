@@ -56,6 +56,7 @@ Grafana also uses basic admin credentials:
 To receive alerts on Discord:
 
 - Set `DISCORD_WEBHOOK_URL` to your Discord channel webhook URL. If left empty, alerts will still be evaluated but not sent to Discord.
+- Set `MONITORING_DOMAIN` to the base URL where you access Grafana (e.g., `http://localhost:3000` or `https://domain.example.com`). This will be used to generate clickable **Source** and **Silence** links within your Discord alerts.
 
 > **Note**: If you want to receive alerts on other platforms, you can modify the [`alertmanager.yaml`](../../monitoring/alertmanager/alertmanager.yaml) configuration file according to the [official Alertmanager documentation](https://prometheus.io/docs/alerting/latest/configuration/).
 

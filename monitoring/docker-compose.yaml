@@ -67,10 +67,11 @@ services:
     restart: unless-stopped
     environment:
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+      - MONITORING_DOMAIN=${MONITORING_DOMAIN:-http://localhost:3000}
     entrypoint:
       - /etc/alertmanager/entrypoint.sh
     volumes:
-      - ./alertmanager/alertmanager.yaml:/etc/alertmanager/alertmanager.yaml:ro
+      - ./alertmanager/alertmanager.yaml:/tmp/alertmanager.yaml:ro
       - ./alertmanager/entrypoint.sh:/etc/alertmanager/entrypoint.sh:ro
       - alertmanager-data:/alertmanager
     command:
