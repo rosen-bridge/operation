@@ -18,11 +18,16 @@ loki.process "add_labels" {
   
   stage.json {
     source      = "json_part"
-    expressions = {"level" = "level", "serviceName" = "serviceName", "fileName" = "fileName"}
+    expressions = {"level" = "level", "serviceName" = "serviceName", "fileName" = "fileName", "time" = "timestamp"}
   }
   
   stage.labels {
     values = {"level" = "", "serviceName" = "", "fileName" = ""}
+  }
+
+  stage.timestamp {
+    source = "time"
+    format = "RFC3339Nano"
   }
 }
 
