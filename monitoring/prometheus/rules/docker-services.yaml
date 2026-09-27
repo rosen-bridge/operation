@@ -20,8 +20,9 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "Docker service {{ $labels.container_label_com_docker_compose_service }} appears stopped"
-          description: "No cAdvisor metrics for >1m. host={{ $labels.host }} instance={{ $labels.instance }} project={{ $labels.container_label_com_docker_compose_project }} container={{ $labels.name }}"
+          summary: "Service {{ $labels.container_label_com_docker_compose_service }} appears stopped in {{ $labels.container_label_com_docker_compose_project }} project."
+          description: "No cAdvisor service metrics for more than a minute."
+          silence_matchers: "alertname%3DDockerServiceStopped&matcher=container_label_com_docker_compose_service%3D{{ $labels.container_label_com_docker_compose_service }}&matcher=container_label_com_docker_compose_project%3D{{ $labels.container_label_com_docker_compose_project }}"
 
       - alert: DockerServiceRestartLoop
         expr: |
@@ -40,7 +41,8 @@ groups:
           )
         for: 0s
         labels:
-          severity: warning
+          severity: critical
         annotations:
-          summary: "Docker service {{ $labels.container_label_com_docker_compose_service }} restarted >3 times in 5m"
-          description: "Restart loop detected. host={{ $labels.host }} instance={{ $labels.instance }} project={{ $labels.container_label_com_docker_compose_project }} container={{ $labels.name }}"
+          summary: "Restart loop detected for service {{ $labels.container_label_com_docker_compose_service }}."
+          description: "Service restarted more than 3 times in 5 minutes in {{ $labels.container_label_com_docker_compose_project }} project."
+          silence_matchers: "alertname%3DDockerServiceRestartLoop&matcher=container_label_com_docker_compose_service%3D{{ $labels.container_label_com_docker_compose_service }}&matcher=container_label_com_docker_compose_project%3D{{ $labels.container_label_com_docker_compose_project }}"

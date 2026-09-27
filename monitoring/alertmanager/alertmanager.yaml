@@ -3,7 +3,7 @@ global:
 
 route:
   receiver: discord
-  group_by: ['alertname', 'instance', 'check', 'path', 'target']
+  group_by: ['...']
   group_wait: 0s
   group_interval: 1m
   repeat_interval: 20m
@@ -13,3 +13,55 @@ receivers:
     discord_configs:
       - webhook_url_file: /etc/alertmanager/secrets/discord_webhook_url
         send_resolved: true
+        title: |-
+          {{- "**Infrastructure Alert**\n" -}}
+          {{- if eq .Status "firing" -}}
+            {{- if eq .CommonLabels.severity "critical" -}}
+              {{- "❌ Broken: " -}}
+            {{- else -}}
+              {{- "⚠️ Warning: " -}}
+            {{- end -}}
+          {{- else -}}
+            {{- "✅ Now Healthy: " -}}
+          {{- end -}}
+          {{- .CommonLabels.alertname -}}
+          {{- if .CommonLabels.host -}}
+            {{- " (" -}}{{ .CommonLabels.host }}{{- ")" -}}
+          {{- end -}}
+        message: |-
+          {{- range .Alerts -}}
+            {{- if eq .Status "firing" -}}
+              {{- .Annotations.summary -}}
+              {{- if .Annotations.description -}}
+                {{- " " -}}{{ .Annotations.description -}}
+              {{- end -}}
+            {{- else -}}
+              {{- if .Labels.container_label_com_docker_compose_service -}}
+                {{- .Labels.container_label_com_docker_compose_service -}}
+                {{- " in " -}}
+                {{- .Labels.container_label_com_docker_compose_project -}}
+                {{- " project returned to healthy state." -}}
+              {{- else if .Labels.mountpoint -}}
+                {{- "Disk " -}}
+                {{- .Labels.mountpoint -}}
+                {{- " on " -}}
+                {{- .Labels.host -}}
+                {{- " returned to healthy state." -}}
+              {{- else if .Labels.instance -}}
+                {{- "Instance " -}}
+                {{- .Labels.instance -}}
+                {{- " returned to healthy state." -}}
+              {{- else -}}
+                {{- "Target returned to healthy state." -}}
+              {{- end -}}
+            {{- end }}
+            {{- "\n\nSource: MONITORING_DOMAIN/alerting/list?search=" -}}
+            {{- .Labels.alertname -}}
+            {{- "\nSilence: MONITORING_DOMAIN/alerting/silence/new?alertmanager=Alertmanager&matcher=" -}}
+            {{- if .Annotations.silence_matchers -}}
+              {{- .Annotations.silence_matchers -}}
+            {{- else -}}
+              {{- "alertname%3D" -}}
+              {{- .Labels.alertname -}}
+            {{- end -}}
+          {{- end -}}

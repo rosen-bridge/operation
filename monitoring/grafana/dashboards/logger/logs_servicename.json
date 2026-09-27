@@ -1,4 +1,3 @@
-
 {
   "__inputs": [
     {
@@ -99,7 +98,7 @@
       ],
       "datasource": {
         "type": "loki",
-        "uid": "loki"
+        "uid": "${DS_LOKI}"
       },
       "description": "Total  Count of log lines in the specified time range",
       "fieldConfig": {
@@ -198,7 +197,7 @@
       ],
       "datasource": {
         "type": "loki",
-        "uid": "loki"
+        "uid": "${DS_LOKI}"
       },
       "description": "Total Count: of $search in the specified time range",
       "fieldConfig": {
@@ -287,7 +286,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "loki"
+        "uid": "${DS_LOKI}"
       },
       "description": "Live logs is a like 'tail -f' in a real time",
       "fieldConfig": {
@@ -334,7 +333,7 @@
       },
       "datasource": {
         "type": "loki",
-        "uid": "loki"
+        "uid": "${DS_LOKI}"
       },
       "decimals": null,
       "fieldConfig": {
@@ -421,7 +420,7 @@
       },
       "datasource": {
         "type": "loki",
-        "uid": "loki"
+        "uid": "${DS_LOKI}"
       },
       "decimals": 0,
       "fieldConfig": {
@@ -472,7 +471,7 @@
       "cacheTimeout": null,
       "datasource": {
         "type": "loki",
-        "uid": "loki"
+        "uid": "${DS_LOKI}"
       },
       "fieldConfig": {
         "defaults": {
@@ -554,7 +553,7 @@
       "dashes": false,
       "datasource": {
         "type": "loki",
-        "uid": "loki"
+        "uid": "${DS_LOKI}"
       },
       "decimals": 0,
       "fieldConfig": {
@@ -665,7 +664,7 @@
       "dashes": false,
       "datasource": {
         "type": "loki",
-        "uid": "loki"
+        "uid": "${DS_LOKI}"
       },
       "fieldConfig": {
         "defaults": {
@@ -771,7 +770,7 @@
       "dashes": false,
       "datasource": {
         "type": "loki",
-        "uid": "loki"
+        "uid": "${DS_LOKI}"
       },
       "fieldConfig": {
         "defaults": {
@@ -924,6 +923,22 @@
       {
         "current": {
           "selected": true,
+          "text": "Loki",
+          "value": "loki"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "label": "datasource",
+        "multi": false,
+        "name": "DS_LOKI",
+        "options": [],
+        "query": "loki",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": true,
           "text": "",
           "value": ""
         },
@@ -949,7 +964,7 @@
         },
         "datasource": {
           "type": "loki",
-          "uid": "loki"
+          "uid": "${DS_LOKI}"
         },
         "definition": "label_values({serviceName=~\".+\"}, serviceName)",
         "hide": 0,
@@ -978,7 +993,7 @@
         },
         "datasource": {
           "type": "loki",
-          "uid": "loki"
+          "uid": "${DS_LOKI}"
         },
         "definition": "label_values({serviceName=~\"$service\"}, level)",
         "hide": 0,

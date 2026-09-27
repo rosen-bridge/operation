@@ -8,10 +8,6 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "Host {{ $labels.instance }} is Down"
-          description: |
-            No successful node-exporter scrape for 30 minutes.
-            instance={{ $labels.instance }}
-            job={{ $labels.job }}
-            host={{ $labels.host }}
-
+          summary: "The {{ $labels.instance }} instance is Down."
+          description: "No successful node-exporter scrape for 30 minutes."
+          silence_matchers: "alertname%3DHostDown&matcher=instance%3D{{ $labels.instance }}"
