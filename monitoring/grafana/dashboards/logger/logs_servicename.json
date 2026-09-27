@@ -931,6 +931,8 @@
         "label": "datasource",
         "multi": false,
         "name": "DS_LOKI",
+        "options": [],
+        "query": "loki",
         "skipUrlSync": false,
         "type": "datasource"
       },
