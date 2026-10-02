@@ -25,7 +25,7 @@ ingester:
 
 schema_config:
   configs:
-    - from: 2025-11-05                        # Apply this storage schema for logs starting from this date
+    - from: 2026-10-01                        # Apply this storage schema for logs starting from this date
       store: tsdb                             # TSDB engine required for Loki 3.x & OTLP
       object_store: filesystem                # Save TSDB index and compressed logs to filesystem
       schema: v13                             # Recommended schema version supporting structured metadata
