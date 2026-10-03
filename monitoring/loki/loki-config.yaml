@@ -2,6 +2,8 @@ auth_enabled: false                           # Disable Loki native auth (handle
 
 server:
   http_listen_port: 3100                      # Port for incoming HTTP requests
+  http_server_read_timeout: 5m                # Max time to wait for a full HTTP request (default 5m)
+  http_server_write_timeout: 5m               # Max time to wait for a full HTTP response (default 5m)
   grpc_server_max_recv_msg_size: 33554432     # Max size for incoming internal gRPC messages (32MB)
   grpc_server_max_send_msg_size: 33554432     # Max size for outgoing internal gRPC messages (32MB)
 
@@ -17,33 +19,31 @@ ingester:
   max_chunk_age: 1h                           # Force save chunk to disk after 1 hour anyway
   chunk_target_size: 1048576                  # Try to compress chunks to exactly 1MB before saving
   chunk_retain_period: 30s                    # Keep chunk in RAM for 30s after saving (speeds up recent searches)
-  max_transfer_retries: 0                     # Disable transferring chunks on shutdown (single-node)
   concurrent_flushes: 16                      # Use 16 parallel threads to save chunks to disk
   wal:
     dir: /loki/wal                            # Path to Write-Ahead Log (prevents data loss on crash)
 
 schema_config:
   configs:
-    - from: 2026-07-01                        # Apply this storage schema for logs starting from this date
-      store: boltdb-shipper                   # Use boltdb engine to create and ship index files
-      object_store: filesystem                # Save compressed logs directly on the local hard drive
-      schema: v11                             # Use version 11 for data formatting structure
+    - from: 2026-10-01                        # Apply this storage schema for logs starting from this date
+      store: tsdb                             # TSDB engine required for Loki 3.x & OTLP
+      object_store: filesystem                # Save TSDB index and compressed logs to filesystem
+      schema: v13                             # Recommended schema version supporting structured metadata
       index:
         prefix: index_                        # Add 'index_' prefix to all index filenames
         period: 24h                           # Create a brand new index file every 24 hours
 
 storage_config:
-  boltdb_shipper:
-    active_index_directory: /loki/boltdb-shipper-active  # Temp folder for building today's index
-    cache_location: /loki/boltdb-shipper-cache           # Cache folder for downloading older indexes
-    cache_ttl: 24h                                       # Keep downloaded indexes in cache for 24 hours
-    shared_store: filesystem                             # Archive finished indexes to the local hard drive
+  tsdb_shipper:
+    active_index_directory: /loki/tsdb-shipper-active    # Temp folder for building TSDB index
+    cache_location: /loki/tsdb-shipper-cache             # Cache folder for downloading TSDB indexes
+    cache_ttl: 24h                                       # Keep TSDB indexes in cache for 24 hours
   filesystem:
     directory: /loki/chunks                              # Main folder where compressed logs are saved
 
 compactor:
-  working_directory: /loki/boltdb-shipper-compactor      # Temp folder for merging and cleaning index files
-  shared_store: filesystem                               # Where to find index files to compact
+  working_directory: /loki/compactor                     # Temp folder for merging and cleaning index files
+  delete_request_store: filesystem                       # Storage backend for tracking deletion requests/retention
   retention_enabled: true                                # Allow compactor to automatically delete old logs
 
 limits_config:
@@ -59,7 +59,7 @@ limits_config:
   max_line_size_truncate: true                # If a log line is over 16MB, cut it instead of throwing error
   retention_period: 164h                      # Keep logs for 180 hours (7 days) then delete them
   
-  query_timeout: 10m                          # Kill any search query that takes longer than 10 minutes
+  query_timeout: 5m                           # Kill any search query that takes longer than 5 minutes
   split_queries_by_interval: 30m              # Break heavy searches into 30-minute chunks for speed
   max_query_parallelism: 8                    # Run up to 8 search chunks at the same time
   max_query_lookback: 164h                    # Do not allow searching for logs older than 164 hours

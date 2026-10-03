@@ -18,9 +18,17 @@ services:
       - prometheus-data:/prometheus
     networks:
       - monitoring
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:9090/-/healthy || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      alertmanager:
+        condition: service_healthy
 
   loki:
-    image: grafana/loki:2.8.0
+    image: grafana/loki:3.7.8
     profiles:
       - "logger"
     restart: always
@@ -31,6 +39,14 @@ services:
     command: -config.file=/etc/loki/loki-config.yaml
     networks:
       - logger
+    healthcheck:
+      test: ["CMD", "/usr/bin/loki", "-health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      alertmanager:
+        condition: service_healthy
 
   grafana:
     image: grafana/grafana:11.6.16
@@ -42,6 +58,7 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_DATAPROXY_TIMEOUT=305
     volumes:
       - grafana-data:/var/lib/grafana
       - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
@@ -51,12 +68,19 @@ services:
     networks:
       - monitoring
       - logger
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3000/api/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     depends_on:
+      alertmanager:
+        condition: service_healthy
       prometheus:
-        condition: service_started
+        condition: service_healthy
         required: false
       loki:
-        condition: service_started
+        condition: service_healthy
         required: false
 
   alertmanager:
@@ -81,6 +105,11 @@ services:
     networks:
       - monitoring
       - logger
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:9093/-/healthy || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   monitoring-proxy:
     image: nginx:alpine
@@ -105,10 +134,10 @@ services:
       - logger
     depends_on:
       prometheus:
-        condition: service_started
+        condition: service_healthy
         required: false
       loki:
-        condition: service_started
+        condition: service_healthy
         required: false
 
 volumes:
