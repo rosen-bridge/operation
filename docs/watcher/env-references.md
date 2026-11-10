@@ -40,6 +40,10 @@ FIRO_RPC_USERNAME=
 
 FIRO_RPC_PASSWORD=
 
+HANDSHAKE_RPC_USERNAME=
+
+HANDSHAKE_RPC_PASSWORD=
+
 WATCHER_HOST= # (default is 127.0.0.1 if no value is set)
 
 WATCHER_PORT= # (default is 3030 if no value is set)
