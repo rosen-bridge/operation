@@ -583,7 +583,14 @@ handshake:
   chainNetwork: 'rpc' # 'rpc'
   rpc:
     url: 'YOUR_HANDSHAKE_NODE_URL'
+    username: 'YOUR_RPC_USERNAME'
+    password: 'YOUR_RPC_PASSWORD'
+    apiKey: 'YOUR_API_KEY'
 ```
+
+> **NOTE**: Only `url` config of `rpc` is required. Depending on the endpoint provider, you may need to specify username and password, or the apiKey. You may also specify none of them.
+
+> **NOTE**: When using docker there are environment variables available for `apiKey`, `username` and `password` that you can set instead of in the local configuration. Please refer to [env-references](env-references.md) for the key.
 
 ### Address Info
 
