@@ -730,6 +730,68 @@ observation:
   confirmation: 8
 ```
 
+### Handshake Config (Just for Handshake watchers)
+
+If you're running a Handshake watcher, configure it under the `handshake` section as follows:
+
+1. **Connection configuration:** Handshake watchers currently support only RPC endpoints. Specify your connection details in this format:
+
+```yaml
+  type: rpc
+  rpc:
+    url: <your rpc url>
+    timeout: <your rpc timeout in seconds>
+    username: <your rpc username>
+    password: <your rpc password>
+```
+
+> Note: RPC username and password is optional, if you're using a public node you don't need to add authorization configs.
+
+> NOTE: When using docker there are `HANDSHAKE_RPC_USERNAME` and `HANDSHAKE_RPC_PASSWORD` environment variable available for rpc authentication that you can set instead of in the local configuration.
+
+2. **Initial Block Height:** Define the starting block height for observing and reporting events. We recommend using the latest Handshake block:
+
+```yaml
+initial:
+  height: <latest handshake height>
+```
+
+> Note: Find the latest Handshake blocks [here](https://e.hnsfans.com/).
+
+> Note: Once the watcher begins scanning from the initial block, updating this setting won't change its behavior. To restart from an earlier block, remove volumes and update both the Ergo and Handshake initial heights.
+
+3. **Observation Confirmation:** To ensure accurate event tracking, set confirmation based on Handshake's network specifications. Recommended value:
+
+```yaml
+observation:
+  confirmation: 2
+```
+
+Finally, an example Handshake watcher `local.yaml` file would look like:
+
+```yaml
+network: handshake
+api:
+  apiKeyHash: <your api key hash>
+ergo:
+  type: node
+  initialHeight: <latest ergo height>
+  mnemonic: <your wallet mnemonic>
+  node:
+    url: https://example.node.com
+handshake:
+  type: rpc
+  rpc:
+    url: <your rpc url>
+    timeout: 10
+    username: <your second rpc instance username>
+    password: <your second rpc instance password>
+  initial:
+    height: <latest handshake height>
+observation:
+  confirmation: 2
+```
+
 ## Monitoring Agents Configuration
 
 You have two deployment options depending on where your Observability Stack (Grafana, Prometheus and Loki) is located:
