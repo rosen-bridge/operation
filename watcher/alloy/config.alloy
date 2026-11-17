@@ -44,6 +44,7 @@ loki.write "remote" {
       username = env("LOKI_USERNAME")
       password = env("LOKI_PASSWORD")
     }
+    max_backoff_retries = 0
   }
   wal {
     enabled = true
